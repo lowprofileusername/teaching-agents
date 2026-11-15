@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 
@@ -20,6 +21,7 @@ var secretSet = keyring.Set
 var secretDelete = keyring.Delete
 
 type APIProfile struct {
+	ModelOptions
 	ID     string `json:"id"`
 	Name   string `json:"name"`
 	Base   string `json:"base"`
@@ -27,8 +29,9 @@ type APIProfile struct {
 	KeyRef string `json:"keyRef,omitempty"`
 }
 type ProfileFile struct {
-	Active   string       `json:"active"`
-	Profiles []APIProfile `json:"profiles"`
+	LibraryPath string       `json:"libraryPath,omitempty"`
+	Active      string       `json:"active"`
+	Profiles    []APIProfile `json:"profiles"`
 }
 type ProfileStore struct {
 	mu   sync.Mutex
@@ -84,7 +87,11 @@ func (a *App) initProfiles() {
 		if e != nil {
 			return
 		}
-		path = filepath.Join(filepath.Dir(exe), "teaching-agent-profiles.json")
+		dir := filepath.Dir(exe)
+		if runtime.GOOS == "darwin" && strings.Contains(exe, ".app/Contents/MacOS/") {
+			dir = filepath.Dir(filepath.Dir(filepath.Dir(dir)))
+		}
+		path = filepath.Join(dir, "teaching-agent-profiles.json")
 	}
 	a.profiles = &ProfileStore{path: path}
 	p, e := a.profiles.read()
@@ -100,6 +107,7 @@ func (a *App) initProfiles() {
 					return
 				}
 			}
+			a.cfg.ModelOptions = v.ModelOptions
 			a.cfg.Base = v.Base
 			a.cfg.Model = v.Model
 			a.cfg.Key = key
@@ -107,10 +115,11 @@ func (a *App) initProfiles() {
 	}
 }
 func publicProfile(p APIProfile) map[string]any {
-	return map[string]any{"id": p.ID, "name": p.Name, "base": p.Base, "model": p.Model, "hasKey": p.KeyRef != ""}
+	return map[string]any{"id": p.ID, "name": p.Name, "base": p.Base, "model": p.Model, "hasKey": p.KeyRef != "", "thinkingMode": p.ThinkingMode, "thinkingFormat": p.ThinkingFormat, "reasoningEffort": p.ReasoningEffort, "contextWindow": p.ContextWindow, "maxTokens": p.MaxTokens}
 }
 func (a *App) profileAPI(w http.ResponseWriter, r *http.Request) {
 	var x struct {
+		ModelOptions
 		Action   string `json:"action"`
 		ID       string `json:"id"`
 		Name     string `json:"name"`
@@ -168,7 +177,11 @@ func (a *App) profileAPI(w http.ResponseWriter, r *http.Request) {
 			fail(w, 404, "配置不存在，请新建")
 			return
 		}
-		v := APIProfile{ID: newID(), Name: x.Name, Base: base, Model: x.Model}
+		if err := x.ModelOptions.normalize(); err != nil {
+			fail(w, 400, err.Error())
+			return
+		}
+		v := APIProfile{ModelOptions: x.ModelOptions, ID: newID(), Name: x.Name, Base: base, Model: x.Model}
 		oldRef := ""
 		if idx >= 0 {
 			v.ID = p.Profiles[idx].ID
@@ -213,6 +226,7 @@ func (a *App) profileAPI(w http.ResponseWriter, r *http.Request) {
 			_ = secretDelete(keyService, oldRef)
 		}
 		a.mu.Lock()
+		a.cfg.ModelOptions = v.ModelOptions
 		a.cfg.Base = v.Base
 		a.cfg.Model = v.Model
 		a.cfg.Key = key
@@ -238,6 +252,7 @@ func (a *App) profileAPI(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		a.mu.Lock()
+		a.cfg.ModelOptions = v.ModelOptions
 		a.cfg.Base = v.Base
 		a.cfg.Model = v.Model
 		a.cfg.Key = key
@@ -352,4 +367,38 @@ func (a *App) voiceConfig(w http.ResponseWriter, r *http.Request) {
 	a.cfg.VoiceSample = c.VoiceSample
 	a.mu.Unlock()
 	jsonOut(w, 200, map[string]bool{"ok": true})
+}
+
+func (a *App) initialLibrary() {
+	if custom := os.Getenv("TEACHING_LIBRARY_DB"); custom != "" {
+		_ = openLibrary(custom)
+		return
+	}
+	if a.profiles != nil {
+		if p, e := a.profiles.read(); e == nil && p.LibraryPath != "" {
+			_ = openLibrary(p.LibraryPath)
+			return
+		}
+	}
+	autoLibrary()
+}
+func (a *App) saveLibraryPath(path string) bool {
+	if a.profiles == nil {
+		return false
+	}
+	s := a.profiles
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	lock, e := os.OpenFile(s.path+".lock", os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	if e != nil {
+		return false
+	}
+	lock.Close()
+	defer os.Remove(s.path + ".lock")
+	p, e := s.read()
+	if e != nil {
+		return false
+	}
+	p.LibraryPath = path
+	return s.write(p) == nil
 }

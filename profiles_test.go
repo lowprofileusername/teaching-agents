@@ -54,15 +54,15 @@ func TestProfilesPersistSwitchAndProtectKeys(t *testing.T) {
 	if a.cfg.Key != "secret-A" {
 		t.Fatal("wrong selected key")
 	}
-	call(`{"action":"save","id":"`+id+`","name":"LAN renamed","base":"http://10.0.0.3:8888/v1","model":"new-model"}`, 200)
+	call(`{"action":"save","id":"`+id+`","name":"LAN renamed","base":"http://10.0.0.3:8888/v1","model":"new-model","thinkingMode":"enabled","thinkingFormat":"enable_thinking","maxTokens":8192,"contextWindow":32768}`, 200)
 	if a.cfg.Key != "secret-A" {
 		t.Fatal("blank edit erased key")
 	}
-	call(`{"action":"save","id":"`+id+`","name":"wrong","base":"http://elsewhere/v1","model":"new-model"}`, 400)
+	call(`{"action":"save","id":"`+id+`","name":"wrong","base":"http://elsewhere/v1","model":"new-model","thinkingMode":"enabled","thinkingFormat":"enable_thinking","maxTokens":8192,"contextWindow":32768}`, 400)
 	t.Setenv("TEACHING_AGENT_PROFILES", path)
 	b := &App{}
 	b.initProfiles()
-	if b.cfg.Model != "new-model" || b.cfg.Key != "secret-A" {
+	if b.cfg.Model != "new-model" || b.cfg.Key != "secret-A" || b.cfg.ThinkingMode != "enabled" || b.cfg.MaxTokens != 8192 {
 		t.Fatal("restart did not restore")
 	}
 	call(`{"action":"delete","id":"`+y["active"].(string)+`"}`, 200)

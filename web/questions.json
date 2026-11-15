@@ -1,0 +1,602 @@
+[
+  {
+    "id": 1,
+    "category": "赛道与规则边界",
+    "question": "人工智能赛道与普通教学创新案例，核心论证有什么不同？请分别列依据。",
+    "needs_user_material": false
+  },
+  {
+    "id": 2,
+    "category": "赛道与规则边界",
+    "question": "新工科赛道中刘学莘的家具结构设计案例，如何体现工程能力培养？",
+    "needs_user_material": false
+  },
+  {
+    "id": 3,
+    "category": "赛道与规则边界",
+    "question": "新医科赛道中辛页的案例，如何连接临床问题与学生能力？",
+    "needs_user_material": false
+  },
+  {
+    "id": 4,
+    "category": "赛道与规则边界",
+    "question": "新农科赛道中向妙莲的案例，如何结合学科特色与真实任务？",
+    "needs_user_material": false
+  },
+  {
+    "id": 5,
+    "category": "赛道与规则边界",
+    "question": "新文科赛道中唐丹的中国法律史案例，如何体现育人目标？",
+    "needs_user_material": false
+  },
+  {
+    "id": 6,
+    "category": "赛道与规则边界",
+    "question": "基础课程赛道中张静的大学物理案例，如何证明学习效果？",
+    "needs_user_material": false
+  },
+  {
+    "id": 7,
+    "category": "赛道与规则边界",
+    "question": "课程思政赛道中曹敏惠的有机化学案例，如何把价值引导融入教学？",
+    "needs_user_material": false
+  },
+  {
+    "id": 8,
+    "category": "赛道与规则边界",
+    "question": "产教融合赛道中俞梅芳的案例，企业与教师分别承担什么角色？",
+    "needs_user_material": false
+  },
+  {
+    "id": 9,
+    "category": "赛道与规则边界",
+    "question": "实验教学赛道中刘战合的案例，如何评价学生的实践过程？",
+    "needs_user_material": false
+  },
+  {
+    "id": 10,
+    "category": "赛道与规则边界",
+    "question": "数据库有第七届2027国赛正式评分标准吗？请区分正式文件、校赛参考和第六届标准。",
+    "needs_user_material": false
+  },
+  {
+    "id": 11,
+    "category": "人工智能教学机制",
+    "question": "宋晓菲和李静的人工智能教学有什么区别？",
+    "needs_user_material": false
+  },
+  {
+    "id": 12,
+    "category": "人工智能教学机制",
+    "question": "综合研究报告把AI介入分为哪四层？请说明这是哪份报告的分析框架。",
+    "needs_user_material": false
+  },
+  {
+    "id": 13,
+    "category": "人工智能教学机制",
+    "question": "AI八种用法图谱包含什么？各找一个库内案例并标来源。",
+    "needs_user_material": false
+  },
+  {
+    "id": 14,
+    "category": "人工智能教学机制",
+    "question": "李静的AI用于课前、课中、课后哪些环节？",
+    "needs_user_material": false
+  },
+  {
+    "id": 15,
+    "category": "人工智能教学机制",
+    "question": "宋晓菲的酶工程案例中，AI如何支持学生解决问题？",
+    "needs_user_material": false
+  },
+  {
+    "id": 16,
+    "category": "人工智能教学机制",
+    "question": "哪些案例中的AI改变了学生的学习任务，而不只是制作教学资源？",
+    "needs_user_material": false
+  },
+  {
+    "id": 17,
+    "category": "人工智能教学机制",
+    "question": "哪些案例展示了AI反馈后学生修改作品的过程证据？",
+    "needs_user_material": false
+  },
+  {
+    "id": 18,
+    "category": "人工智能教学机制",
+    "question": "教师在AI参与的评价中如何进行复核与最终判断？",
+    "needs_user_material": false
+  },
+  {
+    "id": 19,
+    "category": "人工智能教学机制",
+    "question": "案例中如何处理AI幻觉、错误反馈与学生过度依赖？",
+    "needs_user_material": false
+  },
+  {
+    "id": 20,
+    "category": "人工智能教学机制",
+    "question": "没有复杂平台时，可以借鉴哪些低成本AI教学做法？请说明实施条件。",
+    "needs_user_material": false
+  },
+  {
+    "id": 21,
+    "category": "国赛一等奖九位教师",
+    "question": "九位国赛一等奖教师有哪些共同做法？逐条给出至少两个案例依据。",
+    "needs_user_material": false
+  },
+  {
+    "id": 22,
+    "category": "国赛一等奖九位教师",
+    "question": "九位一等奖案例的问题诊断分别如何展开？",
+    "needs_user_material": false
+  },
+  {
+    "id": 23,
+    "category": "国赛一等奖九位教师",
+    "question": "九位一等奖案例怎样把教学目标、活动和评价对应起来？",
+    "needs_user_material": false
+  },
+  {
+    "id": 24,
+    "category": "国赛一等奖九位教师",
+    "question": "九位一等奖案例的创新点如何区别于一般教学改进？",
+    "needs_user_material": false
+  },
+  {
+    "id": 25,
+    "category": "国赛一等奖九位教师",
+    "question": "唐丹和曹敏惠的价值引导设计有什么相同与不同？",
+    "needs_user_material": false
+  },
+  {
+    "id": 26,
+    "category": "国赛一等奖九位教师",
+    "question": "俞梅芳和刘战合怎样组织真实任务与学生实践产出？",
+    "needs_user_material": false
+  },
+  {
+    "id": 27,
+    "category": "国赛一等奖九位教师",
+    "question": "张静和向妙莲怎样处理学科基础学习中的困难？",
+    "needs_user_material": false
+  },
+  {
+    "id": 28,
+    "category": "国赛一等奖九位教师",
+    "question": "辛页与刘学莘的新医科、新工科案例，各有什么不可直接跨学科照搬的条件？",
+    "needs_user_material": false
+  },
+  {
+    "id": 29,
+    "category": "国赛一等奖九位教师",
+    "question": "李静的案例有哪些可迁移到旅游电子商务课程的设计原则？",
+    "needs_user_material": false
+  },
+  {
+    "id": 30,
+    "category": "国赛一等奖九位教师",
+    "question": "九位一等奖案例有哪些不同路径，不能概括成同一个模式？",
+    "needs_user_material": false
+  },
+  {
+    "id": 31,
+    "category": "重点工作坊与案例",
+    "question": "金海京的项目驱动4P教学模式有哪些环节？分别对应什么学习活动？",
+    "needs_user_material": false
+  },
+  {
+    "id": 32,
+    "category": "重点工作坊与案例",
+    "question": "金海京如何把深度学习理论转化为课堂任务？",
+    "needs_user_material": false
+  },
+  {
+    "id": 33,
+    "category": "重点工作坊与案例",
+    "question": "叶齐的四阶教学设计怎样组织课程思政？",
+    "needs_user_material": false
+  },
+  {
+    "id": 34,
+    "category": "重点工作坊与案例",
+    "question": "刘学莘的备赛工作坊如何建议寻找参赛课程的创新路径？",
+    "needs_user_material": false
+  },
+  {
+    "id": 35,
+    "category": "重点工作坊与案例",
+    "question": "赵毅的数见不凡教学智能体支持哪些具体教学任务？",
+    "needs_user_material": false
+  },
+  {
+    "id": 36,
+    "category": "重点工作坊与案例",
+    "question": "陈春丽从AI建课到课堂实践遇到了什么问题？",
+    "needs_user_material": false
+  },
+  {
+    "id": 37,
+    "category": "重点工作坊与案例",
+    "question": "姜宏佺的红色、科学、开放三大基因如何进入医学教学？",
+    "needs_user_material": false
+  },
+  {
+    "id": 38,
+    "category": "重点工作坊与案例",
+    "question": "熊芸的化工分离工程案例如何设计智慧教学？",
+    "needs_user_material": false
+  },
+  {
+    "id": 39,
+    "category": "重点工作坊与案例",
+    "question": "王海燕的概率论与数理统计案例怎样实现自适应学习？",
+    "needs_user_material": false
+  },
+  {
+    "id": 40,
+    "category": "重点工作坊与案例",
+    "question": "陈思云的立体裁剪案例怎样使用AI，又如何保留学生实践能力？",
+    "needs_user_material": false
+  },
+  {
+    "id": 41,
+    "category": "教学设计与课堂实施",
+    "question": "真实学习问题如何转化成可评价的课程目标？",
+    "needs_user_material": false
+  },
+  {
+    "id": 42,
+    "category": "教学设计与课堂实施",
+    "question": "项目式学习与任务驱动学习在库内案例中如何实施？",
+    "needs_user_material": false
+  },
+  {
+    "id": 43,
+    "category": "教学设计与课堂实施",
+    "question": "怎样组织课前诊断、课中活动与课后反馈形成连续过程？",
+    "needs_user_material": false
+  },
+  {
+    "id": 44,
+    "category": "教学设计与课堂实施",
+    "question": "如何根据学习基础差异设计分层任务？",
+    "needs_user_material": false
+  },
+  {
+    "id": 45,
+    "category": "教学设计与课堂实施",
+    "question": "怎样通过高阶问题培养分析、评价和创造能力？",
+    "needs_user_material": false
+  },
+  {
+    "id": 46,
+    "category": "教学设计与课堂实施",
+    "question": "小组合作中怎样判断每个学生的真实贡献？",
+    "needs_user_material": false
+  },
+  {
+    "id": 47,
+    "category": "教学设计与课堂实施",
+    "question": "怎样把产业真实问题转化为学生能够完成的课堂任务？",
+    "needs_user_material": false
+  },
+  {
+    "id": 48,
+    "category": "教学设计与课堂实施",
+    "question": "怎样把跨学科知识引入课程，同时保持主线清晰？",
+    "needs_user_material": false
+  },
+  {
+    "id": 49,
+    "category": "教学设计与课堂实施",
+    "question": "怎样设计学生可以反复修改与迭代的学习成果？",
+    "needs_user_material": false
+  },
+  {
+    "id": 50,
+    "category": "教学设计与课堂实施",
+    "question": "哪些教学设计同时给出了目标、任务、产物和评价标准？",
+    "needs_user_material": false
+  },
+  {
+    "id": 51,
+    "category": "评价与证据质量",
+    "question": "创新成效应该采集哪些过程证据与结果证据？",
+    "needs_user_material": false
+  },
+  {
+    "id": 52,
+    "category": "评价与证据质量",
+    "question": "学习成绩、能力提升与满意度，分别能证明什么、不能证明什么？",
+    "needs_user_material": false
+  },
+  {
+    "id": 53,
+    "category": "评价与证据质量",
+    "question": "前后测和对照班数据有哪些解释限制？",
+    "needs_user_material": false
+  },
+  {
+    "id": 54,
+    "category": "评价与证据质量",
+    "question": "怎样建立与课程目标对应的评价量规？",
+    "needs_user_material": false
+  },
+  {
+    "id": 55,
+    "category": "评价与证据质量",
+    "question": "怎样证明学生能力增长，而不是仅证明使用了AI？",
+    "needs_user_material": false
+  },
+  {
+    "id": 56,
+    "category": "评价与证据质量",
+    "question": "怎样区分学生作品证据、平台访问量和教学获奖证据？",
+    "needs_user_material": false
+  },
+  {
+    "id": 57,
+    "category": "评价与证据质量",
+    "question": "报告中的比例与提升幅度应怎样说明样本和统计口径？",
+    "needs_user_material": false
+  },
+  {
+    "id": 58,
+    "category": "评价与证据质量",
+    "question": "哪些案例给出了学生原始作品或修改过程的可回溯证据？",
+    "needs_user_material": false
+  },
+  {
+    "id": 59,
+    "category": "评价与证据质量",
+    "question": "怎样检查案例中的数字是否属于同一图表、同一对象？",
+    "needs_user_material": false
+  },
+  {
+    "id": 60,
+    "category": "评价与证据质量",
+    "question": "数据库中哪些结论仍有待核或引用限制？这些限制如何影响参赛写作？",
+    "needs_user_material": false
+  },
+  {
+    "id": 61,
+    "category": "创新成果报告写作",
+    "question": "根据讲座，创新报告应该怎么写，分几个步骤？不要联网，只用数据库。",
+    "needs_user_material": false
+  },
+  {
+    "id": 62,
+    "category": "创新成果报告写作",
+    "question": "创新成果报告应怎样从课程情况引出教学问题？",
+    "needs_user_material": false
+  },
+  {
+    "id": 63,
+    "category": "创新成果报告写作",
+    "question": "报告的问题、创新举措与成效怎样一一对应？",
+    "needs_user_material": false
+  },
+  {
+    "id": 64,
+    "category": "创新成果报告写作",
+    "question": "怎样把工具功能介绍改写成教学机制的说明？",
+    "needs_user_material": false
+  },
+  {
+    "id": 65,
+    "category": "创新成果报告写作",
+    "question": "怎样用一段话准确描述课程的核心创新？",
+    "needs_user_material": false
+  },
+  {
+    "id": 66,
+    "category": "创新成果报告写作",
+    "question": "报告中理论依据应放在哪里，怎样避免理论堆砌？",
+    "needs_user_material": false
+  },
+  {
+    "id": 67,
+    "category": "创新成果报告写作",
+    "question": "报告中学生案例应该怎样写才具有证据价值？",
+    "needs_user_material": false
+  },
+  {
+    "id": 68,
+    "category": "创新成果报告写作",
+    "question": "报告怎样写实施条件、局限与推广边界？",
+    "needs_user_material": false
+  },
+  {
+    "id": 69,
+    "category": "创新成果报告写作",
+    "question": "怎样检查报告中的绝对化表述和没有证据的因果判断？",
+    "needs_user_material": false
+  },
+  {
+    "id": 70,
+    "category": "创新成果报告写作",
+    "question": "请给出创新成果报告的审阅清单，并区分库内依据与AI建议。",
+    "needs_user_material": false
+  },
+  {
+    "id": 71,
+    "category": "PPT与现场汇报",
+    "question": "十二分钟创新教学汇报应怎样分配问题、方法、实施和成效的时间？",
+    "needs_user_material": false
+  },
+  {
+    "id": 72,
+    "category": "PPT与现场汇报",
+    "question": "优秀案例的开场如何让评委快速理解课程问题？",
+    "needs_user_material": false
+  },
+  {
+    "id": 73,
+    "category": "PPT与现场汇报",
+    "question": "怎样把创新模式画成清晰的流程图而不是口号堆叠？",
+    "needs_user_material": false
+  },
+  {
+    "id": 74,
+    "category": "PPT与现场汇报",
+    "question": "一页PPT中如何展示目标、任务、评价的对应关系？",
+    "needs_user_material": false
+  },
+  {
+    "id": 75,
+    "category": "PPT与现场汇报",
+    "question": "成效页应该怎样安排学生作品、数据图和证据说明？",
+    "needs_user_material": false
+  },
+  {
+    "id": 76,
+    "category": "PPT与现场汇报",
+    "question": "怎样避免把不同图表的数值错误配对到一起？",
+    "needs_user_material": false
+  },
+  {
+    "id": 77,
+    "category": "PPT与现场汇报",
+    "question": "汇报PPT中哪些内容适合讲述，哪些必须在画面上呈现？",
+    "needs_user_material": false
+  },
+  {
+    "id": 78,
+    "category": "PPT与现场汇报",
+    "question": "怎样用一张对比页说明教学改革前后的变化？",
+    "needs_user_material": false
+  },
+  {
+    "id": 79,
+    "category": "PPT与现场汇报",
+    "question": "怎样设计能够回溯到原始资料的答辩备用页？",
+    "needs_user_material": false
+  },
+  {
+    "id": 80,
+    "category": "PPT与现场汇报",
+    "question": "如何核对PPT与创新成果报告中的术语、数字和实施时间是否一致？",
+    "needs_user_material": false
+  },
+  {
+    "id": 81,
+    "category": "跨36场综合研究",
+    "question": "36场报告可归纳出哪些教学创新路径？请说明每类的适用条件。",
+    "needs_user_material": false
+  },
+  {
+    "id": 82,
+    "category": "跨36场综合研究",
+    "question": "汪琼、于歆杰和陆国栋对AI时代教师角色有哪些共同观点和差异？",
+    "needs_user_material": false
+  },
+  {
+    "id": 83,
+    "category": "跨36场综合研究",
+    "question": "蔡亦渔的教育智能体与竞赛制项目式教学怎样结合？",
+    "needs_user_material": false
+  },
+  {
+    "id": 84,
+    "category": "跨36场综合研究",
+    "question": "潘守东谈到哪些AI教学实践场景与落地条件？",
+    "needs_user_material": false
+  },
+  {
+    "id": 85,
+    "category": "跨36场综合研究",
+    "question": "王世宇的智慧课程建设与教师专业成长两场报告有何联系？",
+    "needs_user_material": false
+  },
+  {
+    "id": 86,
+    "category": "跨36场综合研究",
+    "question": "刘玲与陈后金关于教师AI素养的观点有什么不同？",
+    "needs_user_material": false
+  },
+  {
+    "id": 87,
+    "category": "跨36场综合研究",
+    "question": "黄海兰、马建青、赵洱岽如何处理AI与价值引导的关系？",
+    "needs_user_material": false
+  },
+  {
+    "id": 88,
+    "category": "跨36场综合研究",
+    "question": "卢安、罗成立、解晓灵的产教融合与应用型课堂各有何侧重？",
+    "needs_user_material": false
+  },
+  {
+    "id": 89,
+    "category": "跨36场综合研究",
+    "question": "郑宏的课堂变革如何强调育人本源？",
+    "needs_user_material": false
+  },
+  {
+    "id": 90,
+    "category": "跨36场综合研究",
+    "question": "圆桌论坛对未来教师和未来学生的角色有哪些分歧？请注明真正发言者。",
+    "needs_user_material": false
+  },
+  {
+    "id": 91,
+    "category": "旅游电子商务材料审阅",
+    "question": "结合我上传的创新报告，判断问题诊断是否有证据，并逐项列出修改建议。",
+    "needs_user_material": true
+  },
+  {
+    "id": 92,
+    "category": "旅游电子商务材料审阅",
+    "question": "结合我上传的报告，检查AI应用是否真正对应旅游电子商务课程目标。",
+    "needs_user_material": true
+  },
+  {
+    "id": 93,
+    "category": "旅游电子商务材料审阅",
+    "question": "结合我上传的报告，哪些创新举措只是工具使用，哪些体现教学机制变化？",
+    "needs_user_material": true
+  },
+  {
+    "id": 94,
+    "category": "旅游电子商务材料审阅",
+    "question": "结合我上传的报告，给出可借鉴的三位专家案例及迁移条件。",
+    "needs_user_material": true
+  },
+  {
+    "id": 95,
+    "category": "旅游电子商务材料审阅",
+    "question": "结合我上传的材料，检查是否把平台访问量当作学习成效。",
+    "needs_user_material": true
+  },
+  {
+    "id": 96,
+    "category": "旅游电子商务材料审阅",
+    "question": "结合我上传的材料，为一个旅游电商项目设计任务、学生产物和评价量规。",
+    "needs_user_material": true
+  },
+  {
+    "id": 97,
+    "category": "旅游电子商务材料审阅",
+    "question": "结合我上传的PPT文字，找出与报告中的术语和数字不一致之处。",
+    "needs_user_material": true
+  },
+  {
+    "id": 98,
+    "category": "旅游电子商务材料审阅",
+    "question": "结合我上传的PPT文字，提出十二分钟汇报的删减与重排建议。",
+    "needs_user_material": true
+  },
+  {
+    "id": 99,
+    "category": "旅游电子商务材料审阅",
+    "question": "结合我上传的报告，模拟评委提出十个追问，答案没有证据的地方明确标出。",
+    "needs_user_material": true
+  },
+  {
+    "id": 100,
+    "category": "旅游电子商务材料审阅",
+    "question": "结合我上传的报告与PPT文字，生成按优先级排列的修改清单，保留原文、依据和建议文字。",
+    "needs_user_material": true
+  }
+]

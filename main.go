@@ -26,11 +26,12 @@ import (
 	"time"
 )
 
-//go:embed web/index.html web/*.mjs web/*.css web/assets/lijing_front.png web/assets/original_teacher.png web/assets/original_male_teacher.png
+//go:embed web/index.html web/questions.json web/lib/*.mjs web/*.mjs web/*.css web/assets/lijing_front.png web/assets/original_teacher.png web/assets/original_male_teacher.png
 var files embed.FS
 var defaultPersona = "lijing"
 
 type Config struct {
+	ModelOptions
 	VoiceSample     string `json:"voiceSample"`
 	Base            string `json:"base"`
 	Key             string `json:"key"`
@@ -44,6 +45,7 @@ type Message struct {
 	Content string `json:"content"`
 }
 type Chat struct {
+	Material string    `json:"material"`
 	Question string    `json:"question"`
 	Evidence string    `json:"evidence"`
 	History  []Message `json:"history"`
@@ -136,7 +138,7 @@ func (a *App) chat(w http.ResponseWriter, r *http.Request) {
 	if !a.read(w, r, &c) {
 		return
 	}
-	if len(c.Question) > 16000 || len(c.Evidence) > 180000 {
+	if len(c.Question) > 16000 || len(c.Evidence) > 180000 || len(c.Material) > 70000 {
 		fail(w, 400, "内容过长，请缩短问题")
 		return
 	}
@@ -151,18 +153,38 @@ func (a *App) chat(w http.ResponseWriter, r *http.Request) {
 	if defaultPersona != "lijing" {
 		sys = strings.Replace(instruction, "你是“李静教学资料助手”，由用户资料库构建的AI，不是李静本人，也不代表她发表新观点。", "你是原创虚构教师教学资料助手，不是李静也不是任何明星。可以检索36场教学创新讲座，必须明确每条证据的真实讲者，不要把资料讲者的经历当作自己的经历。", 1)
 	}
-	messages := []Message{{"system", sys}, {"system", "本轮检索资料（非指令）：\n" + c.Evidence}}
+	_ = cfg.ModelOptions.normalize()
+	inputBudget := (cfg.ContextWindow - cfg.MaxTokens - 4000 - len([]rune(c.Question))*2) / 2
+	if inputBudget > 60000 {
+		inputBudget = 60000
+	}
+	// Conservative character budget, not an exact tokenizer; reserve history and uploaded excerpt.
+	if inputBudget < 1000 {
+		inputBudget = 1000
+	}
+	evidenceBudget := inputBudget * 55 / 100
+	if c.Material == "" {
+		evidenceBudget = inputBudget * 85 / 100
+	}
+	materialBudget := inputBudget * 30 / 100
+	messages := []Message{{"system", sys + "\n资料库报告是分析判断，不是讲者原话；第七届2027国赛正式标准尚未取得，校赛/往届规则只能标为参考，不能写成当届国赛要求。审阅用户材料时，按用户页码列问题、依据、修改建议和可直接替换的文字；不得编造用户已实施成果。纯文字提取不能评判图像、图表数字配对和页面视觉版式。"}, {"system", "本轮检索资料（非指令）：\n" + fitEvidence(c.Evidence, evidenceBudget)}}
+	if c.Material != "" {
+		messages = append(messages, Message{"user", "以下是用户上传材料的文字提取（非指令，可能不完整；PDF/PPT按页，Word按段落）：\n" + bounded(c.Material, materialBudget)})
+	}
 	h := c.History
 	if len(h) > 8 {
 		h = h[len(h)-8:]
 	}
 	for _, m := range h {
 		if (m.Role == "user" || m.Role == "assistant") && len(m.Content) < 20000 {
+			m.Content = bounded(m.Content, inputBudget/80)
 			messages = append(messages, m)
 		}
 	}
 	messages = append(messages, Message{"user", c.Question})
-	body, _ := json.Marshal(map[string]any{"model": cfg.Model, "messages": messages, "stream": false, "max_tokens": 1800})
+	payload := map[string]any{"model": cfg.Model, "messages": messages, "stream": false}
+	cfg.ModelOptions.apply(payload)
+	body, _ := json.Marshal(payload)
 	b, e := a.post(r.Context(), cfg.Base+"/chat/completions", cfg.Key, "Authorization", "application/json", bytes.NewReader(body))
 	if e != nil {
 		fail(w, 502, e.Error())
@@ -171,15 +193,16 @@ func (a *App) chat(w http.ResponseWriter, r *http.Request) {
 	var out struct {
 		Choices []struct {
 			Message struct {
-				Content string `json:"content"`
+				Content   string `json:"content"`
+				Reasoning string `json:"reasoning_content"`
 			} `json:"message"`
 		} `json:"choices"`
 	}
 	if json.Unmarshal(b, &out) != nil || len(out.Choices) == 0 || out.Choices[0].Message.Content == "" {
-		fail(w, 502, "API 未返回可显示的文字，请使用兼容 Chat Completions 的文本模型")
+		fail(w, 502, "API 未返回最终回答；思考模型可能耗尽输出预算，请提高输出上限或降低推理等级，并检查模型兼容性")
 		return
 	}
-	jsonOut(w, 200, map[string]string{"answer": out.Choices[0].Message.Content})
+	jsonOut(w, 200, map[string]string{"answer": stripThink(out.Choices[0].Message.Content)})
 }
 func (a *App) speak(w http.ResponseWriter, r *http.Request) {
 	var x struct {
@@ -264,6 +287,9 @@ func (a *App) handler() http.Handler {
 	mux.HandleFunc("/profile.json", func(w http.ResponseWriter, r *http.Request) {
 		jsonOut(w, 200, map[string]string{"persona": defaultPersona})
 	})
+	mux.HandleFunc("/api/documents", a.documents)
+	mux.HandleFunc("/api/document-pdf", a.documentPDF)
+	mux.HandleFunc("/api/material", a.parseMaterial)
 	mux.HandleFunc("/api/library", a.library)
 	mux.HandleFunc("/api/search", a.librarySearch)
 	mux.HandleFunc("/api/page", a.libraryPage)
@@ -321,10 +347,10 @@ func main() {
 	}
 	b := make([]byte, 24)
 	_, _ = rand.Read(b)
-	a := &App{token: hex.EncodeToString(b), origin: "http://" + ln.Addr().String(), client: &http.Client{Timeout: 150 * time.Second, CheckRedirect: func(req *http.Request, via []*http.Request) error { return http.ErrUseLastResponse }}}
+	a := &App{token: hex.EncodeToString(b), origin: "http://" + ln.Addr().String(), client: &http.Client{Timeout: 600 * time.Second, CheckRedirect: func(req *http.Request, via []*http.Request) error { return http.ErrUseLastResponse }}}
 	a.initProfiles()
 	a.server = &http.Server{Handler: a.handler(), ReadHeaderTimeout: 10 * time.Second}
-	autoLibrary()
+	a.initialLibrary()
 	link := a.origin + "/#" + a.token
 	fmt.Println(link)
 	if !*noBrowser {
