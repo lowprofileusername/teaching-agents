@@ -306,6 +306,14 @@ func (a *App) librarySearch(w http.ResponseWriter, r *http.Request) {
 	if strings.Contains(x.Q, "圆桌") {
 		named["roundtable_future"] = true
 	}
+
+	if len(named) == 0 {
+		for track, tag := range map[string]string{"新文科": "tangdan", "新医科": "xinye", "新农科": "xiangmiaolian", "新工科": "liuxueshen_xgk", "基础课程赛道": "zhangjing", "课程思政赛道": "caominhui", "产教融合赛道": "yumeifang", "实验教学赛道": "liuzhanhe"} {
+			if strings.Contains(x.Q, track) {
+				named[tag] = true
+			}
+		}
+	}
 	winnerQ := strings.Contains(x.Q, "九位") && strings.Contains(x.Q, "一等奖")
 	if winnerQ {
 		for _, tag := range []string{"tangdan", "yumeifang", "zhangjing", "liuzhanhe", "xiangmiaolian", "xinye", "liuxueshen_xgk", "caominhui", "lijing"} {

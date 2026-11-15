@@ -24,7 +24,9 @@ jobs:
       - name: Test Windows implementation
         run: go test -v ./...
       - name: Test PDF text extraction
-        run: node tests/pdf-smoke.mjs
+        run: |
+          node tests/pdf-smoke.mjs
+          node tests/markdown.mjs
       - name: Build three static personas
         shell: pwsh
         run: |

@@ -52,6 +52,14 @@ func knowledgeSearch(ctx context.Context, db *sql.DB, q, tag string) []map[strin
 	if strings.Contains(q, "圆桌") {
 		named["roundtable_future"] = true
 	}
+
+	if len(named) == 0 {
+		for track, tag := range map[string]string{"新文科": "tangdan", "新医科": "xinye", "新农科": "xiangmiaolian", "新工科": "liuxueshen_xgk", "基础课程赛道": "zhangjing", "课程思政赛道": "caominhui", "产教融合赛道": "yumeifang", "实验教学赛道": "liuzhanhe"} {
+			if strings.Contains(q, track) {
+				named[tag] = true
+			}
+		}
+	}
 	allowProposal := strings.Contains(q, "旅游电子商务") || strings.Contains(q, "我的") || strings.Contains(q, "我上传")
 
 	for _, r := range rows {
