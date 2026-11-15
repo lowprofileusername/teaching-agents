@@ -27,6 +27,7 @@ jobs:
         run: |
           node tests/pdf-smoke.mjs
           node tests/markdown.mjs
+          node tests/retrieval-context.mjs
       - name: Build three static personas
         shell: pwsh
         run: |

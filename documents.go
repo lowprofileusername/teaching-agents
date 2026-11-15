@@ -60,6 +60,11 @@ func knowledgeSearch(ctx context.Context, db *sql.DB, q, tag string) []map[strin
 			}
 		}
 	}
+	aiTrack := strings.Contains(q, "人工智能赛道") || strings.Contains(strings.ToLower(q), "ai赛道")
+	if len(named) == 0 && aiTrack {
+		named["lijing"] = true
+		named["songxiaofei"] = true
+	}
 	allowProposal := strings.Contains(q, "旅游电子商务") || strings.Contains(q, "我的") || strings.Contains(q, "我上传")
 
 	for _, r := range rows {
@@ -112,6 +117,24 @@ func knowledgeSearch(ctx context.Context, db *sql.DB, q, tag string) []map[strin
 		}
 	}
 
+	if aiTrack {
+		refs, _ := cachedTextRows(ctx, db, `SELECT p.id,p.pdf_page_no,p.text,p.extraction,d.id AS document_id,d.title,d.kind,d.video_tag,d.edition,d.authority_level,d.authority_status,d.source_url FROM competition_rule_section s JOIN knowledge_document d ON d.id=s.document_id JOIN knowledge_document_page p ON p.document_id=d.id AND p.pdf_page_no=s.pdf_start WHERE s.track_name='人工智能' ORDER BY d.id`)
+		for _, r := range refs {
+			if len(out) >= 6 {
+				break
+			}
+			id := fmt.Sprint(r["document_id"])
+			r["text"] = stringLimit(fmt.Sprint(r["text"]), 4500)
+			r["citation"] = fmt.Sprintf("[%s PDF第%v页]", r["title"], r["pdf_page_no"])
+			r["reference_note"] = "人工智能赛道参考文件；不是第七届国赛正式标准"
+			out = append(out, r)
+			per[id]++
+		}
+	}
+
+	if len(out) >= 6 {
+		return out
+	}
 	for _, v := range rank {
 		duplicate := false
 		for _, o := range out {

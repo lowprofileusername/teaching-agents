@@ -11,3 +11,4 @@ export function retrieve(db,q,limit=5){
  const evidence=pages.map(({p})=>({reference:`R${String(p.page_no).padStart(2,'0')}`,title:p.title,original_ppt_page:p.original_page_no,occurrences:p.occurrences,page_facts:p.page_text,transcripts_unverified:p.utterances,issues:p.issues,research_analysis:p.analysis?.analysis}));
  return {pages:pages.map(x=>x.p),ocr,evidence:JSON.stringify({scope:db.scope,notice:'R为视频展示单元，不是原PPT页码；转写与OCR均可能有错。原声片段可回听。',pages:evidence,raw_ocr_unverified:ocr.map(o=>({id:o.id,text:o.text,times:o.times.slice(0,8),page_refs:o.page_refs}))})};
 }
+export function retrievalQuery(q,history=[],videos=[]){const explicit=/赛道|新文科|新工科|新医科|新农科|课程思政|产教融合|人工智能/.test(q)||videos.some(v=>v.teacher&&q.includes(v.teacher));if(!explicit&&/^(它|这|那|她|其|为什么|具体|还有|怎么)/.test(q)&&history.length){return history.filter(m=>m.role==='user').slice(-1).map(m=>m.content).join(' ')+' '+q}return q}

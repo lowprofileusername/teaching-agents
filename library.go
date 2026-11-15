@@ -314,6 +314,10 @@ func (a *App) librarySearch(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+	if len(named) == 0 && (strings.Contains(x.Q, "人工智能赛道") || strings.Contains(strings.ToLower(x.Q), "ai赛道")) {
+		named["lijing"] = true
+		named["songxiaofei"] = true
+	}
 	winnerQ := strings.Contains(x.Q, "九位") && strings.Contains(x.Q, "一等奖")
 	if winnerQ {
 		for _, tag := range []string{"tangdan", "yumeifang", "zhangjing", "liuzhanhe", "xiangmiaolian", "xinye", "liuxueshen_xgk", "caominhui", "lijing"} {
