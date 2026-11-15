@@ -10,12 +10,12 @@ import (
 )
 
 func TestEndpoint(t *testing.T) {
-	for _, s := range []string{"http://example.com", "https://example.com/v1?key=x", "file:///x"} {
+	for _, s := range []string{"https://user:pass@example.com", "https://example.com/v1?key=x", "file:///x"} {
 		if _, e := endpoint(s); e == nil {
 			t.Fatalf("accepted unsafe endpoint %s", s)
 		}
 	}
-	for _, s := range []string{"https://example.com/v1", "http://127.0.0.1:1234/v1"} {
+	for _, s := range []string{"http://example.com/v1", "http://10.0.0.3:8888/v1", "http://[::1]:8888/v1", "https://example.com/v1", "http://127.0.0.1:1234/v1"} {
 		if _, e := endpoint(s); e != nil {
 			t.Fatal(e)
 		}

@@ -49,12 +49,13 @@ type Chat struct {
 	History  []Message `json:"history"`
 }
 type App struct {
-	mu     sync.RWMutex
-	cfg    Config
-	token  string
-	server *http.Server
-	origin string
-	client *http.Client
+	profiles *ProfileStore
+	mu       sync.RWMutex
+	cfg      Config
+	token    string
+	server   *http.Server
+	origin   string
+	client   *http.Client
 }
 
 const instruction = `你是“李静教学资料助手”，由用户资料库构建的AI，不是李静本人，也不代表她发表新观点。可以检索36场教学创新讲座资料库，帮助研究和迁移教学设计。每项观点必须标明真正的来源专家、学校、课程；李静形象不表示所有内容出自李静。使用清楚自然的中文，可追问学习者的情境。
@@ -78,11 +79,11 @@ func (a *App) read(w http.ResponseWriter, r *http.Request, v any) bool {
 }
 func endpoint(base string) (string, error) {
 	u, e := url.Parse(strings.TrimSpace(base))
-	if e != nil || u.Host == "" || u.RawQuery != "" || u.Fragment != "" {
+	if e != nil || u.Host == "" || u.RawQuery != "" || u.Fragment != "" || u.User != nil {
 		return "", errors.New("填写有效的 API Base URL，不含查询参数")
 	}
-	if u.Scheme != "https" && !(u.Scheme == "http" && (u.Hostname() == "localhost" || u.Hostname() == "127.0.0.1")) {
-		return "", errors.New("远程 API 必须使用 HTTPS")
+	if u.Scheme != "https" && u.Scheme != "http" {
+		return "", errors.New("API 地址只支持 HTTP 或 HTTPS")
 	}
 	return strings.TrimRight(u.String(), "/"), nil
 }
@@ -92,10 +93,12 @@ func (a *App) post(ctx context.Context, api, key, header, ctype string, body io.
 		return nil, e
 	}
 	req.Header.Set("Content-Type", ctype)
-	if header == "Authorization" {
+	if key != "" && header == "Authorization" {
 		key = "Bearer " + key
 	}
-	req.Header.Set(header, key)
+	if key != "" {
+		req.Header.Set(header, key)
+	}
 	resp, e := a.client.Do(req)
 	if e != nil {
 		return nil, errors.New("无法连接 API，请检查地址、网络及服务状态")
@@ -126,7 +129,7 @@ func (a *App) config(w http.ResponseWriter, r *http.Request) {
 	a.mu.Lock()
 	a.cfg = c
 	a.mu.Unlock()
-	jsonOut(w, 200, map[string]bool{"chatReady": c.Base != "" && c.Key != "" && c.Model != "", "voiceReady": c.VoiceAuthorized && c.VoiceKey != "" && c.VoiceID != ""})
+	jsonOut(w, 200, map[string]bool{"chatReady": c.Base != "" && c.Model != "", "voiceReady": c.VoiceAuthorized && c.VoiceKey != "" && c.VoiceID != ""})
 }
 func (a *App) chat(w http.ResponseWriter, r *http.Request) {
 	var c Chat
@@ -140,7 +143,7 @@ func (a *App) chat(w http.ResponseWriter, r *http.Request) {
 	a.mu.RLock()
 	cfg := a.cfg
 	a.mu.RUnlock()
-	if cfg.Key == "" || cfg.Model == "" || cfg.Base == "" {
+	if cfg.Model == "" || cfg.Base == "" {
 		fail(w, 409, "尚未配置对话 API；当前可使用本地资料检索")
 		return
 	}
@@ -268,6 +271,9 @@ func (a *App) handler() http.Handler {
 	mux.HandleFunc("/api/audio", a.libraryAudio)
 	mux.HandleFunc("/api/catalog", a.libraryCatalog)
 	mux.HandleFunc("/api/config", a.config)
+	mux.HandleFunc("/api/voice-config", a.voiceConfig)
+	mux.HandleFunc("/api/profiles", a.profileAPI)
+	mux.HandleFunc("/api/test", a.testAPI)
 	mux.HandleFunc("/api/chat", a.chat)
 	mux.HandleFunc("/api/speak", a.speak)
 	mux.HandleFunc("/api/clone", a.clone)
@@ -316,6 +322,7 @@ func main() {
 	b := make([]byte, 24)
 	_, _ = rand.Read(b)
 	a := &App{token: hex.EncodeToString(b), origin: "http://" + ln.Addr().String(), client: &http.Client{Timeout: 150 * time.Second, CheckRedirect: func(req *http.Request, via []*http.Request) error { return http.ErrUseLastResponse }}}
+	a.initProfiles()
 	a.server = &http.Server{Handler: a.handler(), ReadHeaderTimeout: 10 * time.Second}
 	autoLibrary()
 	link := a.origin + "/#" + a.token
