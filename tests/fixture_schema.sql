@@ -1,0 +1,18 @@
+CREATE TABLE video(tag text primary key,title text,teacher text,institution text,course text,duration real,source_path text,identity_status text,identity_provenance_json text,page_review_status text);
+CREATE TABLE page(id text primary key,tag text references video(tag),page_no integer,original_page_no text,title text,page_text text,visible_facts_json text,review_status text,review_basis text,unique(tag,page_no));
+CREATE TABLE page_occurrence(id text primary key,page_id text references page(id),t0 real,t1 real,check(t1>t0));
+CREATE TABLE utterance(id integer primary key,tag text references video(tag),version text,ordinal integer,t0 real,t1 real,text text,timing_json text,quality_status text,evidence_type text);
+CREATE TABLE page_utterance(page_id text references page(id),occurrence_id text references page_occurrence(id),utterance_id integer references utterance(id),overlap_start real,overlap_end real,primary key(occurrence_id,utterance_id));
+CREATE TABLE asset(id text primary key,mime text,codec text,bytes integer,content blob,metadata_json text);
+CREATE TABLE page_image(page_id text references page(id),asset_id text references asset(id),source_seconds real,source_path text,kind text,primary key(page_id,asset_id));
+CREATE TABLE audio_chunk(id text primary key,tag text references video(tag),asset_id text references asset(id),t0 real,t1 real,source_audio_start real,encoded_duration real,quality_status text);
+CREATE TABLE review_issue(id text primary key,page_id text,issue text,action text,status text);
+CREATE TABLE page_analysis(page_id text primary key references page(id),analysis_json text,report_version text);
+CREATE TABLE source_document(id TEXT PRIMARY KEY,tag TEXT REFERENCES video(tag),title TEXT,asset_id TEXT REFERENCES asset(id),source_type TEXT,pdf_page_count INTEGER,original_path TEXT,original_sha256 TEXT,clean_sha256 TEXT,clean_path TEXT,provenance_json TEXT);
+CREATE TABLE source_document_page(id TEXT PRIMARY KEY,document_id TEXT REFERENCES source_document(id),pdf_page_no INTEGER,direct_text TEXT,ocr_text TEXT,ocr_json TEXT,render_path TEXT,page_size_json TEXT,review_status TEXT,UNIQUE(document_id,pdf_page_no));
+CREATE TABLE page_source_link(page_id TEXT REFERENCES page(id),source_page_id TEXT REFERENCES source_document_page(id),relation TEXT,review_status TEXT,review_basis TEXT,notes TEXT,PRIMARY KEY(page_id,source_page_id));
+CREATE TABLE utterance_speaker_scope(utterance_id integer primary key,speaker_role text,teacher_attribution text,basis text,review_status text);
+CREATE TABLE transcript_annotation(id text primary key,tag text,utterance_id integer,original text,candidate text,basis text,status text,metadata_json text);
+CREATE TABLE ocr_text_record(id INTEGER PRIMARY KEY,sha256 TEXT UNIQUE NOT NULL,text TEXT NOT NULL);
+CREATE TABLE ocr_observation(tag TEXT REFERENCES video(tag),frame_no INTEGER,pts INTEGER,seconds REAL,pixel_sha TEXT,ocr_reused INTEGER,text_id INTEGER REFERENCES ocr_text_record(id),block_id TEXT REFERENCES ocr_archive_block(id),record_index INTEGER,PRIMARY KEY(tag,frame_no));
+CREATE TABLE research_card(id TEXT PRIMARY KEY,kind TEXT,title TEXT,payload_json TEXT,version TEXT,updated_utc TEXT);

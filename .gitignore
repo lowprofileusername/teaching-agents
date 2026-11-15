@@ -1,0 +1,16 @@
+*.exe
+*.sqlite*
+*.db
+*.mp3
+*.wav
+*.opus
+*.mp4
+*.mov
+.env*
+dist/
+build_cache/
+references/
+knowledge.json
+app_lijing_snapshot.txt
+*_preview.png
+.DS_Store
