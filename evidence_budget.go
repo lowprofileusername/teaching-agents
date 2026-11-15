@@ -43,7 +43,7 @@ func evidenceSources(root map[string]any) []evidenceSource {
 			}
 			switch key {
 			case "pages":
-				add("page", r, []string{"id", "teacher", "institution", "course", "title", "original_page_no", "page_facts"}, "speaker:"+fmt.Sprint(r["teacher"]))
+				add("page", r, []string{"id", "teacher", "institution", "course", "title", "original_page_no", "source_format", "research_analysis_unverified", "page_facts"}, "speaker:"+fmt.Sprint(r["teacher"]))
 				m := out[len(out)-1].fields
 				if a, ok := r["official_pages"].([]any); ok && len(a) > 0 {
 					m["official_page_reference"] = a[0]

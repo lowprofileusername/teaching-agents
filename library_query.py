@@ -7,6 +7,28 @@ s.add_parser('schema');q=s.add_parser('search');q.add_argument('--keyword',actio
 a=p.parse_args();dbpath=Path(a.db).resolve();c=sqlite3.connect(dbpath.as_uri()+'?mode=ro',uri=True,timeout=3);c.row_factory=sqlite3.Row;c.execute('pragma query_only=on');c.execute('pragma temp_store=memory')
 deadline=time.monotonic()+5;c.set_progress_handler(lambda:time.monotonic()>deadline,10000)
 def rows(sql,args=()):return [dict(x) for x in c.execute(sql,args)]
+claude='speaker' in {r['name'] for r in c.execute('pragma table_info(video)')}
+if claude and a.action!='schema':
+ if a.action=='search':
+  terms=[x.strip() for x in a.keyword if x.strip()][:8]
+  if not terms:raise SystemExit('Need keywords')
+  pred=" OR ".join(["instr(coalesce(p.title,'')||coalesce(p.ocr_text,''),?)>0"]*len(terms))
+  out={'format':'claude','pages':rows("SELECT p.tag||':P'||p.page_no AS id,p.tag,p.page_no,p.title,p.ocr_text,v.speaker,v.school,v.course FROM page p JOIN video v USING(tag) WHERE (?='' OR p.tag=?) AND ("+pred+") LIMIT 12",[a.tag,a.tag]+terms)}
+ elif a.action=='page':
+  tag,sep,num=a.id.rpartition(':P')
+  if not sep or not num.isdigit():raise SystemExit('Claude page id example: song:P12')
+  out={'format':'claude','page_number_note':'P is database order, not original PPT corner number','page':rows('SELECT tag,page_no,title,t_start,t_end,time_ranges,ocr_text,main_message,elements,function,relation,visual,evidence,borrow,migrate FROM page WHERE tag=? AND page_no=?',(tag,int(num))),'utterances':rows('SELECT t_start,t_end,text FROM utterance WHERE tag=? AND page_no=? ORDER BY t_start',(tag,int(num))),'errata':rows('SELECT * FROM errata WHERE tag=?',(tag,))}
+ else:
+  c.set_progress_handler(None,0)
+  parts=a.id.split(':',2)
+  kinds={'page-image':('page','image','id'),'frame-image':('frame','image','id'),'flash-image':('flash','image','id'),'video-audio':('video','audio','tag')}
+  if a.kind!='asset' or len(parts)!=3 or parts[0]!='claude' or parts[1] not in kinds:raise SystemExit('Claude media id example: claude:page-image:202 or claude:video-audio:song; no embedded report PDFs')
+  table,col,key=kinds[parts[1]];r=c.execute('SELECT '+col+' FROM '+table+' WHERE '+key+'=?',(parts[2],)).fetchone()
+  if not r or not r[0]:raise SystemExit('Media not found')
+  dest=Path(a.out)
+  if dest.exists():raise SystemExit('Output exists; choose a new filename')
+  dest.write_bytes(r[0]);out={'file':str(dest.resolve()),'bytes':len(r[0]),'sha256':hashlib.sha256(r[0]).hexdigest()}
+ print(json.dumps(out,ensure_ascii=False,indent=2));c.close();raise SystemExit(0)
 if a.action=='schema':out=rows("SELECT name,sql FROM sqlite_master WHERE type IN ('table','view') AND name NOT LIKE '%_data' AND name NOT LIKE '%_idx'")
 elif a.action=='search':
  terms=[x.strip() for x in a.keyword if x.strip()][:8]

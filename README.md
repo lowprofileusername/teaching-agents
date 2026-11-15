@@ -1,13 +1,13 @@
 # 教学资料智能体 · 静态形象版
 
-三个独立启动版本：李静形象、原创女教师、原创男教师。三者共用用户指定的36场讲座 SQLite 资料库，形象不决定检索范围。回答由用户配置的 API 生成，不代表任何真人发言。
+三个独立启动版本：李静形象、原创女教师、原创男教师。三者读取用户指定的 SQLite 资料库，支持 Codex 格式及 Claude 的 expert_videos.db 格式，形象不决定检索范围。回答由用户配置的 API 生成，不代表任何真人发言。
 
 ## Windows 使用
 
 1. 下载一个对应形象的 Windows amd64 EXE，双击启动。程序会在本机随机端口提供界面并打开默认浏览器；保留程序窗口，关闭窗口即停止服务。
 2. 程序尝试自动定位 EXE 上三级目录、Z 盘和 SMB 共享中的资料库。未找到时，在“API / 资料库设置”填写现有 `expert_videos_v1.sqlite3` 的完整路径。
 3. 当前用户路径为 `Z:\第五届高校智慧教育与教学创新成果交流会\codex_analysis_tmp\qa\compact_database\expert_videos_v1.sqlite3`。也可设置环境变量 `TEACHING_LIBRARY_DB` 或使用已挂载共享盘的其他盘符。
-4. 不配置 API 也能浏览36场目录、检索页面、放大截图、查官方课件、回听库内音频。对话需填写兼容 Chat Completions 的 HTTP 或 HTTPS Base URL、模型名称及 API Key；无认证的本地服务可以不填密钥。例如 Unsloth 使用 `http://127.0.0.1:8888/v1`，不是网页地址 `/chat`。另一台电脑的服务请使用该电脑的局域网 IP，127.0.0.1 始终指运行 EXE 的电脑。
+4. 不配置 API 也能浏览所连接资料库目录、检索页面、放大截图、查官方课件、回听库内音频。对话需填写兼容 Chat Completions 的 HTTP 或 HTTPS Base URL、模型名称及 API Key；无认证的本地服务可以不填密钥。例如 Unsloth 使用 `http://127.0.0.1:8888/v1`，不是网页地址 `/chat`。另一台电脑的服务请使用该电脑的局域网 IP，127.0.0.1 始终指运行 EXE 的电脑。
 5. 三种角色均有系统音色朗读。李静版本可选填写已授权 ElevenLabs 音色 ID，或在确认针对李静本人授权后提供本地声音样本申请音色；这不是已经完成的声音克隆，也不能跳过服务方身份验证。
 
 ## 数据与证据
@@ -67,3 +67,14 @@ Go 1.27.4。Windows：`CGO_ENABLED=0 go build -ldflags "-X main.defaultPersona=m
 ## v0.3.3：证据确实送达模型
 
 修复检索成功但上下文预算分支清空证据的问题。前端保留全部选中页面的摘录，后端按来源缩减重复元数据；显示实际发送证据数/候选证据数及上传材料状态。无法保留有效证据时不调用模型。32768上下文、4096最大输出的正常配置不必更改。实际模型输入内容已用本机模拟接口检查；这不等于真实模型答案质量认证，也未调用用户API。
+
+
+## v0.3.4：直接支持 Claude expert_videos.db
+
+将 `expert_videos.db.part0` 与 `expert_videos.db.part1` 按顺序二进制拼接成 `expert_videos.db`，在“API / 资料库设置”填写合并文件路径并连接。程序自动识别，无需修改源库或另建转换数据库；现有 Codex 库继续支持。一次使用一个库，切换库会清空当前对话及旧媒体引用，防止编号串用；不会把两库内容自动合并。
+
+- 读取 speaker/school、去重页、time_ranges 回看区间、逐句转写、截图、原声、insight 综合结论表、errata 和逐秒/闪现 OCR。实际数量以连接后的目录为准。
+- Claude 页标识例如 `song:P12`，对应它自己的 page_no=12；Codex `songxiaofei:R12` 是另一套编号，两者不能当同一画面，也不能当原PPT角标。逐页研究标注与页面 OCR 分开显示，研究判断不当作专家原话。
+- 此批 Claude 库为28场/1182页/12719条转写，含33条 insight、13条来源勘误；配套完整研究报告PDF没有嵌入这份库。切换到原 Codex 完整库才可查其额外场次、报告PDF及评分参考材料。本程序兼容读取不等于重新验收来源库全部内容。
+- 只在内存建立文本适配表和索引；原 SQLite 保持只读，图片和音频点击时读取。Claude 回听使用库内整场 Ogg 音频，按视频时间定位，避免把多次回看拼接的逐页音频当连续时间轴。
+- `library_query.py` 也支持两种格式。Claude 示例：`python library_query.py --db expert_videos.db page song:P12`；导出原声：`python library_query.py --db expert_videos.db export --kind asset --id claude:video-audio:song --out song.ogg`。

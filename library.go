@@ -90,7 +90,16 @@ func openLibrary(path string) error {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	for _, t := range []string{"video", "page", "page_occurrence", "utterance", "asset", "page_image", "audio_chunk"} {
+	claude, e := prepareClaudeLibrary(ctx, db)
+	if e != nil {
+		db.Close()
+		return e
+	}
+	required := []string{"video", "page", "page_occurrence", "utterance", "asset", "page_image", "audio_chunk"}
+	if claude {
+		required = []string{"video", "page", "page_occurrence", "utterance"}
+	}
+	for _, t := range required {
 		var n int
 		if e = db.QueryRowContext(ctx, "SELECT 1 FROM "+t+" LIMIT 1").Scan(&n); e != nil && e != sql.ErrNoRows {
 			db.Close()
@@ -126,7 +135,7 @@ func getLibrary() (*sql.DB, string, error) {
 	libraryState.RLock()
 	defer libraryState.RUnlock()
 	if libraryState.db == nil {
-		return nil, "", errors.New("尚未连接36场资料库，请在资料库设置中填写 SQLite 路径")
+		return nil, "", errors.New("尚未连接资料库，请在资料库设置中填写 SQLite 路径")
 	}
 	return libraryState.db, libraryState.path, nil
 }
@@ -156,7 +165,7 @@ func (a *App) library(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	counts := map[string]int{}
-	for _, t := range []string{"video", "page", "utterance", "audio_chunk", "source_document", "source_document_page", "knowledge_document", "knowledge_document_page"} {
+	for _, t := range []string{"video", "page", "utterance", "audio_chunk", "source_document", "source_document_page", "knowledge_document", "knowledge_document_page", "insight", "frame", "flash", "second", "second_full", "plan_a_done", "errata"} {
 		var n int
 		if e = db.QueryRowContext(ctx, "SELECT count(*) FROM "+t).Scan(&n); e == nil {
 			counts[t] = n
@@ -167,7 +176,13 @@ func (a *App) library(w http.ResponseWriter, r *http.Request) {
 	if x.Path != "" {
 		pathSaved = a.saveLibraryPath(path)
 	}
-	jsonOut(w, 200, map[string]any{"path_saved": pathSaved, "path": path, "bytes": info.Size(), "read_only": true, "videos": videos, "counts": counts})
+	format, note, readme := "codex", "R是检索单元编号，不一定是原PPT页码", ""
+	if isClaudeLibrary(db) {
+		format = "claude"
+		note = "P是此库去重页顺序，不是原PPT角标；研究分析与转写不等于原声听校"
+		readme = claudeReadme(ctx, db)
+	}
+	jsonOut(w, 200, map[string]any{"format": format, "coverage_note": note, "source_readme": readme, "path_saved": pathSaved, "path": path, "bytes": info.Size(), "read_only": true, "videos": videos, "counts": counts})
 }
 
 var hanWords = regexp.MustCompile(`[\p{Han}]+|[a-zA-Z0-9_]+`)
@@ -211,6 +226,9 @@ func textScore(text string, terms []string) int {
 	return n
 }
 func enrichPage(ctx context.Context, db *sql.DB, id string) (map[string]any, error) {
+	if isClaudeLibrary(db) {
+		return claudePage(ctx, db, id)
+	}
 	rows, e := rowsJSON(ctx, db, `SELECT p.*,v.teacher,v.institution,v.course FROM page p JOIN video v ON v.tag=p.tag WHERE p.id=?`, id)
 	if e != nil {
 		return nil, e
@@ -324,6 +342,7 @@ func (a *App) librarySearch(w http.ResponseWriter, r *http.Request) {
 			named[tag] = true
 		}
 	}
+	named = libraryTagHints(vs, named)
 	q := `SELECT p.id,p.tag,p.page_no,p.title,p.page_text,v.teacher,v.course FROM page p JOIN video v ON p.tag=v.tag WHERE (?='' OR p.tag=?) AND (?=0 OR p.page_no=?)`
 	ps, e := cachedTextRows(ctx, db, q, x.Tag, x.Tag, x.PageNo, x.PageNo)
 	if e != nil {
@@ -425,6 +444,9 @@ func (a *App) librarySearch(w http.ResponseWriter, r *http.Request) {
 			raw = rr
 		}
 	}
+	if isClaudeLibrary(db) && (strings.Contains(x.Q, "快闪") || strings.Contains(strings.ToLower(x.Q), "ocr") || strings.Contains(x.Q, "闪现")) {
+		raw = claudeRawOCR(ctx, db, x.Q, x.Tag)
+	}
 	mark("ocr_ms")
 	official := []map[string]any{}
 	research := []map[string]any{}
@@ -478,7 +500,11 @@ func (a *App) libraryAsset(w http.ResponseWriter, r *http.Request) {
 	}
 	var b []byte
 	var mime string
-	e = db.QueryRowContext(r.Context(), "SELECT mime,content FROM asset WHERE id=?", x.ID).Scan(&mime, &b)
+	if isClaudeLibrary(db) {
+		mime, b, e = claudeAsset(r.Context(), db, x.ID)
+	} else {
+		e = db.QueryRowContext(r.Context(), "SELECT mime,content FROM asset WHERE id=?", x.ID).Scan(&mime, &b)
+	}
 	if e != nil {
 		fail(w, 404, "媒体不存在")
 		return
@@ -503,6 +529,10 @@ func (a *App) libraryAudio(w http.ResponseWriter, r *http.Request) {
 	db, _, e := getLibrary()
 	if e != nil {
 		fail(w, 409, e.Error())
+		return
+	}
+	if isClaudeLibrary(db) {
+		claudeAudio(w, r, db, x.Tag, x.Time)
 		return
 	}
 	rows, e := rowsJSON(r.Context(), db, `SELECT id,asset_id,t0,t1,source_audio_start,encoded_duration,quality_status FROM audio_chunk WHERE tag=? AND t0<=? AND t1>? ORDER BY t0 DESC LIMIT 1`, x.Tag, x.Time, x.Time)

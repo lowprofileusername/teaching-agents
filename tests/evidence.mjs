@@ -3,3 +3,5 @@ const r={pages:Array.from({length:8},(_,i)=>({id:`${i%2?'lijing':'songxiaofei'}:
 const e=buildEvidence(r);assert.equal(e.pages.length,8);assert.equal(e.document_evidence.length,6);assert.equal(e.pages.filter(p=>p.teacher==='李静').length,4);assert.ok(Buffer.byteLength(JSON.stringify(e))<170000);assert.equal(e.pages[0].occurrences.length,3);console.log('Evidence payload keeps every selected page and report within request limits');
 
 assert.equal(e.pages[0].official_pages[0].id,'official0');
+
+const c=buildEvidence({pages:[{id:'song:P12',source_format:'claude',page_text:'页面原文',research_analysis_unverified:'来源库研究判断',utterances:[]}]});assert.equal(c.pages[0].page_facts,'页面原文');assert.equal(c.pages[0].research_analysis_unverified,'来源库研究判断');assert.equal(c.pages[0].source_format,'claude');assert.ok(!c.pages[0].page_facts.includes('研究判断'));
