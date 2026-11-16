@@ -36,7 +36,7 @@ foreach ($persona in @('original','male')) {
   for($i=0;$i -lt 100;$i++){
    Start-Sleep -Milliseconds 300
    if($proc.HasExited){throw "Native app exited: $(Get-Content $err -Raw)"}
-   if(Test-Path $log){$m=[regex]::Match([string](Get-Content $log -Raw),'http://127\.0\.0\.1:\d+/#([a-f0-9]+)');if($m.Success){$link=$m.Value}}
+   if(Test-Path $log){$raw=Get-Content $log -Raw;if(-not [string]::IsNullOrWhiteSpace($raw)){$m=[regex]::Match($raw,'http://127\.0\.0\.1:\d+/#([a-f0-9]+)');if($m.Success){$link=$m.Value}}}
    $hwnd=[TeacherWindowProbe]::Find([uint32]$proc.Id)
    if($link -and $hwnd -ne [IntPtr]::Zero){break}
   }
