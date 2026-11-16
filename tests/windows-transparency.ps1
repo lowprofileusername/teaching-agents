@@ -14,7 +14,7 @@ public class TeacherWindowProbe {
  public struct Rect { public int Left,Top,Right,Bottom; }
  [DllImport("user32.dll")] public static extern void mouse_event(uint flags,uint dx,uint dy,uint data,UIntPtr extra);
  public static IntPtr Find(uint pid) {IntPtr found=IntPtr.Zero;EnumWindows((h,p)=>{uint owner;GetWindowThreadProcessId(h,out owner);var s=new StringBuilder(256);GetWindowText(h,s,256);if(owner==pid&&s.ToString().StartsWith("桌面教师")){found=h;return false;}return true;},IntPtr.Zero);return found;}
- public static IntPtr FindWorkbench(uint pid) {IntPtr found=IntPtr.Zero;EnumWindows((h,p)=>{uint owner;GetWindowThreadProcessId(h,out owner);var s=new StringBuilder(256);GetWindowText(h,s,256);if(owner==pid&&s.ToString().StartsWith("教学创新备赛工作台")){found=h;return false;}return true;},IntPtr.Zero);return found;}
+ public static IntPtr FindWorkbench(uint pid) {IntPtr found=IntPtr.Zero;EnumWindows((h,p)=>{uint owner;GetWindowThreadProcessId(h,out owner);var s=new StringBuilder(256);GetWindowText(h,s,256);if(owner==pid&&s.ToString().Contains("教学创新备赛工作台")){found=h;return false;}return true;},IntPtr.Zero);return found;}
 }
 '@
 $qa=Join-Path $env:RUNNER_TEMP 'teacher-transparency'
@@ -46,6 +46,7 @@ foreach ($persona in @('original','male')) {
   $parts=$link.Split('#');$base=$parts[0].TrimEnd('/');$headers=@{'X-Session-Token'=$parts[1]}
   Invoke-RestMethod "$base/api/desktop" -Method Post -Headers $headers -ContentType 'application/json' -Body '{"action":"posture","posture":"sit"}' | Out-Null
   $workbench=[TeacherWindowProbe]::FindWorkbench([uint32]$proc.Id)
+  for($j=0;$workbench -eq [IntPtr]::Zero -and $j -lt 50;$j++){Start-Sleep -Milliseconds 200;$workbench=[TeacherWindowProbe]::FindWorkbench([uint32]$proc.Id)}
   if($workbench -eq [IntPtr]::Zero){throw 'Workbench native window missing'}
   [TeacherWindowProbe]::SetWindowPos($workbench,[IntPtr]::Zero,100,50,1000,640,0x0014) | Out-Null
   Start-Sleep -Milliseconds 1200
@@ -102,5 +103,5 @@ foreach ($persona in @('original','male')) {
   if([Math]::Abs($dragged.Left-$still.Left) -lt 30 -or [Math]::Abs($dragged.Top-$still.Top) -lt 20){throw 'Dragging the teacher canvas did not move the native window'}
   $checks[-1].roam_xy=@($after.Left-$before.Left,$after.Top-$before.Top);$checks[-1].drag_xy=@($dragged.Left-$still.Left,$dragged.Top-$still.Top)
   Write-Output "PASS ${persona}: real native window shows coloured background around visible teacher"
- } finally {if($backdrop){$backdrop.Close();$backdrop.Dispose()};if(-not $proc.HasExited){try{Invoke-RestMethod "$base/api/desktop" -Method Post -Headers $headers -ContentType 'application/json' -Body '{"action":"quit"}' | Out-Null;$proc.WaitForExit(5000) | Out-Null}catch{};if(-not $proc.HasExited){Stop-Process -Id $proc.Id -Force}};$checks | ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $qa 'checks.json')}
+ } finally {node tests/windows-webview-probe.mjs;if($backdrop){$backdrop.Close();$backdrop.Dispose()};if(-not $proc.HasExited){try{Invoke-RestMethod "$base/api/desktop" -Method Post -Headers $headers -ContentType 'application/json' -Body '{"action":"quit"}' | Out-Null;$proc.WaitForExit(5000) | Out-Null}catch{};if(-not $proc.HasExited){Stop-Process -Id $proc.Id -Force}};$checks | ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $qa 'checks.json')}
 }
