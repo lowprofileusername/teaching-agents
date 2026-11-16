@@ -242,7 +242,19 @@ func (a *App) chat(w http.ResponseWriter, r *http.Request) {
 func (a *App) handler() http.Handler {
 	mux := http.NewServeMux()
 	web, _ := fs.Sub(files, "web")
-	mux.Handle("/", http.FileServer(http.FS(web)))
+	static := http.FileServer(http.FS(web))
+	mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Windows registry MIME associations can override Go's built-in .mjs
+		// type with text/plain. Module scripts must have a JavaScript MIME type,
+		// including nested imports, regardless of installed editors or browsers.
+		switch {
+		case strings.HasSuffix(r.URL.Path, ".mjs"), strings.HasSuffix(r.URL.Path, ".js"):
+			w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
+		case strings.HasSuffix(r.URL.Path, ".css"):
+			w.Header().Set("Content-Type", "text/css; charset=utf-8")
+		}
+		static.ServeHTTP(w, r)
+	}))
 	mux.HandleFunc("/profile.json", func(w http.ResponseWriter, r *http.Request) {
 		desktopState.Lock()
 		persona := "original"

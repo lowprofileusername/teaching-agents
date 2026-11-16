@@ -24,6 +24,10 @@ foreach ($exe in Get-ChildItem dist/*.exe) {
     if ($res.pages[0].id -ne 'synthetic:R01') { throw 'Page retrieval failed' }
     $ui=Invoke-WebRequest "$base/"
     if ($ui.StatusCode -ne 200 -or -not $ui.Content.Contains('scope')) { throw 'Embedded UI missing' }
+    foreach ($module in @('app.mjs','pet.mjs','teacher-animation.mjs','walk-calibration.mjs','lib/pdf.mjs')) {
+      $script=Invoke-WebRequest "$base/$module"
+      if ($script.StatusCode -ne 200 -or $script.Headers['Content-Type'] -notmatch '^(text|application)/javascript') { throw "Module MIME incorrect: $module" }
+    }
     Write-Output "PASS $($exe.Name): launch, private session, read-only SQLite, page retrieval, embedded UI"
   } finally { if (-not $process.HasExited) { Stop-Process -Id $process.Id -Force } }
 }

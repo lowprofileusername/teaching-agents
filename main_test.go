@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"mime"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -81,6 +82,22 @@ func TestTeacherProfileFollowsDesktopSelection(t *testing.T) {
 		var got map[string]string
 		if err := json.Unmarshal(w.Body.Bytes(), &got); err != nil || got["persona"] != item.persona {
 			t.Fatalf("profile %s: %s", item.template, w.Body.String())
+		}
+	}
+}
+
+func TestEmbeddedModulesIgnoreHostMimeAssociations(t *testing.T) {
+	old := mime.TypeByExtension(".mjs")
+	if err := mime.AddExtensionType(".mjs", "text/plain"); err != nil {
+		t.Fatal(err)
+	}
+	defer mime.AddExtensionType(".mjs", old)
+	a := &App{origin: "http://127.0.0.1:9999"}
+	for _, path := range []string{"/app.mjs", "/pet.mjs", "/teacher-animation.mjs", "/walk-calibration.mjs", "/lib/pdf.mjs"} {
+		w := httptest.NewRecorder()
+		a.handler().ServeHTTP(w, httptest.NewRequest("GET", a.origin+path, nil))
+		if w.Code != 200 || !strings.HasPrefix(w.Header().Get("Content-Type"), "text/javascript") {
+			t.Fatalf("%s: status %d MIME %q", path, w.Code, w.Header().Get("Content-Type"))
 		}
 	}
 }
