@@ -22,7 +22,7 @@ func reviewFixture(t *testing.T) []byte {
 }
 func TestWordReviewExportPreservesAndTracks(t *testing.T) {
 	source := reviewFixture(t)
-	edits := []ParagraphEdit{{"p1", "教学问题", "明确真实问题", "真实教学问题"}, {"p2", "图示", "补充图例", "新的图示"}, {"p4", "", "空段标注", ""}}
+	edits := []ParagraphEdit{{ID: "p1", Original: "教学问题", Comment: "明确真实问题", Replacement: "真实教学问题"}, {ID: "p2", Original: "图示", Comment: "补充图例", Replacement: "新的图示"}, {ID: "p4", Original: "", Comment: "空段标注"}}
 	out, result, e := buildReviewedDOCX(source, edits, "revisions")
 	if e != nil {
 		t.Fatal(e)
@@ -66,7 +66,7 @@ func TestWordReviewExportPreservesAndTracks(t *testing.T) {
 	if pp[0].Text != "教学问题" {
 		t.Fatal("comment mode changed text")
 	}
-	bad := []ParagraphEdit{{"p1", "其他文件", "不可串文档", ""}}
+	bad := []ParagraphEdit{{ID: "p1", Original: "其他文件", Comment: "不可串文档"}}
 	if _, _, e = buildReviewedDOCX(source, bad, "comments"); e == nil {
 		t.Fatal("mismatched source accepted")
 	}

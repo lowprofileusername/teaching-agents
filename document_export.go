@@ -21,14 +21,16 @@ import (
 )
 
 type ParagraphEdit struct {
-	ID          string `json:"paragraph_id"`
-	Original    string `json:"original"`
-	Comment     string `json:"comment"`
-	Replacement string `json:"replacement"`
+	ID          string         `json:"paragraph_id"`
+	Original    string         `json:"original"`
+	Comment     string         `json:"comment"`
+	Replacement string         `json:"replacement"`
+	Spans       []RevisionSpan `json:"spans,omitempty"`
 }
 type reviewExportResult struct {
 	Comments  int      `json:"comments"`
 	Revisions int      `json:"revisions"`
+	Spans     int      `json:"spans"`
 	Warnings  []string `json:"warnings"`
 }
 
@@ -311,7 +313,38 @@ func buildReviewedDOCX(data []byte, edits []ParagraphEdit, mode string) ([]byte,
 		}
 		content := append([]byte{}, doc[p.Start:p.End]...)
 		comment := edit.Comment
-		if edit.Replacement != "" && edit.Replacement != edit.Original {
+		if len(edit.Spans) > 0 {
+			if e := validateSpans(edit.Original, edit.Spans); e != nil {
+				return nil, result, fmt.Errorf("%s %w", edit.ID, e)
+			}
+			if mode == "revisions" {
+				v, used, done, e := revisionParagraphSpans(doc, p, edit.Original, edit.Spans, next, date)
+				if e != nil {
+					return nil, result, e
+				}
+				if done {
+					content = v
+					next += used
+					result.Revisions++
+					result.Spans += len(edit.Spans)
+				} else if edit.Replacement != "" && edit.Replacement != edit.Original {
+					v2, done2, e := revisionParagraph(doc, p, edit.Replacement, next, date)
+					if e != nil {
+						return nil, result, e
+					}
+					if done2 {
+						content = v2
+						next += 2
+						result.Revisions++
+					} else {
+						result.Warnings = append(result.Warnings, edit.ID+"包含图片、域、链接、已有批注/修订或复杂对象，仅添加建议批注，不改正文")
+					}
+				} else {
+					result.Warnings = append(result.Warnings, edit.ID+"包含复杂对象，字级修订未写回，仅添加建议批注")
+				}
+			}
+			comment += "\n修订明细：\n" + spanDetail(edit.Spans)
+		} else if edit.Replacement != "" && edit.Replacement != edit.Original {
 			if mode == "revisions" {
 				v, done, e := revisionParagraph(doc, p, edit.Replacement, next, date)
 				if e != nil {

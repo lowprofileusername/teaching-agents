@@ -37,8 +37,8 @@
 - **能直接改的**（措辞/逻辑/术语/冗余/AI味）输出字级 `revisions`（start/end/delete/insert/reason），前端 `parseRevise` 硬校验：delete 必须与原文逐字一致、区间不重叠、insert 不得含数字/引语/成效断言（`factRisk` 镜像 Go `generatedFactRisk`），无出处断言只能删除或改"待补："占位。
 - **不能直接改的**（缺真实数据/口径/结构取舍）只输出 `comment` 批注，不替用户编内容。
 - **字数只提醒**：超 4000 字仅在面板与批注中提醒，不自动删减、不因字数拒绝。
-- 面板（`reviseDialog`）逐条接受/拒绝，选择保存在会话；"复制已接受修订后的文字"与"写回 Word"都只应用已接受修订。Word 写回复用现有 `buildReviewedDOCX`（revisions 模式）：已接受修订成为 Word 可接受/拒绝的修订（段落级 w:del/w:ins），批注成为 Word 批注；复杂对象段落自动降级为批注。原文件始终不被自动修改。
-- 测试：`tests/revise.mjs`（协议/应用/字数/导出桥接）、`revise_test.go`（模式互斥守卫+提示词送达）。
+- 面板（`reviseDialog`）逐条接受/拒绝，选择保存在会话；"复制已接受修订后的文字"与"写回 Word"都只应用已接受修订。Word 写回为**字级** `w:del/w:ins`（`document_export_spans.go`）：按 rune 区间切分 run，未触及的文字与格式（rPr）原样保留，tab/br 可被删除或保留；批注成为 Word 批注并附修订明细。含图片/域/链接/已有修订等复杂对象的段落自动降级：有整段替换则退为整段修订，否则仅批注。服务端 `validateSpans` 再校验 delete 与原文一致、区间不重叠、insert 不触 `generatedFactRisk`。原文件始终不被自动修改。
+- 测试：`tests/revise.mjs`（协议/应用/字数/导出桥接）、`revise_test.go`（模式互斥守卫+提示词送达）、`document_export_spans_test.go`（跨run/多处修订/纯插入删除/tab与br/复杂降级/校验拒绝/批注模式/ID唯一）。
 
 ## 可复现测试
 

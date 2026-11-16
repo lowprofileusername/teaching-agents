@@ -24,6 +24,7 @@ export function reviseExportEdits(doc,items,decisions){
    }
   }
   let replacement='';
+  const spans=[];
   if(accepted.length){
    accepted.sort((a,b)=>b.start-a.start);
    let out=p.text;
@@ -33,9 +34,10 @@ export function reviseExportEdits(doc,items,decisions){
     out=a.slice(0,r.start).join('')+r.insert+a.slice(r.end).join('');
    }
    if(out!==p.text)replacement=out;
+   for(const r of [...accepted].sort((a,b)=>a.start-b.start))spans.push({start:r.start,end:r.end,delete:r.delete,insert:r.insert,reason:r.reason||''});
   }
   const comment=[...g.comments,...g.placements].join('\n')||'建议保留';
-  edits.push({paragraph_id:pid,original:p.text,comment,replacement});
+  edits.push({paragraph_id:pid,original:p.text,comment,replacement,spans});
  }
  if(!edits.length)throw Error('还没有已完成的修订意见可以写回。');
  return edits;
