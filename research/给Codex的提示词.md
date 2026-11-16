@@ -1,7 +1,7 @@
 # 给 Codex 的提示词（可直接粘贴）
 
 > 用途：让 Codex 根据已上传的研究资料改进 teaching-agents 工作台，并把资料内置为参考。
-> 前提：这些资料已由我推送到 `main` 分支（首批 commit ff99ebc，AI 获奖案例批次 commit ca0a738），Codex 直接 pull 即可获得全部 JSON 与 research 文档。本提示词文件也已存放在仓库 `research/给Codex的提示词.md`，以仓库版本为准。
+> 前提：这些资料已由我推送到 `main` 分支，Codex 直接 pull 即可获得全部 JSON 与 research 文档。请先读 `research/资料总览与Codex使用说明.md`（资料地图 + 实施顺序 + 数据纪律），本提示词是具体任务书。`research/README.md` 是索引；本文件以仓库版本为准。
 > 用法：把下面「=====」之间的全部内容复制给 Codex。文末附分阶段执行建议。
 
 ---
