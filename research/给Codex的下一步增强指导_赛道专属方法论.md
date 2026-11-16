@@ -66,8 +66,8 @@
 
 ### 任务 4：测试
 
-- 扩充 `ai_track_test.go`：验证**有可核验出处的赛道**能取到各自打法，且每条打法带 `source`/`source_locator`/`supports_dimensions`/`caution`；新农科等无出处赛道返回空数组并标 `no_traceable_source`，禁止用通用打法填坑；AI 赛道走 `ai_playbook.json` 不重复加载
-- 在 `generate_test.go` 加用例：选"新医科"生成报告骨架，prompt 里应出现辛页/姜宏佺类打法、不出现 AI 专属章节；选"新工科"应出现刘战合/熊芸类打法
+- 扩充 `ai_track_test.go`：验证**有可核验出处的赛道**能取到各自打法，且每条打法带 `source`/`source_locator`/`supports_dimensions`/`caution`；新农科必须取到向妙莲打法（不得留空）；确无出处的赛道返回空数组并标 `no_traceable_source`，禁止用通用打法填坑；AI 赛道走 `ai_playbook.json` 不重复加载
+- 在 `generate_test.go` 加用例：选"新医科"生成报告骨架，prompt 里应出现辛页/姜宏佺类打法、不出现 AI 专属章节；选"新工科"应出现刘学莘/熊芸类打法；选"实验教学"应出现刘战合类打法
 - 现有的 10 PASS 与 `TestBuilderTrackSwitchAndTwoVideoRequirements` 必须继续通过
 
 ### 交付
