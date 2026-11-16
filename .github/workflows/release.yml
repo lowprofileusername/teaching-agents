@@ -59,6 +59,7 @@ jobs:
         shell: pwsh
         run: |
           Copy-Item README.md dist/README.txt
+          Copy-Item RELEASE_NOTES.md dist/
           Copy-Item THIRD_PARTY_LICENSES.txt dist/
           Copy-Item library_query.py dist/
           $lines = Get-ChildItem dist/*.exe | ForEach-Object { "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)" }
