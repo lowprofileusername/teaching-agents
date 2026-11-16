@@ -28,6 +28,7 @@ $checks=@()
 foreach ($persona in @('original','male')) {
  $exe=(Resolve-Path "dist/teaching-agent-$persona-windows-amd64.exe").Path
  $log=Join-Path $qa "$persona.log";$err=Join-Path $qa "$persona.err"
+ $env:TEACHER_QA_PERSONA=$persona
  $proc=Start-Process $exe -PassThru -RedirectStandardOutput $log -RedirectStandardError $err
  $backdrop=$null
  try {
@@ -35,7 +36,7 @@ foreach ($persona in @('original','male')) {
   for($i=0;$i -lt 100;$i++){
    Start-Sleep -Milliseconds 300
    if($proc.HasExited){throw "Native app exited: $(Get-Content $err -Raw)"}
-   if(Test-Path $log){$m=[regex]::Match((Get-Content $log -Raw),'http://127\.0\.0\.1:\d+/#([a-f0-9]+)');if($m.Success){$link=$m.Value}}
+   if(Test-Path $log){$m=[regex]::Match([string](Get-Content $log -Raw),'http://127\.0\.0\.1:\d+/#([a-f0-9]+)');if($m.Success){$link=$m.Value}}
    $hwnd=[TeacherWindowProbe]::Find([uint32]$proc.Id)
    if($link -and $hwnd -ne [IntPtr]::Zero){break}
   }
@@ -71,5 +72,5 @@ foreach ($persona in @('original','male')) {
   $checks+=@{rect=@($rect.Left,$rect.Top,$rect.Right,$rect.Bottom);persona=$persona;corners_show_backdrop=$matched;person_pixels=$painted}
   if(-not $matched -or $painted -le 100){throw "Teacher alpha test failed: backdrop=$matched personSamples=$painted"}
   Write-Output "PASS ${persona}: real native window shows coloured background around visible teacher"
- } finally {if($backdrop){$backdrop.Close();$backdrop.Dispose()};if(-not $proc.HasExited){Stop-Process -Id $proc.Id -Force};$checks | ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $qa 'checks.json')}
+ } finally {if($backdrop){$backdrop.Close();$backdrop.Dispose()};if(-not $proc.HasExited){try{Invoke-RestMethod "$base/api/desktop" -Method Post -Headers $headers -ContentType 'application/json' -Body '{"action":"quit"}' | Out-Null;$proc.WaitForExit(5000) | Out-Null}catch{};if(-not $proc.HasExited){Stop-Process -Id $proc.Id -Force}};$checks | ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $qa 'checks.json')}
 }

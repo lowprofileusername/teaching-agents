@@ -13,7 +13,7 @@ foreach ($exe in Get-ChildItem dist/*.exe) {
     $link = ''
     for ($i=0; $i -lt 40; $i++) {
       Start-Sleep -Milliseconds 500
-      if (Test-Path $out) { $match = [regex]::Match((Get-Content $out -Raw), 'http://127\.0\.0\.1:\d+/#([a-f0-9]+)'); if ($match.Success) { $link=$match.Value; break } }
+      if (Test-Path $out) { $match = [regex]::Match([string](Get-Content $out -Raw), 'http://127\.0\.0\.1:\d+/#([a-f0-9]+)'); if ($match.Success) { $link=$match.Value; break } }
       if ($process.HasExited) { throw (Get-Content $err -Raw) }
     }
     if (-not $link) { throw 'Executable startup timed out' }
