@@ -1,14 +1,156 @@
 {
   "source": {
-    "title": "AI赛道深度资料：两场核心专家 + 第六届获奖案例与复盘新闻",
+    "title": "AI赛道深度资料：两场AI赛道冠军课程实例 + 支撑方法 + 第六届案例新闻",
     "checked": "2026-11-17",
     "edition_focus": 7,
     "track": "人工智能",
-    "nature": "两场专家方法来自用户本地36场视频库（可回查总账与迁移清单）；第六届案例与新闻来自高校官网/主流媒体/获奖者复盘公开报道。全部是迁移建议与先例，不是官方评分标准、不是获奖报告全文、不是用户自己的成效。",
-    "priority_sessions": ["于歆杰｜AI赋能教育教学底层逻辑", "汪琼｜智能时代新教法"],
+    "nature": "两场AI赛道冠军课程实例（李静、宋晓菲）来自用户本地36场视频库，可回查总账与PPT实证；支撑方法（于歆杰、汪琼、刘学莘）同为36场；第六届案例与新闻来自高校官网/主流媒体/获奖者复盘公开报道。全部是迁移建议与先例，不是官方评分标准、不是获奖报告全文、不是用户自己的成效。",
+    "priority_sessions": ["李静｜人工智能赛道案例分享（流体力学）", "宋晓菲｜从改造酶到进化人（酶工程）"],
     "disclaimer": "每条带来源定位或URL。专家观点≠官方评分；公开报道≠报告全文；第三方公众号转述≠逐字原话。第七届国赛通知未发布，材料规格以当届官网为准。"
   },
   "priority_sessions": [
+    {
+      "id": "lijing_ai_track",
+      "speaker": "李静",
+      "course": "流体力学",
+      "session_title": "人工智能赛道案例分享（流体力学）",
+      "session_key": "lijing",
+      "duration_min": 6.6,
+      "ai_level": "L2",
+      "evidence_grade": "C",
+      "citation_status": "可引用（总账标注：差异小但静音高）",
+      "why_priority": "用户36场库中明确的AI赛道场次（总账赛道列='人工智能'），第六届AI赛道国赛一等奖得主本人分享；与用户同为AI赛道，最可直接对标",
+      "source_locator": "00_视频样本总账.md｜lijing（人工智能赛道，6.6min，L2，证据C）；02_专家方法库_36场.md §六A组李静行；03_PPT设计案例库.md 案例06/07/13/14/19/20/21/22",
+      "moves": [
+        {
+          "id": "lijing_let_flow_seen",
+          "name": "让XX看得见（使命宣言）",
+          "original": "李静'让流场看得见'——一句话把抽象教学目标变成可感知承诺",
+          "migration": "构造自己课程的'让X看得见'（如'让判断过程看得见''让算法决策看得见'）",
+          "supports_dimensions": ["有明显的创新特色", "有明确的问题导向"],
+          "evidence_to_collect": ["使命句在报告/PPT/视频三处一致出现", "对应到具体课堂行为"],
+          "caution": "一句话定调须有后面机制接住，不能只当口号",
+          "source_locator": "03_PPT设计案例库.md 案例06（原文'让流场看得见'）"
+        },
+        {
+          "id": "lijing_four_word_skeleton",
+          "name": "四词骨架（共建/共创/共学/共评）",
+          "original": "用四个词做记忆锚点，贯穿人机协同各环节",
+          "supports_dimensions": ["有明显的创新特色", "关注技术应用于教学"],
+          "evidence_to_collect": ["四词对应的具体环节", "每个词下的学生行为证据"],
+          "caution": "四词是她的课程骨架，不可直接抄；按自己课程重造，且须与问题一一对应",
+          "source_locator": "03_PPT设计案例库.md 案例07"
+        },
+        {
+          "id": "lijing_one_page_mapping",
+          "name": "一页总装的主映射页",
+          "original": "顶部目标句 → 中部五举措四色标签 → 下部六问题带 → 底部创新理念句",
+          "why": "一页回答'问题是否被接住'，举措与问题一一对应，评委不用自己连线",
+          "supports_dimensions": ["有明确的问题导向", "有明显的创新特色"],
+          "evidence_to_collect": ["问题—举措对应表", "该映射页在报告/PPT中的落点"],
+          "caution": "是PPT版式借鉴，不是官方硬性要求；OCR实证，引用标来源",
+          "source_locator": "03_PPT设计案例库.md 案例14（李静创新设计总览页，OCR实证）"
+        },
+        {
+          "id": "lijing_question_ai_formal",
+          "name": "把'质疑AI'写成正式课堂环节",
+          "original": "AI赛道方法库逐场索引：把质疑AI写成正式课堂环节",
+          "supports_dimensions": ["关注技术应用于教学", "体现课程思政特色"],
+          "evidence_to_collect": ["质疑环节的学生动作", "核验与修订留痕"],
+          "caution": "该场'创新设计占时过高，成效证据偏少'——正是要避开的短板，别照搬时间分配",
+          "source_locator": "02_专家方法库_36场.md §六A组李静行（警惕：创新设计占时过高，成效证据偏少）"
+        },
+        {
+          "id": "lijing_human_machine_division",
+          "name": "五步流程图标注人机分工",
+          "original": "用五步流程图明确教师/学生/AI各做什么",
+          "supports_dimensions": ["关注技术应用于教学", "有明显的创新特色"],
+          "evidence_to_collect": ["流程中每步的人机动作", "对应学生产物"],
+          "caution": "流程图标注是表达方法，不是官方要求画图；重点是分工说清，不是图好看",
+          "source_locator": "03_PPT设计案例库.md 案例20"
+        },
+        {
+          "id": "lijing_evidence_caution",
+          "name": "证据形态警示（引自该场实际情况）",
+          "original": "该场全文'%'零命中；方法库指出'创新设计占时过高，成效证据偏少'",
+          "supports_dimensions": ["注重创新成果的辐射"],
+          "caution": "这是该场的短板，不是可迁移打法——提醒用户：别只讲设计不讲结果；成效必须有可核数据，不能靠描述性评价",
+          "source_locator": "07_证据核验与六类误判.md（百分比零命中场次含李静）；02_专家方法库_36场.md §六A组李静行"
+        }
+      ]
+    },
+    {
+      "id": "songxiaofei_ai_track",
+      "speaker": "宋晓菲",
+      "course": "酶工程",
+      "session_title": "从改造酶到进化人",
+      "session_key": "songxiaofei",
+      "duration_min": 25.8,
+      "ai_level": "L2",
+      "evidence_grade": "B",
+      "citation_status": "引用需标注",
+      "why_priority": "用户36场库中的A组课程案例（25.8min，L2，证据B），第六届AI赛道国赛一等奖得主本人工作坊；PPT与报告实证页最完整，可直接对标AI赛道写作与汇报",
+      "source_locator": "00_视频样本总账.md｜songxiaofei（A组，25.8min，L2，证据B，引用需标注）；02_专家方法库_36场.md §六A组宋晓菲行；03_PPT设计案例库.md 案例01/02/03/04/05/08/09/10/11/12/15/16/17/18/23/24；04_AI教学创新迁移清单.md §九；07_证据核验与六类误判.md",
+      "moves": [
+        {
+          "id": "song_industry_metaphor",
+          "name": "用行业流程比喻课前课中课后",
+          "original": "借鉴酶从小试—中试—产业化的规律，构建'课前小试、课堂中试、课后大试'三阶段",
+          "supports_dimensions": ["有明显的创新特色", "关注技术应用于教学"],
+          "evidence_to_collect": ["三阶段各自的学生任务与AI动作", "阶段衔接证据"],
+          "caution": "比喻要来自本学科真实流程，不可硬凑；该场方法库警惕'个人故事依赖真实经历，不可硬凑'",
+          "source_locator": "02_专家方法库_36场.md §六A组宋晓菲行；宁波大学培训报道 https://jwc.nbu.edu.cn/info/1151/18396.htm"
+        },
+        {
+          "id": "song_black_hat",
+          "name": "六顶思考帽之黑帽环节（防AI权威化）",
+          "original": "专门设挑AI方案错的黑帽环节，把批判性思维变成课堂仪式",
+          "supports_dimensions": ["关注技术应用于教学", "体现课程思政特色", "有明显的创新特色"],
+          "evidence_to_collect": ["黑帽环节学生挑错清单", "挑错后修订稿"],
+          "caution": "是她课程的机制，迁移需按本课程重构；不可写成官方要求",
+          "source_locator": "04_AI教学创新迁移清单.md §九（宋晓菲）；03_PPT设计案例库.md 案例16（三角色卡+真实学生提问+六色思考帽条，OCR实证）"
+        },
+        {
+          "id": "song_low_cost_tools",
+          "name": "低成本工具观 + 工具自我分级",
+          "original": "明确学生零费用，给工具配'可辅/可练/可验'动词定语，工具清单变能力叙事",
+          "supports_dimensions": ["注重创新成果的辐射", "关注技术应用于教学"],
+          "evidence_to_collect": ["工具清单与动词定语", "学生零费用说明"],
+          "caution": "回应资源质疑的说法，不是成效数据；不得把工具数当学习成效",
+          "source_locator": "04_AI教学创新迁移清单.md §九（宋晓菲）；03_PPT设计案例库.md 案例08/23"
+        },
+        {
+          "id": "song_two_source_evidence",
+          "name": "自评×第三方双联证据页",
+          "original": "成效页左侧雷达图（教改前后双色）+ 右侧20家用人单位词云，两图都有数据来源脚注",
+          "why": "自评与第三方交叉验证，避免自己说自己好",
+          "supports_dimensions": ["注重创新成果的辐射"],
+          "evidence_to_collect": ["自评数据来源与脚注", "第三方样本（单位数、时间、题项）"],
+          "caution": "成效页至少一项非自评证据；数据脚注必须真实，不可为美观编造口径（OCR实证）",
+          "source_locator": "03_PPT设计案例库.md 案例17（宋晓菲成效页，OCR+目检）；07_证据核验与六类误判.md（P30学情图表）"
+        },
+        {
+          "id": "song_three_layer_effect",
+          "name": "成效三层叙事（个体—群体—生态）",
+          "original": "个体觉醒（一个学生故事）→ 群体进化（整体数据/第三方）→ 生态回响（项目/教材/成果奖）",
+          "supports_dimensions": ["注重创新成果的辐射"],
+          "evidence_to_collect": ["学生个体原话（真实）", "群体数据口径", "生态层成果主体"],
+          "caution": "学生原话不可编造；竞赛获奖等生态层成果不能自动归因课程",
+          "source_locator": "03_PPT设计案例库.md 案例09/12（学生原话'我是AI进化出来的'、三层叙事）"
+        },
+        {
+          "id": "song_honest_limit",
+          "name": "主动报告局限的诚实姿态",
+          "original": "宋晓菲在答辩中主动给出真实局限，被认为加分（与于歆杰、刘学同类）",
+          "supports_dimensions": ["注重创新成果的辐射"],
+          "evidence_to_collect": ["2-3条真实局限 + 对应改进计划"],
+          "caution": "局限必须真实，不能是包装过的'优点式不足'",
+          "source_locator": "05_答辩追问与回答.md（宋晓菲、于歆杰、刘学莘诚实姿态加分）"
+        }
+      ]
+    }
+  ],
+  "support_sessions": [
     {
       "id": "yuxinjie_ai_logic",
       "speaker": "于歆杰",
@@ -17,8 +159,8 @@
       "duration_min": 30.1,
       "evidence_grade": "B",
       "citation_status": "可直接引用",
-      "why_priority": "直接讲AI赋能的底层逻辑，含可操作的使用边界与审查基准，最贴合AI赛道的AI必要性与治理维度",
-      "source_locator": "00_视频样本总账.md｜yuxinjie；02_专家方法库_36场.md §六C组于歆杰；04_AI教学创新迁移清单.md §三、§九",
+      "why_support": "不针对某门课，提供AI赛道通用的边界设定与核验机制，是两场冠军课程实例的方法论支撑",
+      "source_locator": "00_视频样本总账.md｜yuxinjie；04_AI教学创新迁移清单.md §三、§九；02_专家方法库_36场.md §六C组",
       "moves": [
         {
           "id": "yuxinjie_three_benchmarks",
@@ -38,16 +180,7 @@
           "supports_dimensions": ["关注技术应用于教学", "体现课程思政特色"],
           "evidence_to_collect": ["分类题库与规则", "各类型学生产出样本", "过程性评价记录"],
           "caution": "是一刀切禁止的结构性替代，不是简单放宽；客观题结论不可直接推到所有课程",
-          "source_locator": "04_AI教学创新迁移清单.md §九（于歆杰 23:51-26:11）；02_专家方法库_36场.md §六C组"
-        },
-        {
-          "id": "yuxinjie_measurement_over_intuition",
-          "name": "用实测推翻旧判断",
-          "original": "不靠直觉，用数据说话（如客观题结论）",
-          "supports_dimensions": ["有明确的问题导向", "注重创新成果的辐射"],
-          "evidence_to_collect": ["实测设计", "样本口径N与时间", "结论边界说明"],
-          "caution": "结论不可外推到未测的课程与题型，须写清适用边界",
-          "source_locator": "02_专家方法库_36场.md §六C组于歆杰行"
+          "source_locator": "04_AI教学创新迁移清单.md §九（于歆杰 23:51-26:11）"
         }
       ]
     },
@@ -58,7 +191,7 @@
       "session_key": "wangqiong",
       "duration_min": 26.1,
       "citation_status": "引用需标注（理论与文献不能替代本课程数据）",
-      "why_priority": "回答AI赛道最核心的'学生判断力如何培养与举证'，与官方'负责任合乎伦理地使用AI'直接呼应",
+      "why_support": "回答学生判断力如何培养与举证，作为冠军课程机制的学术支撑",
       "source_locator": "00_视频样本总账.md｜wangqiong；02_专家方法库_36场.md §六C组汪琼；04_AI教学创新迁移清单.md §九",
       "moves": [
         {
@@ -67,27 +200,17 @@
           "original": "让学生比较、改错、决定采不采纳",
           "supports_dimensions": ["关注技术应用于教学", "有明显的创新特色"],
           "evidence_to_collect": ["学生比较与改错记录", "采纳/驳回理由", "修订稿"],
-          "caution": "理论与文献不能替代本课程数据，必须有本课程真实交互证据",
+          "caution": "理论与文献不能替代本课程数据，必须有真实交互证据",
           "source_locator": "02_专家方法库_36场.md §六C组汪琼行"
-        },
-        {
-          "id": "wangqiong_good_student",
-          "name": "好学生是会做错、能发现错、能改错的人",
-          "original": "最好的学生不是一做就对，而是会做错、能发现错、能找到原因、能改错",
-          "timestamp": "22:24-22:57",
-          "supports_dimensions": ["有明显的创新特色", "体现课程思政特色"],
-          "evidence_to_collect": ["学生发现错误并改正的过程留痕", "错误归因说明"],
-          "caution": "与于歆杰'生成问题'判据互证；不可只写口号不给错例证据",
-          "source_locator": "04_AI教学创新迁移清单.md §九（汪琼 22:24-22:57）"
         },
         {
           "id": "wangqiong_attribution",
           "name": "作业归属判定（摄影类比）",
-          "original": "人在驱动相机；没有统一一刀切的标准，判定权在教师",
+          "original": "人在驱动相机；没有统一一刀切标准，判定权在教师",
           "timestamp": "23:00-24:21",
           "supports_dimensions": ["体现课程思政特色", "关注技术应用于教学"],
           "evidence_to_collect": ["作业声明", "教师判定规则", "学生自述与核验记录"],
-          "caution": "是专家观点不是官方硬规；不得写成'官方要求声明归属'",
+          "caution": "是专家观点不是官方硬规，不得写成'官方要求声明归属'",
           "source_locator": "04_AI教学创新迁移清单.md §九（汪琼 23:00-24:21）"
         }
       ]
@@ -99,7 +222,7 @@
       "session_key": "liuxueshen_dasai",
       "duration_min": 84.8,
       "citation_status": "引用需标注（个人评审经验，非官方评分条文）",
-      "why_priority": "赛制与判据视角，含第六届AI赛道专属数据，帮助报告避开'乱炖'和'AI味'",
+      "why_support": "赛制判据视角，帮助把两场冠军课程的经验写成评委看得懂的结构",
       "source_locator": "01_评委判据与赛制.md 全文；04_AI教学创新迁移清单.md §九；00_视频样本总账.md｜liuxueshen_dasai",
       "moves": [
         {
@@ -117,17 +240,8 @@
           "original": "罗列项目化+平台+题库+微课=一锅烩；一说提到什么就想到你，就是有标签",
           "timestamp": "76:50-78:21",
           "supports_dimensions": ["有明显的创新特色", "注重创新成果的辐射"],
-          "caution": "与36场'一个主线'结论一致；不得堆砌工具清单",
-          "source_locator": "01_评委判据与赛制.md §五.7（76:50-78:21）；02_专家方法库_36场.md §四"
-        },
-        {
-          "id": "liu_title_no_ai",
-          "name": "题目不要用AI起",
-          "original": "AI味浓、易雷同、没温度",
-          "timestamp": "26:41-27:07",
-          "supports_dimensions": ["有明显的创新特色"],
-          "caution": "是评审经验；标题仍须体现核心创新点与课程名",
-          "source_locator": "01_评委判据与赛制.md §二标准2（26:41-27:07）"
+          "caution": "与'一个主线'结论一致；不得堆砌工具清单",
+          "source_locator": "01_评委判据与赛制.md §五.7（76:50-78:21）"
         },
         {
           "id": "liu_ai_track_data",
@@ -135,26 +249,39 @@
           "original": "一流课程命中率33.33%、教学成果奖命中率33.33%（新工科64.29%）；特等奖零重合",
           "timestamp": "15:10-16:00 / 16:30-17:20",
           "supports_dimensions": ["有明确的问题导向"],
-          "caution": "讲者本人统计，样本与口径来自其工作坊，不得写成官方数据或据此计算获奖概率",
-          "source_locator": "01_评委判据与赛制.md §四往届获奖数据；04_AI教学创新迁移清单.md judge_insights.data_2026_6th"
+          "caution": "讲者本人统计，不得写成官方数据或据此计算获奖概率",
+          "source_locator": "01_评委判据与赛制.md §四往届获奖数据"
         }
       ]
     }
   ],
   "sixth_edition_reports": [
     {
-      "id": "shi_tuo_self_dev",
-      "teacher": "石拓",
-      "school": "北京警察学院",
-      "course": "公安情报学概论",
+      "id": "songxiaofei_training",
+      "teacher": "宋晓菲",
+      "school": "浙江工业大学",
+      "course": "酶工程",
+      "award": "第六届AI赛道一等奖（地方）",
+      "practice": "AI×SET能力模型；课前小试—课堂中试—课后大试；学期初/中/末三阶段采数据分别服务考核权重/个性化建议/教学迭代；六顶思考帽研讨",
+      "quote": "比拼的不是材料包装堆砌，而是长期扎根课堂的真实积累；真诚是打动评委的关键",
+      "supports_dimensions": ["有明确的问题导向", "有明显的创新特色", "关注技术应用于教学", "注重创新成果的辐射"],
+      "source_url": "https://jwc.nbu.edu.cn/info/1151/18396.htm",
+      "source_nature": "宁波大学教务处培训报道（获奖者本人专题报告）",
+      "verification": "verified",
+      "caution": "iGEM金奖等是学生成果，不能自动归因课程；引用须标'往届公开报道，不是你的课程事实'"
+    },
+    {
+      "id": "lijing_award",
+      "teacher": "李静",
+      "school": "郑州大学",
+      "course": "流体力学",
       "award": "第六届AI赛道一等奖（部属）",
-      "practice": "涉密背景下自主研发：团队自建知识库、多Agent联动；MoE规则引擎让AI只引导不代答；纯手工20余次迭代打磨'带人味'的本子",
-      "quote": "写报告时主语应该是学生，不是AI；搞AI的人容易炫技，但AI赛道以以学生为主体为要",
-      "supports_dimensions": ["关注技术应用于教学", "有明显的创新特色", "体现课程思政特色"],
-      "source_url": "http://mp.weixin.qq.com/s?__biz=MzkwMjIxMTU0NA==&mid=2247733026&idx=2&sn=3c38d85eedd11b19a1b75f548132c8b8",
-      "source_nature": "第三方公众号（新哥聊AI）对获奖者复盘分享的转述，非逐字原文",
-      "verification": "transcribed",
-      "caution": "自主研发路线依赖团队技术能力与涉密条件，普通课程不可照搬；'带人味'指本人真实思考，不是让AI模仿人味"
+      "practice": "智能体'纳小维'为中枢的全流程智慧环境；基础—工程—智能—前沿四阶递进；师生与AI共创资源；'双智协同四环联动'",
+      "supports_dimensions": ["有明显的创新特色", "关注技术应用于教学"],
+      "source_url": "https://www5.zzu.edu.cn/tmgc/info/1045/6405.htm",
+      "source_nature": "郑州大学官网获奖报道",
+      "verification": "verified",
+      "caution": "获奖报道非报告全文；具体机制细节以本人36场分享与校方报道为准，不得自行扩写成效"
     },
     {
       "id": "xin_huijuan_platform",
@@ -168,7 +295,21 @@
       "source_url": "http://www.jyb.cn/rmtzgjyb/202609/t20260909_2111518818.html",
       "source_nature": "中国教育新闻网现场报道 + 第三方复盘转述",
       "verification": "verified",
-      "caution": "与36场叶齐/汪琼的'找AI错'同一逻辑；成熟平台路线更可借鉴，但须写清AI使用证明"
+      "caution": "与叶齐/汪琼的'找AI错'同一逻辑；成熟平台路线更可借鉴，但须写清AI使用证明"
+    },
+    {
+      "id": "shi_tuo_self_dev",
+      "teacher": "石拓",
+      "school": "北京警察学院",
+      "course": "公安情报学概论",
+      "award": "第六届AI赛道一等奖（部属）",
+      "practice": "涉密背景下自主研发：团队自建知识库、多Agent联动；MoE规则引擎让AI只引导不代答；纯手工20余次迭代打磨'带人味'的本子",
+      "quote": "写报告时主语应该是学生，不是AI；搞AI的人容易炫技，但AI赛道以以学生为主体为要",
+      "supports_dimensions": ["关注技术应用于教学", "有明显的创新特色", "体现课程思政特色"],
+      "source_url": "http://mp.weixin.qq.com/s?__biz=MzkwMjIxMTU0NA==&mid=2247733026&idx=2&sn=3c38d85eedd11b19a1b75f548132c8b8",
+      "source_nature": "第三方公众号（新哥聊AI）对获奖者复盘分享的转述，非逐字原文",
+      "verification": "transcribed",
+      "caution": "自主研发路线依赖团队技术能力与涉密条件，普通课程不可照搬；'带人味'指本人真实思考，不是让AI模仿人味"
     },
     {
       "id": "gao_yue_ai_fit",
@@ -199,34 +340,6 @@
       "caution": "AI空转是反模式，可用于报告的'问题/反思'段，不得当作已发生事实"
     },
     {
-      "id": "li_chenyu_details",
-      "teacher": "李晨瑜",
-      "school": "珠海科技学院",
-      "course": "人工智能导论",
-      "award": "第六届基础课程组二等奖 / 广东省特等奖",
-      "practice": "评分标准是备赛的'标准答案'逐条梳理；选赛道要回答'为什么一定是这个赛道'；AI幻觉逆向训练；现场汇报写逐字稿+倒计时练习；成效分清自己与团队功劳",
-      "quote": "精读文件、选准赛道是第一步；痛点一定是真问题，成效展示要分清自己与团队的功劳",
-      "supports_dimensions": ["有明确的问题导向", "注重创新成果的辐射"],
-      "source_url": "https://xhsysu.edu.cn/info/1233/16643.htm",
-      "source_nature": "广州新华学院培训报道（转述获奖者分享）",
-      "verification": "transcribed",
-      "caution": "李晨瑜非AI赛道本身（基础课程组），方法可迁移，引用须标明赛道，不得写成AI赛道获奖"
-    },
-    {
-      "id": "songxiaofei_training",
-      "teacher": "宋晓菲",
-      "school": "浙江工业大学",
-      "course": "酶工程",
-      "award": "第六届AI赛道一等奖（地方）",
-      "practice": "AI×SET能力模型；课前小试—课堂中试—课后大试；学期初/中/末三阶段采集数据分别服务考核权重/个性化建议/教学迭代；六顶思考帽研讨",
-      "quote": "比拼的不是材料包装堆砌，而是长期扎根课堂的真实积累；真诚是打动评委的关键",
-      "supports_dimensions": ["有明确的问题导向", "有明显的创新特色", "关注技术应用于教学", "注重创新成果的辐射"],
-      "source_url": "https://jwc.nbu.edu.cn/info/1151/18396.htm",
-      "source_nature": "宁波大学教务处培训报道（获奖者本人专题报告）",
-      "verification": "verified",
-      "caution": "iGEM金奖等是学生成果，不能自动归因课程；引用须标'往届公开报道，不是你的课程事实'"
-    },
-    {
       "id": "teacher_role_shift",
       "teacher": "吴锦俊/田媛/岳鹏等",
       "school": "广州中医药大学/华中师范大学/首都医科大学",
@@ -241,5 +354,5 @@
       "caution": "是现状观察与观点，不是获奖做法或评分标准；只可作问题引入，不得写成成效证据"
     }
   ],
-  "cross_link_note": "本库与 ai_playbook.json 互补：ai_playbook.json 提供跨场次打法（张静拒绝直答、辛页盲评、叶齐幻觉标注、陈春丽契约等），本库提供两场核心专家的完整方法包与第六届案例新闻。生成时两者都可引用，但不重复同一条打法。"
+  "cross_link_note": "本库与 ai_playbook.json 互补：priority_sessions 是两场AI赛道冠军课程实例（李静/宋晓菲，最优先），support_sessions 是通用方法论支撑（于歆杰/汪琼/刘学莘），sixth_edition_reports 是第六届公开报道。ai_playbook.json 提供跨场次打法（张静拒绝直答、辛页盲评、叶齐幻觉标注、陈春丽契约等）。生成时同一条打法不要重复引用。"
 }
