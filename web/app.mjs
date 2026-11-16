@@ -275,6 +275,7 @@ setInterval(()=>{if(jobs.size)syncTaskControls()},1000);
 function persistentSnapshot(){snapshotTask();return{version:1,currentTask,library:currentLibraryPath,project:{track:$('#competitionTrack').value,edition:$('#competitionEdition').value,course:$('#courseName').value},notes:workspace.exportState().notes,replay:lecturePlayer.exportState(),sessions:Object.fromEntries([...taskSessions].map(([id,s])=>[id,encodeSession(s)]))}}
 function restorePersistent(state){
  if(state?.version!==1||!state.sessions||typeof state.sessions!=='object')throw Error('不是可恢复的工作记录格式');
+ if(state.notes&&(typeof state.notes!=='object'||Array.isArray(state.notes)||Object.values(state.notes).some(v=>!v||typeof v!=='object'||Array.isArray(v)||(v.selected&&!Array.isArray(v.selected))||(v.page!==undefined&&(!Number.isInteger(v.page)||v.page<0)))))throw Error('工作区标注格式无效，原工作未改变');
  const parsed=new Map();for(const [id,s] of Object.entries(state.sessions)){if(!tasks.some(t=>t.id===id))continue;parsed.set(id,decodeSession(s))}
  if(jobs.size||importing)throw Error('请先完成或取消当前运行中的任务，再恢复记录');
  taskSessions.clear();for(const [id,s] of parsed){if(state.library!==currentLibraryPath){s.history=[];if(s.uploaded)s.uploaded.reviewSignature='';s.status='记录来自另一资料库；展示历史，但新问题不会沿用旧上下文。'}taskSessions.set(id,s)}

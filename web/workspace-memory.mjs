@@ -7,6 +7,7 @@ export function decodeSession(s){
  if(!s||typeof s!=='object'||!Array.isArray(s.conversation)||!Array.isArray(s.reviewResults))throw Error('工作区记录结构无效');
  if(!Array.isArray(s.history||[])||!Array.isArray(s.reviewItems||[])||s.reviewResults.some(x=>!Array.isArray(x)||typeof x[0]!=='string'||!Array.isArray(x[1])))throw Error('审阅进度结构无效');
  if(s.uploaded&&(!Array.isArray(s.uploaded.units)||s.uploaded.units.some(u=>typeof u.text!=='string')))throw Error('材料快照无效');
+ if(s.reviewResults.some(([,items])=>items.some(p=>!p||typeof p.id!=='string'||typeof p.comment!=='string')))throw Error('审阅条目结构无效');
  const out={...s,reviewResults:new Map(s.reviewResults),conversation:s.conversation.map(cleanTurn)};
  if(s.jobState==='running'){out.jobState='interrupted';out.status='上次任务中断，已完成批次已保留；点击审阅继续剩余批次，不会自动重发请求。'}
  for(const t of out.conversation)if(t.status==='generating')t.status='interrupted';return out;

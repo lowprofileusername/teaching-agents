@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {encodeSession,decodeSession,createWorkspaceMemory} from '../web/workspace-memory.mjs';
 const source={jobState:'running',conversation:[{role:'assistant',text:'已完成部分',status:'generating'}],reviewResults:new Map([['p1',[{id:'p1',comment:'保留'}]]]),uploaded:{name:'报告',units:[{no:1,text:'原文'}]},cfg:{key:'secret'},reviewFile:{private:'source'}};
 const encoded=encodeSession(source);assert(!JSON.stringify(encoded).includes('secret'));assert(!('reviewFile'in encoded));const decoded=decodeSession(JSON.parse(JSON.stringify(encoded)));assert.equal(decoded.jobState,'interrupted');assert.equal(decoded.conversation[0].status,'interrupted');assert(decoded.reviewResults.has('p1'));
+assert.throws(()=>decodeSession({...encoded,reviewResults:[['p1',[null]]]}),/审阅条目/);
 let saved=null,calls=0,state={version:1,sessions:{report:encoded}},restored=null;const indicator={};
 const request=async x=>{if(x.action==='list')return{sessions:saved?[{id:saved.id}]:[]};if(x.action==='load')return saved;if(x.action==='save'){calls++;saved=JSON.parse(JSON.stringify({...x,revision:(saved?.revision||0)+1,updated:new Date().toISOString()}));return saved}};
 const m=createWorkspaceMemory({request,snapshot:()=>state,restore:s=>restored=s,indicator});await m.start(true);await m.flush();assert.equal(calls,1);await m.flush();assert.equal(calls,1);state={...state,project:{course:'新课程'}};await m.flush();assert.equal(calls,2);
