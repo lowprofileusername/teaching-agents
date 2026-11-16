@@ -23,10 +23,15 @@ func startDesktop(a *App, link string) error {
 	if e := os.MkdirAll(cache, 0700); e != nil {
 		return fmt.Errorf("无法创建原生窗口缓存目录：%w", e)
 	}
+	windows := application.WindowsOptions{WebviewUserDataPath: cache}
+	// Native QA only: do not expose a debugging port in normal installations.
+	if os.Getenv("TEACHER_QA_DIR") != "" {
+		windows.AdditionalBrowserArgs = []string{"--remote-debugging-port=9222"}
+	}
 	host := application.New(application.Options{
 		Name: "教学创新备赛工作台", Description: "报告、课堂实录与教学汇报审阅",
 		Mac:     application.MacOptions{ApplicationShouldTerminateAfterLastWindowClosed: true},
-		Windows: application.WindowsOptions{WebviewUserDataPath: cache},
+		Windows: windows,
 	})
 	var mu sync.Mutex
 	var pet *application.WebviewWindow
