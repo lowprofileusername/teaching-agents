@@ -30,6 +30,7 @@
 | **`ai_award_cases_6th.json`** | 第六届 AI 赛道 10 个公开可核验获奖案例：核心机制、证据、来源、交叉验证、评委关注点 | 报告骨架的"结构参考"；视频策划的"可拍摄行为"参考。**不得当作用户自己的成效** |
 | **`video_index_5th_wenke.json`** | 第五届新文科 24 门课 48 个视频的直链/大小/路径索引 | 仅为"往届课堂实录的存在与可获取"证据；**不得假装已观看视频内容** |
 | `track_playbooks.json`（**待实现**） | 9 个赛道各自的可迁移打法库（来源讲者/课程、支撑维度、适用条件、警惕项），AI 赛道沿用 `ai_playbook.json` | 由阶段二任务书创建；加入 embed 后在 `generationPrompt` 按 `p.Track` 引用。未建好前不得声称"各赛道已有专属方案" |
+| **`ai_track_deep.json`**（**数据已建好，待接线**） | AI 赛道深度库：于歆杰/汪琼两场核心专家方法包 + 刘学莘赛制判据 + 第六届 7 条案例新闻，每条带 source_locator/url/nature/verification | AI 赛道专项任务书要求加入 embed+检索、生成优先引用。用户是 AI 赛道，此项优先级最高（撤回指令之后） |
 
 ### research/ — 文档（供阅读与只读检索）
 
@@ -67,6 +68,7 @@
 
 ### 阶段二（当前任务，在 `feat/ai-track-builder` 已验收能力上增量扩展）
 
+0. **【AI 赛道专项，优先级最高】** 先执行 `research/给Codex的撤回与修正指令_事实性断言核查.md`，再做 `research/给Codex的AI赛道深度融入任务书.md`：把已建好的 `knowledge/ai_track_deep.json` 接入 embed/检索，AI 赛道生成优先引用于歆杰/汪琼两场，第六届案例带出处标注。用户是 AI 赛道选手，此项优先于下面两项。
 1. 读 `research/给Codex的下一步增强指导_报告与PPT.md`：architect 增加 `depth:"full"` 逐段扩写；新增 `presentation-architect` 顾问生成汇报 PPT；`BuilderPlan` 增加 slides 字段与校验。**硬校验只有官方 ≤12 分钟（≤720 秒）；30 页 / 3+6+3 / 690–710 秒是经验目标，只能出 warning 不能拒绝。**
 2. 读 `research/给Codex的下一步增强指导_赛道专属方法论.md`：新建 `knowledge/track_playbooks.json`，把赛道感知从维度层推进到方法论层；**只为能回查到 36 场专家库 §六对应行的赛道写打法，新农科无对应场次必须留空标 `no_traceable_source`，不许编造或跨赛道改名顶替**；AI 赛道继续用 `ai_playbook.json` 不重复；architect 生成时按赛道引用 1–2 个打法并标注"迁移建议"。
 3. 两份任务可合并一个分支一次提交；**不得回退**已通过的 10 PASS 与 `TestBuilderTrackSwitchAndTwoVideoRequirements`。
