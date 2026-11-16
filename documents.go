@@ -502,5 +502,10 @@ func (a *App) parseMaterial(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	jsonOut(w, 200, map[string]any{"name": name, "paragraphs": paragraphs, "units": units, "empty_units": empty, "scope": "原生文字提取；未读取图片中的字、SmartArt、母版文字、备注、图表曲线或版式；Word按段落组，PPTX按实际幻灯片顺序。文件仅在内存解析，不保存原文件。"})
+	sourceID, e := a.saveSource(b, strings.ToLower(path.Ext(name)))
+	if e != nil {
+		fail(w, 400, "无法保存材料原件："+e.Error())
+		return
+	}
+	jsonOut(w, 200, map[string]any{"source_id": sourceID, "ext": strings.ToLower(path.Ext(name)), "name": name, "paragraphs": paragraphs, "units": units, "empty_units": empty, "scope": "原生文字提取；未读取图片中的字、SmartArt、母版文字、备注、图表曲线或版式；Word按段落组，PPTX按实际幻灯片顺序。原件按哈希保存到配置目录material_sources，用于图片审阅和Word导出；原文件不覆盖。"})
 }

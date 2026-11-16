@@ -10,7 +10,7 @@ export function exportConversation(turns,format,{library='',includeReasoning=fal
  const records=turns.map(cleanTurn).map(t=>({...t,reasoning:includeReasoning?t.reasoning:''}));
  if(format==='json')return JSON.stringify({version:1,exported_at:new Date().toISOString(),library,turns:records},null,2);
  const lines=[format==='md'?'# 教学资料助手对话':'教学资料助手对话',`资料库：${library}`,'说明：AI回答不是原始证据；来源条目是检索命中，不代表全部被引用。',''];
- for(const t of records){lines.push(`${format==='md'?'## ':''}${t.role==='user'?'用户':t.expert_name?'参考'+t.expert_name+'视角（AI）':'资料助手'}${t.status==='reviewed_text'?'（AI文字审阅）':t.status==='structure_review'?'（结构建议，未修改原文件）':t.status==='local_reply'?'（工作台回应）':t.status!=='complete'?`（${t.status}，非完整回答）`:''}`,t.request_scope?'本次范围：'+t.request_scope:'',t.text,'');
+ for(const t of records){lines.push(`${format==='md'?'## ':''}${t.role==='user'?'用户':t.expert_name?'参考'+t.expert_name+'视角（AI）':'资料助手'}${t.status==='visual_review'?'（AI图片审阅）':t.status==='reviewed_text'?'（AI文字审阅）':t.status==='structure_review'?'（结构建议，未修改原文件）':t.status==='local_reply'?'（工作台回应）':t.status!=='complete'?`（${t.status}，非完整回答）`:''}`,t.request_scope?'本次范围：'+t.request_scope:'',t.text,'');
   for(const r of t.review_attempts||[])lines.push('未通过校验的模型原始返回'+(r.truncated?'（截断）':'')+'：',r.answer,'');
   if(t.reasoning)lines.push('接口返回的思考文本（非事实证据）：',t.reasoning,'');
   if(t.sources.length){lines.push('检索来源：');for(const s of t.sources)lines.push(`- ${s.teacher} · ${s.id} · ${s.title}${s.occurrences.length?' · '+s.occurrences.map(x=>`${x.t0}–${x.t1}秒`).join('；'):''}`);lines.push('');}

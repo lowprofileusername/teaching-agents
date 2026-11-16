@@ -1,7 +1,7 @@
 // Every modal has a permanently visible close action. Native dialog semantics
 // provide focus trapping, Escape, and focus restoration; closing never cancels jobs.
 export function installDialogChrome(){
- const closes={workspaceHistoryDialog:'workspaceHistoryClose',settings:'settingsClose',imageDialog:'imageClose',exportDialog:'exportClose',expertDialog:'expertClose',voiceDialog:'voiceClose',teacherProfileDialog:'teacherProfileClose'};
+ const closes={wordExportDialog:'wordExportClose',workspaceHistoryDialog:'workspaceHistoryClose',settings:'settingsClose',imageDialog:'imageClose',exportDialog:'exportClose',expertDialog:'expertClose',voiceDialog:'voiceClose',teacherProfileDialog:'teacherProfileClose'};
  for(const dialog of document.querySelectorAll('dialog')){
   const close=document.getElementById(closes[dialog.id]);if(!close)continue;
   const title=dialog.querySelector('h2')||Object.assign(document.createElement('h2'),{textContent:'原页预览'});

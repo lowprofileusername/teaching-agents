@@ -22,13 +22,13 @@ export function reviewBatches(sections,maxChars=1000,maxParts=6){
 }
 // Extract balanced JSON objects without changing strings or guessing missing text.
 // Ignore provider think blocks, and refuse ambiguous multiple review objects.
-export function parseStructuredJSON(answer,key="items"){
+export function parseStructuredJSON(answer,key="items",arrayOnly=true){
  const raw=String(answer||'').replace(/<think>[\s\S]*?<\/think>/gi,'').trim();
  try{return JSON.parse(raw)}catch{}
  const found=[];let depth=0,start=-1,quote=false,escape=false;
  for(let i=0;i<raw.length;i++){const c=raw[i];if(depth===0){if(c==='{'){start=i;depth=1;quote=false;escape=false}continue}
   if(quote){if(escape)escape=false;else if(c==='\\')escape=true;else if(c==='"')quote=false;continue}
-  if(c==='"')quote=true;else if(c==='{')depth++;else if(c==='}'&&--depth===0){try{const x=JSON.parse(raw.slice(start,i+1));if(Array.isArray(x?.[key]))found.push(x)}catch{}}
+  if(c==='"')quote=true;else if(c==='{')depth++;else if(c==='}'&&--depth===0){try{const x=JSON.parse(raw.slice(start,i+1));if(arrayOnly?Array.isArray(x?.[key]):x&&Object.hasOwn(x,key))found.push(x)}catch{}}
  }
  if(found.length!==1)throw Error(found.length?'模型返回了多份审阅结果，无法确定采用哪份。':'模型没有返回完整的审阅数据。');return found[0];
 }

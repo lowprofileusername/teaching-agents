@@ -34,6 +34,7 @@ jobs:
           node tests/workspace-data.mjs
           node tests/workspace-memory.mjs
           node tests/document-review.mjs
+          node tests/material-visuals.mjs
           node tests/lecture-timeline.mjs
       - name: Build two original teachers
         shell: pwsh
