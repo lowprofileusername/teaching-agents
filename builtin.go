@@ -106,26 +106,28 @@ func (a *App) builtinRules(w http.ResponseWriter, r *http.Request) {
 	jsonOut(w, 200, builtinState.catalog)
 }
 func builtinRuleSearch(ctx context.Context, q string) []map[string]any {
-	if queryEdition(q) == 7 && queryAI(q) {
-		return nil
-	}
 	db, e := builtinLibrary()
 	if e != nil {
 		return []map[string]any{}
 	}
 	track := ""
+	first := len(q) + 1
 	for _, g := range builtinState.catalog.Groups {
 		for _, t := range g.Tracks {
-			if strings.Contains(q, t) {
+			if i := strings.Index(q, t); i >= 0 && i < first {
+				first = i
 				track = t
 			}
 		}
 	}
-	if strings.Contains(strings.ToLower(q), "ai赛道") {
+	if track == "" && strings.Contains(normalizedQuery(q), "ai赛道") {
 		track = "人工智能"
 	}
 	if strings.Contains(q, "未选赛道") {
 		track = ""
+	}
+	if queryEdition(q) == 7 && (track == "人工智能" || track == "" && queryAI(q)) {
+		return nil
 	}
 	part := ""
 	if strings.Contains(q, "课堂") || strings.Contains(q, "实录") {

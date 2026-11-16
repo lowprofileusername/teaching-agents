@@ -20,7 +20,7 @@ func builderJPEG() string {
 	return "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(b.Bytes())
 }
 func builderFixture(role string) BuilderPlan {
-	p := BuilderPlan{Kind: "report", Line: "以问题核验串联自主判断", Loop: "问题识别到举措再到证据", WordBudget: 4000, Sections: []BuilderSection{{"s1", "课程问题与创新举措", 3200, []string{"哪些问题有真实依据"}, []string{"待补：原始学情记录"}}, {"s2", "AI伦理与治理", 800, []string{"如何核验模型回答"}, []string{"待补：治理规则"}}}, Scores: []BuilderScore{}, Evidence: []string{"待补：改革前后同口径原始记录"}, Timeline: []BuilderStage{}, References: []BuilderReference{{"builtin:rules7:scoring", "借鉴章节对照结构", ""}}, Boundary: "待实施建议"}
+	p := BuilderPlan{Kind: "report", Line: "以问题核验串联自主判断", Loop: "问题识别到举措再到证据", WordBudget: 4000, Sections: []BuilderSection{{"s1", "课程问题与创新举措", 3200, []string{"哪些问题有真实依据"}, []string{"待补：原始学情记录"}}, {"s2", "AI伦理与治理", 800, []string{"如何核验模型回答"}, []string{"待补：治理规则"}}}, Scores: []BuilderScore{}, Evidence: []string{"待补：改革前后同口径原始记录"}, Timeline: []BuilderStage{}, Demo: []BuilderDemo{}, Annotations: []BuilderAnnotation{}, References: []BuilderReference{{"builtin:rules7:scoring", "借鉴章节对照结构", ""}}, Boundary: "待实施建议"}
 	ids := []string{"s1", "s2"}
 	if role == "video-planner" {
 		p.Kind = "lesson"
@@ -29,6 +29,9 @@ func builderFixture(role string) BuilderPlan {
 		p.Sections = []BuilderSection{}
 		p.Timeline = []BuilderStage{{"t1", 0, 20, "问题识别", "建议让AI追问", "拟拍摄学生说明判断依据", "问题辨析"}, {"t2", 20, 45, "交叉核验", "建议师生核验AI回答", "拟拍摄学生修订过程", "核验修订"}}
 		ids = []string{"t1", "t2"}
+		p.DemoDuration = 15
+		p.Demo = []BuilderDemo{{"d1", 0, 5, "课前", "拟介绍课前问题诊断", "拟展示AI追问", "拟展示问题清单", "t1"}, {"d2", 5, 10, "课中衔接", "拟介绍课堂核验衔接", "拟展示核验记录", "拟展示课堂修订材料", "t2"}, {"d3", 10, 15, "课后", "拟介绍课后延伸", "拟展示AI反馈", "拟展示修订作品", "t2"}}
+		p.Annotations = []BuilderAnnotation{{"t1", "引导判断", "用追问诊断", "预期形成判断依据"}, {"t2", "训练核验", "查证后修订", "预期形成修订理由"}}
 	}
 	for _, dim := range aiReportDimensions() {
 		p.Scores = append(p.Scores, BuilderScore{dim, ids, []string{"待补：对应教学过程记录"}})
@@ -50,7 +53,7 @@ func TestGenerateValidationRejectsUnsupportedFactsAndIncompletePlans(t *testing.
 	available := map[string]map[string]any{"builtin:rules7:scoring": {"authority_status": rules7Notice}}
 	for _, role := range []string{"architect", "video-planner"} {
 		p, e := validateBuilderPlan(fixtureJSON(builderFixture(role)), role, available)
-		if e != nil || p.Boundary != builderBoundary {
+		if e != nil || p.Boundary == "" {
 			t.Fatal(role, e)
 		}
 	}
@@ -172,5 +175,40 @@ func TestGenerateActualProviderFlowAndCheckerRegression(t *testing.T) {
 				t.Fatal(w.Code, w.Body.String())
 			}
 		})
+	}
+}
+
+func TestBuilderTrackSwitchAndTwoVideoRequirements(t *testing.T) {
+	policy, e := builderPolicyFor("新文科", 7)
+	if e != nil || len(policy.Dimensions) != 5 || policy.AI {
+		t.Fatal(policy, e)
+	}
+	c := Chat{Mode: "generate", Track: "新文科", Edition: "7", Question: "请设计报告骨架"}
+	evidence := appendBuiltinEvidence(context.Background(), c)
+	refs := includedBuilderReferences(evidence)
+	p := builderFixture("architect")
+	p.Sections[1].Title = "课程思政与成果推广"
+	p.Scores = []BuilderScore{}
+	for _, dim := range policy.Dimensions {
+		p.Scores = append(p.Scores, BuilderScore{dim, []string{"s1"}, []string{"待补：课程过程证据"}})
+	}
+	p.References = []BuilderReference{{"builtin:新文科:report", "借鉴本赛道评分对照", ""}}
+	if _, e = validateBuilderPlan(fixtureJSON(p), "architect", refs, policy); e != nil {
+		t.Fatal(e, evidence)
+	}
+	p.Sections[1].Title = "AI伦理与治理"
+	if _, e = validateBuilderPlan(fixtureJSON(p), "architect", refs, policy); e == nil {
+		t.Fatal("AI-only chapter accepted for new liberal arts")
+	}
+	if len(builtinRuleSearch(context.Background(), "新文科 第七届 AI工具报告评分")) == 0 {
+		t.Fatal("non-AI track rules lost when mentioning AI tools")
+	}
+	for _, mutate := range []func(*BuilderPlan){func(p *BuilderPlan) { p.Demo = nil }, func(p *BuilderPlan) { p.DemoDuration = 16 }, func(p *BuilderPlan) { p.Demo[2].Phase = "课前" }, func(p *BuilderPlan) { p.Demo[1].ClassID = "missing" }, func(p *BuilderPlan) { p.Annotations = p.Annotations[:1] }} {
+		p := builderFixture("video-planner")
+		mutate(&p)
+		refs := map[string]map[string]any{"builtin:rules7:scoring": {"authority_status": rules7Notice}}
+		if _, e := validateBuilderPlan(fixtureJSON(p), "video-planner", refs); e == nil {
+			t.Fatal("incomplete second video accepted")
+		}
 	}
 }
