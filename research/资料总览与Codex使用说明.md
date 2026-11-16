@@ -2,7 +2,9 @@
 
 > 本文件是仓库研究资料的**总入口**。Codex / 开发者请先读这份，再决定改哪里。
 > 整理时间：2026-11-16。所有资料由 AI 助手联网检索 + 用户本地 36 场专家视频库整理，非官方标准。
-> **状态提醒（2026-11-16）**：已发布的 v0.4.8 只包含"新老师项目与工作区重置"，**未执行本仓库描述的 AI 赛道 builder 改造**（验收脚本 0 PASS）。Codex 已按旧指令开工做到一半时，用 `给Codex的增量修正指令_做到一半用.md`（当前有效任务书）；尚未开工则用 `给Codex的返工指令_可直接粘贴.md`。
+> **状态提醒（2026-11-17 更新）**：首批 AI builder 改造已在 Codex 分支 `feat/ai-track-builder`（commit `cc86c63`）落地并通过验收（脚本 10 PASS / 0 FAIL / 2 个已确认误报，macOS + Windows CI 均 success），**尚未合并 main、尚未发新版本**；已发布的 v0.4.8 只是"新老师项目与工作区重置"，不含 builder 能力。
+> **当前阶段任务书**：`给Codex的下一步增强指导_报告与PPT.md`（报告逐段扩写 + presentation-architect 生成 PPT）和 `给Codex的下一步增强指导_赛道专属方法论.md`（新建 `track_playbooks.json`，各赛道引用真实专家打法）。两份可合并一次发，也可分开发。
+> `给Codex的增量修正指令_做到一半用.md` 与 `给Codex的返工指令_可直接粘贴.md` 已完成历史使命，仅留档，不要重复执行。
 
 ---
 
@@ -26,6 +28,7 @@
 | **`ai_playbook.json`** | 36 场专家 AI 教学打法库：11 个可迁移打法 + 评委洞察，每条含来源专家、支撑评分维度、需采集证据 | `architect` / `video-planner` 生成时引用；`ai` 顾问检查时对照 |
 | **`ai_award_cases_6th.json`** | 第六届 AI 赛道 10 个公开可核验获奖案例：核心机制、证据、来源、交叉验证、评委关注点 | 报告骨架的"结构参考"；视频策划的"可拍摄行为"参考。**不得当作用户自己的成效** |
 | **`video_index_5th_wenke.json`** | 第五届新文科 24 门课 48 个视频的直链/大小/路径索引 | 仅为"往届课堂实录的存在与可获取"证据；**不得假装已观看视频内容** |
+| `track_playbooks.json`（**待实现**） | 9 个赛道各自的可迁移打法库（来源讲者/课程、支撑维度、适用条件、警惕项），AI 赛道沿用 `ai_playbook.json` | 由阶段二任务书创建；加入 embed 后在 `generationPrompt` 按 `p.Track` 引用。未建好前不得声称"各赛道已有专属方案" |
 
 ### research/ — 文档（供阅读与只读检索）
 
@@ -59,7 +62,16 @@
 
 ---
 
-## 3. Codex 实施顺序（照这个做）
+## 3. Codex 实施顺序
+
+### 阶段二（当前任务，在 `feat/ai-track-builder` 已验收能力上增量扩展）
+
+1. 读 `research/给Codex的下一步增强指导_报告与PPT.md`：architect 增加 `depth:"full"` 逐段扩写；新增 `presentation-architect` 顾问生成 12 分钟汇报 PPT（30 页 / 3+6+3 / 11 分 30 秒收尾）；`BuilderPlan` 增加 slides 字段与校验。
+2. 读 `research/给Codex的下一步增强指导_赛道专属方法论.md`：新建 `knowledge/track_playbooks.json`，把赛道感知从维度层推进到方法论层；9 个赛道各配可追溯打法，AI 赛道继续用 `ai_playbook.json` 不重复；architect 生成时按赛道引用 1–2 个打法并标注"迁移建议"。
+3. 两份任务可合并一个分支一次提交；**不得回退**已通过的 10 PASS 与 `TestBuilderTrackSwitchAndTwoVideoRequirements`。
+4. 交付时给出分支名/PR、改动文件、embed 与检索路径、各赛道引用的打法清单、测试命令与结果。
+
+### 阶段一（已完成，留档参考）
 
 1. **先读当前有效任务书**：Codex 已做到一半 → `research/给Codex的增量修正指令_做到一半用.md`；尚未开工 → `research/给Codex的返工指令_可直接粘贴.md`。严格按四步实施（内置资料 → 2 个 builder 顾问 → generate 模式 → 回归测试 + 分支 PR）。原始任务书 `给Codex的提示词.md` 仅供背景参考。
 2. **内置三个新 JSON**：改 `builtin.go` 的 `//go:embed`，并参照 `builtinLibrary()` 的只读加载 + `builtinRuleSearch()` 的检索方式接入。注意四个 JSON 的届次/性质不同，回答要能区分：
