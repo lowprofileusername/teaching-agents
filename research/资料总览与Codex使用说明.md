@@ -68,7 +68,7 @@
 
 ### 阶段二（当前任务，在 `feat/ai-track-builder` 已验收能力上增量扩展）
 
-0. **【AI 赛道专项，优先级最高】** 先执行 `research/给Codex的撤回与修正指令_事实性断言核查.md`，再做 `research/给Codex的AI赛道深度融入任务书.md`：把已建好的 `knowledge/ai_track_deep.json` 接入 embed/检索，AI 赛道生成优先引用**李静/宋晓菲两场 AI 赛道冠军课程实例**（于歆杰/汪琼/刘学莘作方法论支撑），第六届案例带出处标注。用户是 AI 赛道选手，此项优先于下面两项。
+0. **【AI 赛道专项，优先级最高】** 先执行 `research/给Codex的撤回与修正指令_事实性断言核查.md`，再按 `research/独立自查提示词_核验助手产出与Codex执行前检查.md` 的提示词 B 自查一遍（逐条核对 source_locator 到 `research/source-evidence/`，有 FAIL 先报告不要动手），全部 PASS 后才做 `research/给Codex的AI赛道深度融入任务书.md`：把 `knowledge/ai_track_deep.json` 接入 embed/检索，AI 赛道生成优先引用**李静/宋晓菲两场 AI 赛道冠军课程实例**（于歆杰/汪琼/刘学莘作方法论支撑），第六届案例带出处标注。用户是 AI 赛道选手，此项优先于下面两项。
 1. 读 `research/给Codex的下一步增强指导_报告与PPT.md`：architect 增加 `depth:"full"` 逐段扩写；新增 `presentation-architect` 顾问生成汇报 PPT；`BuilderPlan` 增加 slides 字段与校验。**硬校验只有官方 ≤12 分钟（≤720 秒）；30 页 / 3+6+3 / 690–710 秒是经验目标，只能出 warning 不能拒绝。**
 2. 读 `research/给Codex的下一步增强指导_赛道专属方法论.md`：新建 `knowledge/track_playbooks.json`，把赛道感知从维度层推进到方法论层；**只为能回查到 36 场专家库 §六对应行的赛道写打法，新农科无对应场次必须留空标 `no_traceable_source`，不许编造或跨赛道改名顶替**；AI 赛道继续用 `ai_playbook.json` 不重复；architect 生成时按赛道引用 1–2 个打法并标注"迁移建议"。
 3. 两份任务可合并一个分支一次提交；**不得回退**已通过的 10 PASS 与 `TestBuilderTrackSwitchAndTwoVideoRequirements`。
