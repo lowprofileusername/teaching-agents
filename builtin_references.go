@@ -111,7 +111,19 @@ func installBuiltinReferences(db *sql.DB) error {
 		return e
 	}
 	for _, c := range objects(cases["cases"]) {
-		r := builtinReference{ID: "builtin:case:" + stringField(c, "id"), Kind: "award_case", Edition: 6, Title: stringField(c, "teacher") + " · " + stringField(c, "course") + " · " + stringField(c, "award") + " · " + stringField(c, "group"), Text: caseNotice + "\n" + referenceText(c) + "\n本汇编未逐条附报道URL，机制细节引用需回查配套来源文档；不把获奖名单当作机制的逐项证明。", Authority: caseNotice + " 来源组别：" + stringField(c, "group"), SourceFile: "knowledge/ai_award_cases_6th.json", SourceURL: repoSource("research/AI赛道专题资料_第六届获奖案例与36场专家方法.md"), Publisher: "高校/赛事公开报道的AI汇编"}
+		caseURL := stringField(c, "source_url")
+		if caseURL == "" {
+			caseURL = repoSource("research/AI赛道专题资料_第六届获奖案例与36场专家方法.md")
+		}
+		ver := stringField(c, "verification")
+		verNote := "未逐条核验，仅作方向性参考，不得输出其中具体数字、百分比或'某校某人说'。"
+		switch ver {
+		case "verified":
+			verNote = "来源已核验（见source_url）；机制细节以该来源为准，仍属往届公开报道，不是你的课程事实。"
+		case "transcribed":
+			verNote = "第三方/转述来源，非逐字原文；不得写成获奖者原话，引用标'据公开报道/复盘转述'。"
+		}
+		r := builtinReference{ID: "builtin:case:" + stringField(c, "id"), Kind: "award_case", Edition: 6, Title: stringField(c, "teacher") + " · " + stringField(c, "course") + " · " + stringField(c, "award") + " · " + stringField(c, "group"), Text: caseNotice + "\n" + referenceText(c) + "\n" + verNote, Authority: caseNotice + " 来源组别：" + stringField(c, "group") + " 核验状态：" + ver, SourceFile: "knowledge/ai_award_cases_6th.json", SourceURL: caseURL, Publisher: "高校/赛事公开报道的AI汇编"}
 		if e := add(r); e != nil {
 			return e
 		}

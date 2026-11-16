@@ -212,3 +212,87 @@ func TestBuilderTrackSwitchAndTwoVideoRequirements(t *testing.T) {
 		}
 	}
 }
+
+// TestBuilderAuditRetractionRegressions covers the five retractions in
+// research/给Codex的撤回与修正指令_事实性断言核查.md (independent audit 2026-11-17):
+// ethics landing instead of mandatory independent chapter; 40–50 minute lessons;
+// 课前/课后 required with 课中衔接 optional; annotations only for AI segments.
+func TestBuilderAuditRetractionRegressions(t *testing.T) {
+	available := map[string]map[string]any{"builtin:rules7:scoring": {"authority_status": rules7Notice}}
+
+	// AI track: ethics landing inside another chapter, no independent chapter → pass.
+	p := builderFixture("architect")
+	p.Sections[1].Title = "课程思政与成果推广"
+	p.Sections[1].Questions = []string{"如何引导学生负责任地使用AI并留痕"}
+	if _, e := validateBuilderPlan(fixtureJSON(p), "architect", available); e != nil {
+		t.Fatal("ethics landing without independent chapter rejected:", e)
+	}
+	// AI track without any ethics landing → reject.
+	p = builderFixture("architect")
+	p.Sections[1].Title = "普通建议"
+	p.Sections[1].Questions = []string{"如何组织课堂"}
+	if _, e := validateBuilderPlan(fixtureJSON(p), "architect", available); e == nil {
+		t.Fatal("AI plan without ethics landing accepted")
+	}
+
+	// 40/50 minute lessons pass; 39/51 rejected.
+	for _, dur := range []int{40, 50} {
+		p = builderFixture("video-planner")
+		p.Duration = dur
+		p.Timeline[1].End = dur
+		if _, e := validateBuilderPlan(fixtureJSON(p), "video-planner", available); e != nil {
+			t.Fatalf("%d-minute lesson rejected: %v", dur, e)
+		}
+	}
+	for _, dur := range []int{39, 51} {
+		p = builderFixture("video-planner")
+		p.Duration = dur
+		p.Timeline[1].End = dur
+		if _, e := validateBuilderPlan(fixtureJSON(p), "video-planner", available); e == nil {
+			t.Fatalf("%d-minute lesson accepted", dur)
+		}
+	}
+
+	// Demo without 课中衔接 passes; missing 课前 or 课后 rejected.
+	p = builderFixture("video-planner")
+	p.Demo = []BuilderDemo{{"d1", 0, 7, "课前", "拟介绍课前问题诊断", "拟展示AI追问", "拟展示问题清单", "t1"}, {"d2", 7, 15, "课后", "拟介绍课后延伸", "拟展示AI反馈", "拟展示修订作品", "t2"}}
+	if _, e := validateBuilderPlan(fixtureJSON(p), "video-planner", available); e != nil {
+		t.Fatal("two-phase demo rejected:", e)
+	}
+	for _, phase := range []string{"课前", "课后"} {
+		p = builderFixture("video-planner")
+		p.Demo = []BuilderDemo{{"d1", 0, 7, phase, "拟介绍环节设计", "拟展示AI动作", "拟展示学生产物", "t1"}, {"d2", 7, 15, "课中衔接", "拟介绍课堂衔接", "拟展示核验记录", "拟展示课堂材料", "t2"}}
+		if _, e := validateBuilderPlan(fixtureJSON(p), "video-planner", available); e == nil {
+			t.Fatalf("demo missing %s accepted", phase)
+		}
+	}
+
+	// Segment without AI action needs no annotation; AI segment missing annotation rejected.
+	p = builderFixture("video-planner")
+	p.Timeline[1].AI = ""
+	p.Annotations = p.Annotations[:1]
+	if _, e := validateBuilderPlan(fixtureJSON(p), "video-planner", available); e != nil {
+		t.Fatal("no-AI segment without annotation rejected:", e)
+	}
+	p = builderFixture("video-planner")
+	p.Annotations = p.Annotations[:1]
+	if _, e := validateBuilderPlan(fixtureJSON(p), "video-planner", available); e == nil {
+		t.Fatal("AI segment missing annotation accepted")
+	}
+
+	// Prompts carry the corrected specs and case-verification discipline.
+	prompt := generationPrompt("video-planner", 7)
+	for _, s := range []string{"40–50", "课前、课后", "课中衔接段，可选", "有AI介入", "unverified", "transcribed"} {
+		if !strings.Contains(prompt, s) {
+			t.Errorf("prompt missing %q", s)
+		}
+	}
+	for _, s := range []string{"从0到45", "三类phase", "课堂每段提供"} {
+		if strings.Contains(prompt, s) {
+			t.Errorf("prompt still contains retracted rule %q", s)
+		}
+	}
+	if strings.Contains(generationPrompt("architect", 7), "独立设置AI伦理与治理章节") {
+		t.Error("architect prompt still forces independent ethics chapter")
+	}
+}

@@ -85,6 +85,13 @@ type BuilderPlan struct {
 
 var generatedFactRisk = regexp.MustCompile(`[0-9０-９%％“”「」]|百分之|[一二三四五六七八九十百千万]+(名学生|人次|人)|学生(表示|说[：:“”「」]|反馈称)|已(提升|提高|获|被|实现|采用)|获得[^。！？\n]*奖|被[^。！？\n]*(采纳|采用)`)
 
+// hasAIAction reports whether a timeline segment describes an AI intervention.
+// Empty or explicitly "no AI" segments do not require lesson-plan annotations.
+func hasAIAction(s string) bool {
+	s = strings.TrimSpace(s)
+	return s != "" && s != "无" && s != "无AI动作" && s != "本环节无AI"
+}
+
 func validateBuilderPlan(raw, role string, available map[string]map[string]any, policies ...BuilderPolicy) (BuilderPlan, error) {
 	policy, _ := builderPolicyFor("人工智能", 7)
 	if len(policies) > 0 {
@@ -130,7 +137,9 @@ func validateBuilderPlan(raw, role string, available map[string]map[string]any, 
 	texts := []string{p.Line, p.Loop}
 	ids := map[string]bool{}
 	total := 0
-	ethics := false
+	ethicsChapter := false
+	ethicsLanding := false
+	aiSegments := map[string]bool{}
 	evidenceOK := func(a []string) bool {
 		if len(a) == 0 {
 			return false
@@ -152,32 +161,48 @@ func validateBuilderPlan(raw, role string, available map[string]map[string]any, 
 		texts = append(texts, s.Title)
 		texts = append(texts, s.Questions...)
 		if strings.Contains(strings.ReplaceAll(s.Title, " ", ""), "AI伦理与治理") {
-			ethics = true
+			ethicsChapter = true
+		}
+		for _, q := range append([]string{s.Title}, s.Questions...) {
+			if strings.Contains(q, "伦理") || strings.Contains(q, "治理") || strings.Contains(q, "负责任") {
+				ethicsLanding = true
+			}
 		}
 	}
 	end := 0
 	for _, t := range p.Timeline {
-		if t.ID == "" || ids[t.ID] || t.Start != end || t.End <= t.Start || t.End > 45 {
-			return p, fmt.Errorf("课堂时刻表必须连续覆盖完整45分钟")
+		if t.ID == "" || ids[t.ID] || t.Start != end || t.End <= t.Start || t.End > 50 {
+			return p, fmt.Errorf("课堂时刻表必须连续覆盖40–50分钟的完整1学时")
 		}
 		end = t.End
 		ids[t.ID] = true
-		texts = append(texts, t.Stage, t.AI, t.Student, t.Measure)
+		aiSegments[t.ID] = hasAIAction(t.AI)
+		texts = append(texts, t.Stage, t.Student, t.Measure)
+		if strings.TrimSpace(t.AI) != "" {
+			texts = append(texts, t.AI)
+		}
 	}
 	if role == "architect" {
-		if p.Kind != "report" || p.WordBudget != policy.Budget || total != policy.Budget || (policy.AI && !ethics) || (!policy.AI && ethics) || p.Duration != 0 || len(p.Timeline) != 0 || p.DemoDuration != 0 || len(p.Demo) != 0 || len(p.Annotations) != 0 {
-			return p, fmt.Errorf("报告预算、章节或赛道要求不符（AI赛道须独立伦理治理章）")
+		if p.Kind != "report" || p.WordBudget != policy.Budget || total != policy.Budget || p.Duration != 0 || len(p.Timeline) != 0 || p.DemoDuration != 0 || len(p.Demo) != 0 || len(p.Annotations) != 0 {
+			return p, fmt.Errorf("报告预算、章节或结构不符")
+		}
+		// 官方评分原文无"独立伦理章"要求：AI赛道只要求伦理治理内容有落点（可在课程思政章节内）。
+		if policy.AI && !ethicsLanding {
+			return p, fmt.Errorf("AI赛道伦理治理/负责任使用AI内容须有落点（可置于课程思政章节，不要求独立成章）")
+		}
+		if !policy.AI && ethicsChapter {
+			return p, fmt.Errorf("非AI赛道不得设置AI专属伦理治理章节")
 		}
 	} else {
-		if p.Kind != "lesson" || p.Duration != 45 || end != 45 || p.WordBudget != 0 || len(p.Sections) != 0 {
-			return p, fmt.Errorf("视频策划需完整45分钟时刻表")
+		if p.Kind != "lesson" || p.Duration < 40 || p.Duration > 50 || end != p.Duration || p.WordBudget != 0 || len(p.Sections) != 0 {
+			return p, fmt.Errorf("视频策划需40–50分钟完整课堂时刻表")
 		}
 	}
 	if role == "video-planner" {
 		if !policy.AI {
 			return p, fmt.Errorf("双视频策划适用于人工智能赛道，请选对应赛道")
 		}
-		if p.DemoDuration <= 0 || p.DemoDuration > 15 || len(p.Demo) < 3 {
+		if p.DemoDuration <= 0 || p.DemoDuration > 15 || len(p.Demo) < 2 {
 			return p, fmt.Errorf("缺少不超过15分钟的课外说课脚本")
 		}
 		phases := map[string]bool{"课前": false, "课中衔接": false, "课后": false}
@@ -195,8 +220,9 @@ func validateBuilderPlan(raw, role string, available map[string]map[string]any, 
 			demoEnd = d.End
 			texts = append(texts, d.Narration, d.AI, d.Evidence)
 		}
-		if demoEnd != p.DemoDuration || !phases["课前"] || !phases["课中衔接"] || !phases["课后"] {
-			return p, fmt.Errorf("说课必须覆盖课前课中衔接课后，连续完整")
+		// 官方只要求说课展示课前、课后环节；课中衔接为可选写作建议，不作拒绝条件。
+		if demoEnd != p.DemoDuration || !phases["课前"] || !phases["课后"] {
+			return p, fmt.Errorf("说课必须覆盖课前、课后（课中衔接可选），连续完整")
 		}
 		annotations := map[string]bool{}
 		for _, a := range p.Annotations {
@@ -206,8 +232,11 @@ func validateBuilderPlan(raw, role string, available map[string]map[string]any, 
 			annotations[a.SegmentID] = true
 			texts = append(texts, a.Purpose, a.Operation, a.Expected)
 		}
-		if len(annotations) != len(p.Timeline) {
-			return p, fmt.Errorf("每个课堂环节需标注AI应用、设计目的、操作流程、预期效果")
+		// 官方要求教案课件标注AI应用环节四项；只覆盖有AI介入的环节，无AI动作环节不强制。
+		for id, need := range aiSegments {
+			if need && !annotations[id] {
+				return p, fmt.Errorf("有AI介入的课堂环节需补四项标注（应用环节/设计目的/操作流程/预期效果）")
+			}
 		}
 	}
 	dims := map[string]bool{}
