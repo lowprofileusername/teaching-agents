@@ -1,0 +1,153 @@
+{
+  "source": {
+    "title": "第六届全国高校教师教学创新大赛 · 人工智能赛道获奖案例库（公开报道汇总）",
+    "checked": "2026-11-16",
+    "edition": 6,
+    "track": "人工智能",
+    "nature": "各高校官网/省赛公示的公开报道整理，非获奖报告全文；仅作结构对标与方法参照",
+    "official_list": "https://www.cahe.edu.cn/site/content/19799.html",
+    "companion_doc": "research/AI赛道专题资料_第六届获奖案例与36场专家方法.md"
+  },
+  "disclaimer": "这些案例证明某种做法有先例，不能证明用户课程已有效。严禁把案例中的学生数据、成果、措辞当作用户自己的成效。第七届规则以国赛官网为准。",
+  "track_baseline": {
+    "new_in": "第六届首次新增（与实验教学并列）",
+    "groups": ["部属高校组", "地方高校组"],
+    "known_scale": "部属组一等奖3/二等奖8/三等奖12（哈工大化工学院口径）",
+    "technical_threshold": "使用国家高等教育智慧教育平台资源或工具，或依托生成式AI建设并运用教学智能体；至少覆盖6大应用情境中的2项",
+    "six_scenarios": ["学情数据采集与分析", "数字资源整合与运用", "适配的教学场景设计", "多维智能评价反馈", "师生机协同教学", "个性化学习支持"]
+  },
+  "cases": [
+    {
+      "id": "songxiaofei_enzyme_engineering",
+      "school": "浙江工业大学",
+      "course": "酶工程",
+      "teacher": "宋晓菲",
+      "award": "一等奖",
+      "group": "地方高校组",
+      "pain_points": ["内容滞后于学科前沿", "知识衔接不足", "智能教学场景欠缺", "评价方式单一"],
+      "mechanism": "AI×SET（科学/工程/技术）能力模型；课前小试—课堂中试—课后大试三阶段；自编AI融合教材+课程专属SET智能体+AI酶设计平台+工业级智能实验平台",
+      "ai_role": "智能体+平台支撑三阶段教学与个性化建议",
+      "evidence": ["iGEM金奖", "挑战杯国赛金奖", "学期初/中/末三阶段采集学习数据"],
+      "writing_lessons": ["真实问题—创新举措—改革成效完整闭环", "站位回应国家人才培养需求", "学情用真实数据", "创新理念扎根自身学科", "举措逐项回应问题且前后对比", "成效从学生/教师/课程/推广四端梳理"],
+      "playbook_link": ["six_hats_black_hat", "low_cost_tool_view"]
+    },
+    {
+      "id": "liujing-fluid_mechanics",
+      "school": "郑州大学",
+      "course": "流体力学",
+      "teacher": "李静",
+      "award": "一等奖",
+      "group": "部属高校组",
+      "pain_points": ["知识体系复杂、理实贯通难", "机理抽象、具象转化难", "评价反馈不足、因材施教难"],
+      "mechanism": "智能体'纳小维'为中枢的全流程智慧环境；基础—工程—智能—前沿四阶递进；师生与AI共创资源；双智协同四环联动",
+      "ai_role": "智能体中枢支撑全流程",
+      "evidence": ["十余年三段式演进（信息化→数字化→智能化）", "国家级一流课程建设标准"],
+      "playbook_link": ["student_build_ai"]
+    },
+    {
+      "id": "xinhuijuan-hydraulics",
+      "school": "兰州交通大学",
+      "course": "水力学",
+      "teacher": "辛惠娟",
+      "award": "一等奖",
+      "group": "地方高校组",
+      "pain_points": ["公式繁杂、理论抽象", "课后答疑滞后", "实验数据分析难度大"],
+      "mechanism": "'水力学研判官'智能体八大功能（智能答疑/习题批改/工程案例拓展/实验数据解读/个性化复习等）；配套给排水智师/造价通/创新创业导师三款智能体；'双线四阶'智慧课程",
+      "ai_role": "四款智能体构成理论学习—工程设计—经济测算—创新实践全链条",
+      "evidence": ["入选32项全国代表性教学智能体展示", "甘肃唯一国赛一等奖，实现学校零突破"],
+      "playbook_link": ["student_build_ai", "identity_binding_prompt"]
+    },
+    {
+      "id": "gaoyue-genomics",
+      "school": "哈尔滨医科大学",
+      "course": "基因组信息学",
+      "teacher": "高越",
+      "award": "一等奖",
+      "group": "地方高校组",
+      "mechanism": "'AI赋能双螺旋：基因数据驱动精准医学，成长数据赋能因材施教'；培养医理工交叉人才，探索AI在大规模因材施教中的实践价值",
+      "ai_role": "基因数据+成长数据双驱动",
+      "playbook_link": ["ai_blind_review"]
+    },
+    {
+      "id": "liuyan-information_theory",
+      "school": "国防科技大学",
+      "course": "信息论与编码基础",
+      "teacher": "刘严（雷菁、黄英、刘章孟）",
+      "award": "一等奖",
+      "group": "部属高校组",
+      "evidence": ["学校6队获3项一等奖，创校史最佳"]
+    },
+    {
+      "id": "zhangqin-automation_instrument",
+      "school": "上海海事大学",
+      "course": "自动化仪表与过程控制",
+      "teacher": "张琴",
+      "award": "二等奖",
+      "group": "地方高校组",
+      "pain_points": ["软硬件迭代快、内容同步慢", "港航工况深、课堂场景浅", "学生差异大、个性教学难", "学生依赖AI直接获取答案、独立思考弱"],
+      "mechanism": "'一谱驱动、四体协同、三阶递进、千人千径'；静动态双知识库（静态87部教材拆9万余语义块+动态每周抓取前沿经教师审核）；三维追问谱系374个节点（横轴工程链/纵轴四种学习风格/深度轴感知-推理-决策）；核心规则AI只追问不代答",
+      "ai_role": "AI只追问、不代答，引导探究而非代劳",
+      "evidence": ["备赛9个月留档4651个教学文件", "上海赛区地方组唯一入选者"],
+      "playbook_link": ["ai_refuse_direct_answer", "three_checks_benchmark", "identity_binding_prompt"]
+    },
+    {
+      "id": "zhangxingwen-analytical_chemistry",
+      "school": "哈尔滨工业大学",
+      "course": "无机与分析化学",
+      "teacher": "张兴文（吴晓宏、王磊、王威）",
+      "award": "二等奖",
+      "group": "部属高校组",
+      "pain_points": ["知识庞杂难学", "理论抽象难悟", "交叉融汇难创"],
+      "mechanism": "'数智驱动，融创共生'；自研'擘化天工—ChemSeek'化学学科大模型与专业智能体；师生共建ChemMindLab智能实训平台；AI助学/助教/助研三位一体；'教师—智能体—学生'协同融入'学—思—践—悟'全流程",
+      "ai_role": "学科大模型+智能体三位一体",
+      "evidence": ["首批国家级一流本科课程", "入选中国高等教育学会第二批高校教学智能体及应用案例库", "入选2025智能教育发展蓝皮书优秀案例"],
+      "playbook_link": ["student_build_ai"]
+    },
+    {
+      "id": "yuxingze-art_design",
+      "school": "同济大学",
+      "course": "艺术造型",
+      "teacher": "于幸泽",
+      "award": "二等奖",
+      "group": "部属高校组",
+      "mechanism": "立足智能建造国家战略；AI图像生成技术压缩纯手绘技法学时、增设人机协同创意板块；'空间认知—手绘筑基—协作入门—高阶创意'四阶；SPARK多智能体系统贯穿课前课中课后；'人机共塑'新范式",
+      "ai_role": "多智能体贯穿全流程，启迪高阶空间创意思维",
+      "evidence": ["本赛道23门获奖课中唯一艺术设计类课程"],
+      "playbook_link": ["ai_flash_error_first_lesson"]
+    },
+    {
+      "id": "xiaqin-programming",
+      "school": "西安交通大学",
+      "course": "程序设计基础",
+      "teacher": "夏秦",
+      "award": "二等奖",
+      "group": "部属高校组",
+      "mechanism": "'智融四融 知行共进，打造无界课堂'；打破物理边界、角色边界、知识边界、资源边界；行业需求牵引+学生自主学习+教师精准教学+AI全面支撑",
+      "ai_role": "AI全面支撑无界课堂",
+      "playbook_link": ["identity_binding_prompt"]
+    },
+    {
+      "id": "lichengyu-ai_introduction",
+      "school": "珠海科技学院",
+      "course": "人工智能导论",
+      "teacher": "李晨瑜",
+      "award": "二等奖",
+      "group": "基础课程中级及以下组（非AI赛道，高度相关）",
+      "pain_points": ["AI通识过浅无用与过深难懂", "重操作轻迁移", "思辨不足"],
+      "mechanism": "'AI赋能、HI主导'；'一个率先、两个突围'；独创AI幻觉逆向训练——学生先凭自身推理判断AI答案是否可信，再查权威资料反向验证；分专业知识图谱",
+      "ai_role": "AI幻觉作为批判性思维训练对象",
+      "evidence": ["智慧点击量超500万次", "教材获评省优秀教材", "省课程思政示范项目"],
+      "playbook_link": ["ai_flash_error_first_lesson", "ai_violation_annotation", "ai_governance_boundary"]
+    }
+  ],
+  "cross_validation": {
+    "conclusion": "第六届真实获奖做法与36场专家方法高度一致：AI不代答逼学生判断、有核验留痕机制、智能体是常见载体但非唯一、成效要可量化且有真实痕迹",
+    "matrix": [
+      {"consensus": "AI不代答，逼学生判断", "award_cases": ["上海海事只追问不代答", "北理工标注不符合原理处", "珠海AI幻觉逆向训练"], "playbook": ["ai_refuse_direct_answer", "six_hats_black_hat"]},
+      {"consensus": "有核验留痕机制", "award_cases": ["多校要求标注/申诉/过程记录"], "playbook": ["ai_blind_review", "ai_violation_annotation", "ai_tiered_governance"]},
+      {"consensus": "智能体是常见载体", "award_cases": ["纳小维/水力学研判官/ChemSeek/NetAgent/科小智"], "playbook": ["ai_playbook L0-L3层级模型"]},
+      {"consensus": "成效可量化+真实痕迹", "award_cases": ["4651个教学文件", "iGEM金奖", "评阅时长降40%"], "playbook": ["证据形态A/B/C/D分级"]}
+    ]
+  },
+  "judge_focus": "AI赛道评委看的是'AI改变了什么'，不是'用了AI'；新增赛道无往届经验，重点落在课程理念、教学设计逻辑、AI与专业教学融合深度。"
+}
