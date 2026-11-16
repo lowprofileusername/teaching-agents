@@ -32,6 +32,7 @@ jobs:
           node tests/speech.mjs
           node tests/teacher-animation.mjs
           node tests/workspace-data.mjs
+          node tests/workspace-memory.mjs
           node tests/document-review.mjs
           node tests/lecture-timeline.mjs
       - name: Build two original teachers

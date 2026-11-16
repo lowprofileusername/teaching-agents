@@ -66,9 +66,9 @@ func (a *App) windows(w http.ResponseWriter, r *http.Request) {
 		id = hex.EncodeToString(b)
 		desktopState.branches[id] = desktopBranch{Data: x.Snapshot, At: now}
 	}
-	link := a.origin + "/"
+	link := a.origin + "/?fresh=1"
 	if id != "" {
-		link += "?branch=" + id
+		link += "&branch=" + id
 	}
 	link += "#" + a.token
 	native := desktopState.control != nil

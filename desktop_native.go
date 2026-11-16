@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
@@ -39,7 +40,55 @@ func startDesktop(a *App, link string) error {
 	var visible atomic.Bool
 	open := func(windowURL string) {
 		count++
-		host.Window.NewWithOptions(application.WebviewWindowOptions{Name: fmt.Sprintf("workbench-%d", count), Title: "教学创新备赛工作台", Width: 1440, Height: 860, MinWidth: 980, MinHeight: 680, URL: windowURL, BackgroundColour: application.NewRGB(242, 243, 237)})
+		g, ok := a.loadGeometry("workbench")
+		if !ok {
+			g = windowGeometry{Width: 1440, Height: 860, X: 80, Y: 60}
+		}
+		screen := host.Screen.GetPrimary()
+		for _, candidate := range host.Screen.GetAll() {
+			r := candidate.WorkArea
+			if g.X >= r.X && g.X < r.X+r.Width && g.Y >= r.Y && g.Y < r.Y+r.Height {
+				screen = candidate
+				break
+			}
+		}
+		if screen != nil {
+			r := screen.WorkArea
+			g = clampGeometry(g, r.X, r.Y, r.Width, r.Height)
+		}
+		w := host.Window.NewWithOptions(application.WebviewWindowOptions{Name: fmt.Sprintf("workbench-%d", count), Title: "教学创新备赛工作台", Width: g.Width, Height: g.Height, MinWidth: 800, MinHeight: 600, InitialPosition: application.WindowXY, X: g.X, Y: g.Y, URL: windowURL, BackgroundColour: application.NewRGB(242, 243, 237)})
+		// Keep standard OS titlebar drag, resize and maximize semantics. Only
+		// persist a normal (not maximized/minimized) rectangle, debounced.
+		var geometryMu sync.Mutex
+		var timer *time.Timer
+		save := func(_ *application.WindowEvent) {
+			if w.IsMaximised() || w.IsMinimised() {
+				return
+			}
+			x, y := w.Position()
+			width, height := w.Size()
+			g := windowGeometry{x, y, width, height}
+			geometryMu.Lock()
+			defer geometryMu.Unlock()
+			if timer != nil {
+				timer.Stop()
+			}
+			timer = time.AfterFunc(400*time.Millisecond, func() { _ = a.saveGeometry("workbench", g) })
+		}
+		w.OnWindowEvent(events.Common.WindowDidMove, save)
+		w.OnWindowEvent(events.Common.WindowDidResize, save)
+		w.OnWindowEvent(events.Common.WindowClosing, func(_ *application.WindowEvent) {
+			geometryMu.Lock()
+			defer geometryMu.Unlock()
+			if timer != nil {
+				timer.Stop()
+			}
+			if !w.IsMaximised() && !w.IsMinimised() {
+				x, y := w.Position()
+				width, height := w.Size()
+				_ = a.saveGeometry("workbench", windowGeometry{x, y, width, height})
+			}
+		})
 	}
 	open(link)
 	placePet := func() {
@@ -84,7 +133,7 @@ func startDesktop(a *App, link string) error {
 		defer mu.Unlock()
 		switch action {
 		case "open":
-			open(link)
+			open(a.origin + "/?fresh=1#" + a.token)
 		case "open_branch":
 			open(a.origin + "/?branch=" + unused + "#" + a.token)
 		case "show_pet":
