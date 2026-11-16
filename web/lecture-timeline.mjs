@@ -19,3 +19,9 @@ export function audioQualityLabel(status){
  if(/not_listened|unverified|未听/.test(status))return '音频未完成原声听辨';
  return '音频核验状态：'+status;
 }
+
+export function intervalSelection(entry,duration){
+ if(!entry||entry.t0===null||entry.t1===null)return null;
+ const a=Number(entry.t0),b=Number(entry.t1),end=Number(duration);
+ return Number.isFinite(a)&&Number.isFinite(b)&&Number.isFinite(end)&&a>=0&&b>a&&a<end?[a,Math.min(b,end)]:null;
+}

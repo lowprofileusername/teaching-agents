@@ -224,7 +224,9 @@ func (a *App) chat(w http.ResponseWriter, r *http.Request) {
 		sys = generationPrompt(c.SpecialistID, builderEdition(c), c.Track) + expert + lens
 		c.History = nil
 	}
-	c.Evidence = appendBuiltinEvidence(r.Context(), c)
+	if c.AnswerScope != "single_unit" {
+		c.Evidence = appendBuiltinEvidence(r.Context(), c)
+	}
 	_ = cfg.ModelOptions.normalize()
 	systemText := sys + "\n资料库报告是分析判断，不是讲者原话；当届国赛正式标准是否具备，以本轮明确提供的文件及其届次、发布单位为准；没有对应文件时不能臆造，校赛/往届规则只能标为参考。审阅用户材料时不得编造用户已实施成果。纯文字提取不能评判图像和版式。证据摘录不足不等于数据库没有资料；retrieved_source_count表示实际检索命中，included_source_count表示本轮实际提供的条数。"
 	if c.Material == "" && len(c.Images) == 0 {

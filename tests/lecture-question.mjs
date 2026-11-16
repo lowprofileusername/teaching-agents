@@ -7,3 +7,8 @@ x=lectureQuestion('这页是什么意思',context);assert.equal(x.range,'current
 x=lectureQuestion('总结 00:05 到 00:09',context);assert.equal(x.t0,5);assert(!x.material.text.includes('原文2'));
 assert(lectureQuestion('片段',context,'range',[55,70]).error);
 const lines=['甲'.repeat(4000),'乙'.repeat(4000),'丙'.repeat(4000)],parts=lectureBatches(lines);assert.equal(parts.length,3);assert.equal(parts.join('\n'),lines.join('\n'));console.log('lecture identity, whole transcript, current page, time range and lossless batch boundaries passed');
+assert.equal(lectureQuestion('解释当前页',context,'current').page_id,'song:R2');
+assert(lectureQuestion('解释当前页',{...context,current:50},'current').error);
+assert(lectureQuestion('总结片段',context,'range',[NaN,30]).error);
+// A node selection retains decimal boundaries rather than rounding to display time.
+const exact=lectureQuestion('总结所选时间段',context,'range',[10.125,29.875]);assert.equal(exact.t0,10.125);assert.equal(exact.t1,29.875);
