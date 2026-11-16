@@ -13,6 +13,7 @@ public class TeacherWindowProbe {
  [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h,out Rect r);
  public struct Rect { public int Left,Top,Right,Bottom; }
  public static IntPtr Find(uint pid) {IntPtr found=IntPtr.Zero;EnumWindows((h,p)=>{uint owner;GetWindowThreadProcessId(h,out owner);var s=new StringBuilder(256);GetWindowText(h,s,256);if(owner==pid&&s.ToString().StartsWith("桌面教师")){found=h;return false;}return true;},IntPtr.Zero);return found;}
+ public static IntPtr FindWorkbench(uint pid) {IntPtr found=IntPtr.Zero;EnumWindows((h,p)=>{uint owner;GetWindowThreadProcessId(h,out owner);var s=new StringBuilder(256);GetWindowText(h,s,256);if(owner==pid&&s.ToString().StartsWith("教学创新备赛工作台")){found=h;return false;}return true;},IntPtr.Zero);return found;}
 }
 '@
 $qa=Join-Path $env:RUNNER_TEMP 'teacher-transparency'
@@ -43,6 +44,13 @@ foreach ($persona in @('original','male')) {
   if(-not $link -or $hwnd -eq [IntPtr]::Zero){throw 'Native teacher window did not appear'}
   $parts=$link.Split('#');$base=$parts[0].TrimEnd('/');$headers=@{'X-Session-Token'=$parts[1]}
   Invoke-RestMethod "$base/api/desktop" -Method Post -Headers $headers -ContentType 'application/json' -Body '{"action":"posture","posture":"sit"}' | Out-Null
+  $workbench=[TeacherWindowProbe]::FindWorkbench([uint32]$proc.Id)
+  if($workbench -eq [IntPtr]::Zero){throw 'Workbench native window missing'}
+  [TeacherWindowProbe]::SetWindowPos($workbench,[IntPtr]::Zero,100,50,1000,640,0x0014) | Out-Null
+  Start-Sleep -Milliseconds 1200
+  $store=Join-Path $qa 'workbench_history.sqlite3'
+  python tests/check-native-geometry.py $store
+  if($LASTEXITCODE -ne 0){throw 'Native geometry persistence failed'}
   # Uniform coloured window directly beneath the teacher. An opaque WebView
   # cannot pass this test merely because its webpage/canvas alpha is zero.
   $colour=[Drawing.Color]::FromArgb(255,28,67,93)
@@ -60,7 +68,9 @@ foreach ($persona in @('original','male')) {
    [TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$rect) | Out-Null
    $bmp=New-Object Drawing.Bitmap(260,540);$g=[Drawing.Graphics]::FromImage($bmp)
    $g.CopyFromScreen($rect.Left,$rect.Top,0,0,$bmp.Size);$g.Dispose()
-   $points=@(@(3,300),@(256,300),@(3,510),@(256,510),@(10,190),@(250,190))
+   # Controls intentionally have an opaque card when keyboard-focused.
+   # Probe the empty canvas margins below that card, not UI controls.
+   $points=@(@(3,300),@(256,300),@(3,510),@(256,510),@(3,230),@(256,230))
    $matched=$true
    foreach($xy in $points){$c=$bmp.GetPixel($xy[0],$xy[1]);if([Math]::Abs([int]$c.R-$colour.R)+[Math]::Abs([int]$c.G-$colour.G)+[Math]::Abs([int]$c.B-$colour.B) -gt 15){$matched=$false}}
    $painted=0

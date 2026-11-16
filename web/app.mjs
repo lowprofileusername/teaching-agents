@@ -272,14 +272,14 @@ await restoreBranch();
 
 setInterval(()=>{if(jobs.size)syncTaskControls()},1000);
 
-function persistentSnapshot(){snapshotTask();return{version:1,currentTask,library:currentLibraryPath,project:{track:$('#competitionTrack').value,edition:$('#competitionEdition').value,course:$('#courseName').value},notes:workspace.exportState().notes,sessions:Object.fromEntries([...taskSessions].map(([id,s])=>[id,encodeSession(s)]))}}
+function persistentSnapshot(){snapshotTask();return{version:1,currentTask,library:currentLibraryPath,project:{track:$('#competitionTrack').value,edition:$('#competitionEdition').value,course:$('#courseName').value},notes:workspace.exportState().notes,replay:lecturePlayer.exportState(),sessions:Object.fromEntries([...taskSessions].map(([id,s])=>[id,encodeSession(s)]))}}
 function restorePersistent(state){
  if(state?.version!==1||!state.sessions||typeof state.sessions!=='object')throw Error('不是可恢复的工作记录格式');
  const parsed=new Map();for(const [id,s] of Object.entries(state.sessions)){if(!tasks.some(t=>t.id===id))continue;parsed.set(id,decodeSession(s))}
  if(jobs.size||importing)throw Error('请先完成或取消当前运行中的任务，再恢复记录');
  taskSessions.clear();for(const [id,s] of parsed){if(state.library!==currentLibraryPath){s.history=[];if(s.uploaded)s.uploaded.reviewSignature='';s.status='记录来自另一资料库；展示历史，但新问题不会沿用旧上下文。'}taskSessions.set(id,s)}
  for(const [id,key] of [['competitionTrack','track'],['competitionEdition','edition'],['courseName','course']])$('#'+id).value=state.project?.[key]||'';
- workspace.restoreState(state.notes||{});selectTask(state.currentTask||'overview',true);
+ workspace.restoreState(state.notes||{});lecturePlayer.restoreState(state.library===currentLibraryPath?state.replay:null);selectTask(state.currentTask||'overview',true);
 }
 const memoryStatus=$('#memoryStatus');workspaceMemory=createWorkspaceMemory({request:async data=>{const r=await fetch('/api/workspaces',{method:'POST',headers:{'Content-Type':'application/json','X-Session-Token':token},body:JSON.stringify(data)});const x=await r.json();if(!r.ok)throw Error(x.error);return x},snapshot:persistentSnapshot,restore:restorePersistent,indicator:memoryStatus});
 try{await workspaceMemory.start(freshWindow||!!branchID)}catch(e){memoryStatus.textContent='自动恢复未完成：'+e.message}
