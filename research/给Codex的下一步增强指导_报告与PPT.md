@@ -36,13 +36,15 @@
 1. **注册**：`specialists.go` 的 `teachingSpecialists` 加 `{"presentation-architect", "汇报PPT架构师", ...}`；`isBuilder()` 加入该 ID。前端下拉走 `/api/specialists` 动态渲染，不用改前端。
 2. **输出结构**：给 `BuilderPlan` 增加一个 `slides` 数组（同样作为可选字段，不破坏现有必填字段校验）。每张 slide 至少含：`id`、`page_no`、`title`（观点写在标题上）、`section`（属于 3+6+3 哪段）、`bullets`（要点）、`visual`（需要的图/表/截图类型）、`evidence_source`（引用本轮检索到的 material id，不得虚构）、`speaker_note`（讲稿要点）、`duration_sec`（该页讲述秒数）。
 3. **生成规则**（写进 `generationPrompt` 的 presentation-architect 分支，复用 `builderPolicyFor` 的赛道/届次感知）：
-   - **页数 ≤30**，时间分配严格 **3+6+3**：课程与痛点约 3 分钟 / 创新内容约 6 分钟 / 成效与推广约 3 分钟；`duration_sec` 合计落在 690–710 秒（对应 11分30秒–11分50秒收尾），并留一页"总结图"作为可跳过收尾。
+   - **硬性上限只有官方的 ≤12 分钟（720 秒）**：`duration_sec` 合计必须 ≤720，这是唯一能用来拒绝方案的时长规则。
+   - **3+6+3**（课程与痛点 3 分钟 / 创新内容 6 分钟 / 成效与推广 3 分钟）与 **≤30 页**来自公开专家经验（见 `research/AI赛道_报告PPT视频_全网备赛资料.md`），属建议而非官方评分条文；生成时尽量满足，**不得因 711–720 秒而拒绝**。
+   - **690–710 秒收尾、末页留一页"总结图"可跳过**只是综合得出的经验目标，实现为正向提示或 warning，**不得写进 `validateBuilderPlan` 的拒绝条件**。
    - 每页一个观点且**写在 title 上**；bullets 不超过 4 条。
    - **可视化**：`visual` 字段按每页实际需要标注（流程图/截图/对比图等），由用户按自己课程内容决定。**不要预设任何"标准架构图"或固定图样**——官方评分标准和可追溯的专家原文都没有指定 PPT 必须画哪种图。有出处的相关要求只有一条：众师云 12799 要求**成果报告**插"整体创新逻辑框架图"（那是报告，不是 PPT）。
    - **数据纪律**：slides 里不得出现学生人数、分数、提升率、获奖等成效断言（沿用 `generatedFactRisk` 校验）；`evidence_source` 只能引用本轮实际检索到的 source id；引用专家打法标注"迁移建议非专家本人观点"，获奖案例标注"往届公开报道，不是你的课程事实"。
    - 提到"匿名"要求：演讲者页/页脚/截图 placeholders 里不得出现姓名、学校、院系。
-4. **校验扩展**：`validateBuilderPlan` 在 role=presentation-architect 时，检查 slides 非空、页数≤30、`duration_sec` 合计在 690–710、每张 slide 必填字段齐全、3+6+3 三段都有页、evidence_source 都在 available 里。其他 role 的校验路径保持原样。
-5. **测试**：新建或扩充 `generate_test.go`，加 `TestPresentationArchitectPlan`：验证页数/时长/三段/证据源合法；写 2 个破坏性用例（超 30 页、时长超 710）必须被拒。确认新增 role 不影响原 10 PASS。
+4. **校验扩展**：`validateBuilderPlan` 在 role=presentation-architect 时，**只做有官方出处的硬校验**：slides 非空、`duration_sec` 合计 ≤720、每张 slide 必填字段齐全、`evidence_source` 都在 available 里。页数≤30、3+6+3 三段有页、690–710 秒目标一律作为 warning 列表返回，**不得作为拒绝条件**。其他 role 的校验路径保持原样。
+5. **测试**：新建或扩充 `generate_test.go`，加 `TestPresentationArchitectPlan`：验证总时长 ≤720、证据源合法，且 30 页/3+6+3/690–710 秒只产生 warning 不拒绝；写 2 个破坏性用例（时长 721 秒、`evidence_source` 引用不存在的 id）必须被拒。确认新增 role 不影响原 10 PASS。
 
 ### 任务 C：三份材料一致性检查（可选，有余力再做）
 
@@ -56,7 +58,7 @@
 
 ### 自检
 
-完成后按 `research/如何验收Codex的改造.md` 跑原有测试，再补测新的两个能力：① architect 的 depth=full 逐段扩写不编数字；② presentation-architect 生成 30 页内、11分30秒–11分50秒的 PPT 方案。
+完成后按 `research/如何验收Codex的改造.md` 跑原有测试，再补测新的两个能力：① architect 的 depth=full 逐段扩写不编数字；② presentation-architect 生成总时长 ≤12 分钟（≤720 秒）的 PPT 方案，30 页/3+6+3/690–710 秒只是经验目标、不硬卡。
 
 ## ===== 复制结束 =====
 

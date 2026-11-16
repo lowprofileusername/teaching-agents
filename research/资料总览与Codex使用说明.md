@@ -66,8 +66,8 @@
 
 ### 阶段二（当前任务，在 `feat/ai-track-builder` 已验收能力上增量扩展）
 
-1. 读 `research/给Codex的下一步增强指导_报告与PPT.md`：architect 增加 `depth:"full"` 逐段扩写；新增 `presentation-architect` 顾问生成 12 分钟汇报 PPT（30 页 / 3+6+3 / 11 分 30 秒收尾）；`BuilderPlan` 增加 slides 字段与校验。
-2. 读 `research/给Codex的下一步增强指导_赛道专属方法论.md`：新建 `knowledge/track_playbooks.json`，把赛道感知从维度层推进到方法论层；9 个赛道各配可追溯打法，AI 赛道继续用 `ai_playbook.json` 不重复；architect 生成时按赛道引用 1–2 个打法并标注"迁移建议"。
+1. 读 `research/给Codex的下一步增强指导_报告与PPT.md`：architect 增加 `depth:"full"` 逐段扩写；新增 `presentation-architect` 顾问生成汇报 PPT；`BuilderPlan` 增加 slides 字段与校验。**硬校验只有官方 ≤12 分钟（≤720 秒）；30 页 / 3+6+3 / 690–710 秒是经验目标，只能出 warning 不能拒绝。**
+2. 读 `research/给Codex的下一步增强指导_赛道专属方法论.md`：新建 `knowledge/track_playbooks.json`，把赛道感知从维度层推进到方法论层；**只为能回查到 36 场专家库 §六对应行的赛道写打法，新农科无对应场次必须留空标 `no_traceable_source`，不许编造或跨赛道改名顶替**；AI 赛道继续用 `ai_playbook.json` 不重复；architect 生成时按赛道引用 1–2 个打法并标注"迁移建议"。
 3. 两份任务可合并一个分支一次提交；**不得回退**已通过的 10 PASS 与 `TestBuilderTrackSwitchAndTwoVideoRequirements`。
 4. 交付时给出分支名/PR、改动文件、embed 与检索路径、各赛道引用的打法清单、测试命令与结果。
 
@@ -93,3 +93,5 @@
 3. **不虚构**：不编造学生人数、前后测、提升率、学生原话、第三方采用。
 4. **不冒充**：不声称已阅读用户材料或已观看视频，除非本轮确实提供。
 5. **案例边界**：获奖案例只能证明"某做法有先例"，不能证明用户课程已有效。
+6. **可回查**：每条专家打法必须带 `source`（讲者｜课程）和 `source_locator`（36 场专家库 §六对应行）；查不到出处的赛道留空并标 `no_traceable_source`，不得编造或跨赛道改名顶替。
+7. **硬规则 vs 经验**：只有官方原文写明的才进硬校验（如汇报 ≤12 分钟）。第三方文章建议（如 30 页、3+6+3、成果报告逻辑框架图）只能作为 warning/建议，并标注出处与非官方性质。
