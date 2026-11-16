@@ -101,7 +101,7 @@ foreach ($persona in @('original','male')) {
   Start-Sleep -Milliseconds 300
   $dragged=New-Object TeacherWindowProbe+Rect;[TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$dragged)|Out-Null
   if([Math]::Abs($dragged.Left-$still.Left) -lt 30 -or [Math]::Abs($dragged.Top-$still.Top) -lt 20){throw 'Dragging the teacher canvas did not move the native window'}
-  $checks[-1].roam_xy=@($after.Left-$before.Left,$after.Top-$before.Top);$checks[-1].drag_xy=@($dragged.Left-$still.Left,$dragged.Top-$still.Top)
+  $checks[-1].roam_xy=@(($after.Left-$before.Left),($after.Top-$before.Top));$checks[-1].drag_xy=@(($dragged.Left-$still.Left),($dragged.Top-$still.Top))
   Write-Output "PASS ${persona}: real native window shows coloured background around visible teacher"
  } finally {node tests/windows-webview-probe.mjs;if($backdrop){$backdrop.Close();$backdrop.Dispose()};if(-not $proc.HasExited){try{Invoke-RestMethod "$base/api/desktop" -Method Post -Headers $headers -ContentType 'application/json' -Body '{"action":"quit"}' | Out-Null;$proc.WaitForExit(5000) | Out-Null}catch{};if(-not $proc.HasExited){Stop-Process -Id $proc.Id -Force}};$checks | ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $qa 'checks.json')}
 }
