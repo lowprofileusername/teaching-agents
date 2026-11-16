@@ -1,0 +1,23 @@
+name: Builder and existing workflow regression
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+        with:
+          go-version: '1.27.4'
+      - run: go test ./...
+      - run: node tests/builder.mjs
+      - run: node tests/document-review.mjs
+      - run: node tests/workspace-data.mjs
+      - run: node tests/lecture-timeline.mjs

@@ -41,6 +41,7 @@ jobs:
           node tests/material-visuals.mjs
           node tests/lecture-timeline.mjs
           node tests/lecture-question.mjs
+          node tests/builder.mjs
       - name: Build two original teachers
         shell: pwsh
         run: |

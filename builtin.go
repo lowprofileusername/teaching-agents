@@ -13,7 +13,7 @@ import (
 
 // Public, versioned reference material only. No user reports or lecture media.
 //
-//go:embed knowledge/rules.json knowledge/rules_6_2026.pdf knowledge/experts.json
+//go:embed knowledge/rules.json knowledge/rules_6_2026.pdf knowledge/experts.json knowledge/rules_7_ai_2026.json knowledge/ai_playbook.json knowledge/ai_award_cases_6th.json knowledge/video_index_5th_wenke.json research/*.md research/third-party/*.md
 var builtinFiles embed.FS
 
 type RulePart struct {
@@ -84,6 +84,9 @@ func builtinLibrary() (*sql.DB, error) {
 			e = installExperts(db)
 		}
 		if e == nil {
+			e = installBuiltinReferences(db)
+		}
+		if e == nil {
 			_, e = db.Exec("PRAGMA query_only=ON")
 		}
 		if e != nil {
@@ -103,6 +106,9 @@ func (a *App) builtinRules(w http.ResponseWriter, r *http.Request) {
 	jsonOut(w, 200, builtinState.catalog)
 }
 func builtinRuleSearch(ctx context.Context, q string) []map[string]any {
+	if queryEdition(q) == 7 && queryAI(q) {
+		return nil
+	}
 	db, e := builtinLibrary()
 	if e != nil {
 		return []map[string]any{}
@@ -166,5 +172,6 @@ func builtinRuleSearch(ctx context.Context, q string) []map[string]any {
 }
 
 func builtinSearch(ctx context.Context, q string) []map[string]any {
-	return append(builtinRuleSearch(ctx, q), builtinExpertSearch(ctx, q)...)
+	out := append(builtinReferenceSearch(ctx, q), builtinRuleSearch(ctx, q)...)
+	return append(out, builtinExpertSearch(ctx, q)...)
 }

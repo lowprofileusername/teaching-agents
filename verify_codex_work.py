@@ -50,7 +50,7 @@ add("0a 改动在独立分支而非 main",
     PASS if branch and branch != "main" else FLAG,
     f"当前分支：{branch or '未知'}（设计要求是 feat/ai-track-builder 之类，不是 main）")
 
-# ---------- 1. embed 是否真加了三个 JSON ----------
+# ---------- 1. embed 是否真加了四个 JSON ----------
 builtin = read("builtin.go") or ""
 embed_line = ""
 for line in builtin.splitlines():
@@ -58,9 +58,10 @@ for line in builtin.splitlines():
         embed_line = line.strip()
 new_files = ["knowledge/rules_7_ai_2026.json",
              "knowledge/ai_playbook.json",
-             "knowledge/ai_award_cases_6th.json"]
+             "knowledge/ai_award_cases_6th.json",
+             "knowledge/video_index_5th_wenke.json"]
 missing = [f for f in new_files if f not in embed_line]
-add("1a builtin.go embed 含三个新 JSON",
+add("1a builtin.go embed 含四个新 JSON",
     PASS if not missing else FAIL,
     "embed 行：" + (embed_line or "未找到") + (f" | 缺：{missing}" if missing else ""))
 
@@ -103,6 +104,9 @@ if os.path.isdir(fe_root):
                     txt = f.read()
                 if "architect" in txt or "video-planner" in txt or "specialists" in txt.lower():
                     frontend_hits.append(fn)
+web_app = read("web/app.mjs") or ""
+if "/api/specialists" in web_app and "specialistCatalog.roles" in web_app and "$('#specialistRole').append(o)" in web_app:
+    frontend_hits.append("web/app.mjs (dynamic /api/specialists)")
 add("2b 前端能看到新顾问",
     PASS if frontend_hits else FLAG,
     ("命中：" + ", ".join(sorted(set(frontend_hits)))) if frontend_hits
@@ -168,3 +172,5 @@ if n_fail == 0 and n_flag == 0:
     print("代码层全部通过。请继续做文档中的 UI 手工测试（能不能真写、真查、不编造）。")
 else:
     print("代码层未达标。把上面 FAIL / RED FLAG 的条目原样发给 Codex 要求修正。")
+
+sys.exit(0 if n_fail == 0 and n_flag == 0 else 1)

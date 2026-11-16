@@ -1,4 +1,4 @@
-import {intervalAt,imageAt,audioLocalTime,transcriptVersions,transcriptLabel} from './lecture-timeline.mjs';
+import {intervalAt,imageAt,audioLocalTime,transcriptVersions,transcriptLabel,audioQualityLabel} from './lecture-timeline.mjs';
 import {timecode} from './retrieval.mjs';
 const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n};
 export function createLecturePlayer({json,blob,library,videos,ask}){
@@ -16,7 +16,7 @@ export function createLecturePlayer({json,blob,library,videos,ask}){
  }
  async function seek(time,autoplay=true){if(!data)return;const g=generation,id=++seekID;time=Math.max(0,Math.min(time,Number(data.video.duration)-.01));playingWanted=autoplay;audio.pause();paint(time);loading=true;play.textContent='读取原声…';play.disabled=true;
   try{let c=chunk;if(!c||time<c.t0||time>=c.t1){c=await json('/api/audio',{tag,time});const b=await blob('/api/asset',{id:c.asset_id});if(g!==generation||id!==seekID)return;const old=audioURL;audioURL=URL.createObjectURL(b);audio.src=audioURL;chunk=c;if(old)URL.revokeObjectURL(old);await new Promise((resolve,reject)=>{const done=()=>{cleanup();resolve()},fail=()=>{cleanup();reject(Error('当前浏览器无法解码这段原声。'))},timer=setTimeout(fail,10000),cleanup=()=>{clearTimeout(timer);audio.removeEventListener('loadedmetadata',done);audio.removeEventListener('error',fail)};audio.addEventListener('loadedmetadata',done,{once:true});audio.addEventListener('error',fail,{once:true});audio.load();if(audio.readyState>=1)done()})}
-   if(g!==generation||id!==seekID)return;audio.currentTime=audioLocalTime(chunk,time);audio.playbackRate=Number(rate.value);if(playingWanted)await audio.play();status.textContent=data.notice+' '+(chunk.quality_status||'');
+   if(g!==generation||id!==seekID)return;audio.currentTime=audioLocalTime(chunk,time);audio.playbackRate=Number(rate.value);if(playingWanted)await audio.play();status.textContent=data.notice+' '+audioQualityLabel(chunk.quality_status);
   }catch(e){if(g===generation&&id===seekID){status.textContent=e.message;playingWanted=false}}
   finally{if(g===generation&&id===seekID){loading=false;play.disabled=false;play.textContent=audio.paused?'播放原声':'暂停'}}
  }

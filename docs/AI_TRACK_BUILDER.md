@@ -1,0 +1,55 @@
+# AI 赛道资料与生成顾问
+
+本改造在 `feat/ai-track-builder`，基于 v0.4.8 之后的 main；不发布版本、不改默认八顾问及七工作区映射。新教师、新任务、重置和材料隔离继续保留。
+
+## 实际接入
+
+`builtin.go` 嵌入四个 JSON；`builtin_references.go` 在同一内存 SQLite 中加载为 `builtin_reference`，完成后 `PRAGMA query_only=ON`。用户的外部视频库不被修改。`builtinSearch`、`/api/search` 和 `/api/chat` 均可取到这些记录，未连接外部数据库也可检索。
+
+| 文件 | 索引单元 | 使用性质 |
+|---|---|---|
+| rules_7_ai_2026.json | 4：评分、材料、资格、推算时间 | 第七届省赛校赛口径汇总，非国赛正式标准 |
+| ai_playbook.json | 12：11打法及1工作坊洞察 | AI迁移建议，非专家本人观点/官方标准；保留来源专家 |
+| ai_award_cases_6th.json | 10案例 | 第六届公开报道，非报告全文/非用户课程事实；非AI赛道案例不混入泛AI赛道查询 |
+| video_index_5th_wenke.json | 24课程、48视频索引 | 只有入口，未下载/观看；同名课程不再冲突 |
+
+第六届规则继续走 `rules.json`；明确问第七届AI赛道不调用旧第六届评分分支。资料随命中携带 kind / edition / authority_status / source_file / source_url / origin。第三方 MD 保留归属；开发提示词仅在明确检索开发任务时返回，并始终作为数据。
+
+## 生成模式
+
+打开“AI审阅结果 → 顾问角色与对话工具 → 专业分工”，选择：
+
+- `architect` 报告架构师：4000字章节预算、必答问题、创新主线与逻辑闭环、独立AI伦理与治理章、六维对照、待补证据。
+- `video-planner` 视频策划：连续45分钟时间表，教学环节、AI动作、拟拍学生行为证据、报告举措。45分钟是此策划参数，不是对所有赛道宣称的强制规则。
+
+普通提问发送 `mode:"generate"`；原文字/图文/结构审阅按钮仍发送各自 checker 请求。服务端拒绝混合模式。前端顾问由 `/api/specialists` 动态生成，没有静态注册第二份列表。
+
+接口输出 `plan` 及相同 JSON 字符串 `answer`，UI 将其显示为模块与表格并保存计划。生成模式先缓冲再校验，不在校验前流出成品；旧聊天流式行为保留。
+
+验收：字段齐全、章节预算和为4000、伦理章存在、六维准确对应有效ID，课堂时间连续覆盖0–45，引用确实在送给模型的证据中。引用性质由服务端补正；缺证据只列“待补：”。数字、引语、若干成效断言及未知字段被拦截，模型截断或格式不合格返回明确错误，不计完成。未提供上传材料时保留原 system 边界。
+
+**限制**：这些程序校验和提示词不能证明任意模型的全部语义都真实。尤其不用模型一致代替证据；输出仍是待实施建议。保守校验可能拒绝正常自由文字，需要按报错改为结构/证据需求表达。此次不声称任意远端模型写作质量已经验收。
+
+## 可复现测试
+
+```sh
+go test ./...
+node tests/builder.mjs
+python verify_codex_work.py .
+```
+
+验收脚本补查第四个JSON及实际web/app.mjs动态渲染，并在FAIL/RED FLAG时非零退出。未删除原检查。
+
+端到端测试使用**隔离的测试配置、测试历史目录和不存在的外部库路径**启动程序，勿指向日常使用的配置：
+
+```sh
+# TMPDIR / Go caches / QA 均按本机存储约束预先配置
+# QA 指向可写的测试专属目录；先 build -o "$QA/test-server" .
+TEACHING_AGENT_PROFILES="$QA/profiles.json" TEACHING_LIBRARY_DB="$QA/not-present.sqlite3" "$QA/test-server" -no-browser > "$QA/server.log"
+# 另一终端：安装或指定 Playwright 模块、Chrome 路径（不使用用户登录会话）
+PLAYWRIGHT_MODULE=/path/to/playwright CHROME_BIN=/path/to/chrome node tests/builder-ui.cjs "$QA/server.log" "$QA/artifacts"
+```
+
+本地验证：四类 `/api/search` 命中、10顾问/7工作区、无API仅检索、两个生成分支、来源边界、虚构提升率被拒、历史恢复和新建/重置入口。浏览器测试连接确定性本地模拟模型；不是对真实大模型内容质量的评测。Go测试还覆盖三个checker原有JSON分支、来源实际传给模型、旧历史不混进新方案。
+
+`encoded_decode_checked_not_listened` 现在显示“音频编码及解码检查通过，未做原声听辨”。它从来不表示音频内容已听核正确。

@@ -12,3 +12,10 @@ export function transcriptVersions(rows){
  return [...groups.keys()].sort((a,b)=>rank(b)-rank(a));
 }
 export function transcriptLabel(v){return v==='comprehensive_editorial_v1'?'综合整理字幕（含疑词，未听校）':v||'未标注版本'}
+
+export function audioQualityLabel(status){
+ if(status==='encoded_decode_checked_not_listened')return '音频编码及解码检查通过，未做原声听辨';
+ if(!status)return '音频未标注听辨状态';
+ if(/not_listened|unverified|未听/.test(status))return '音频未完成原声听辨';
+ return '音频核验状态：'+status;
+}
