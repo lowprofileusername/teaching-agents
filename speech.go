@@ -61,7 +61,9 @@ func (a *App) voiceDirectory() string {
 	return ""
 }
 func packFile(root, name string) (string, error) {
-	if name == "" || filepath.IsAbs(name) {
+	// Manifest paths are portable: reject both Windows and POSIX roots on every host.
+	name = strings.ReplaceAll(name, `\`, "/")
+	if name == "" || strings.HasPrefix(name, "/") || strings.Contains(name, ":") || filepath.IsAbs(name) {
 		return "", errors.New("语音包路径无效")
 	}
 	clean := filepath.Clean(filepath.FromSlash(name))

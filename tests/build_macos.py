@@ -5,7 +5,7 @@ for persona,label in [("original","原创女教师教学助手"),("male","原创
  app=out/(label+".app");exe=app/"Contents/MacOS/TeachingAgent";exe.parent.mkdir(parents=True,exist_ok=True)
  env=os.environ.copy();env.update(CGO_ENABLED="1",GOOS="darwin",GOARCH="arm64",MACOSX_DEPLOYMENT_TARGET="15.0",CGO_CFLAGS="-mmacosx-version-min=15.0",CGO_LDFLAGS="-mmacosx-version-min=15.0")
  subprocess.run([os.environ.get("GO_BIN","go"),"build","-tags","desktop,private_mac_apis","-trimpath","-ldflags",f"-s -w -X main.defaultPersona={persona}","-o",str(exe),"."],check=True,env=env)
- info={"CFBundleName":label,"CFBundleDisplayName":label,"CFBundleIdentifier":"org.teachingarchive.agent."+persona,"CFBundleVersion":"0.3.5","CFBundleShortVersionString":"0.3.5","CFBundlePackageType":"APPL","CFBundleExecutable":"TeachingAgent","LSMinimumSystemVersion":"15.0","LSUIElement":True,"NSHighResolutionCapable":True}
+ info={"CFBundleName":label,"CFBundleDisplayName":label,"CFBundleIdentifier":"org.teachingarchive.agent."+persona,"CFBundleVersion":"0.3.6","CFBundleShortVersionString":"0.3.6","CFBundlePackageType":"APPL","CFBundleExecutable":"TeachingAgent","LSMinimumSystemVersion":"15.0","LSUIElement":True,"NSHighResolutionCapable":True}
  (app/"Contents/Info.plist").write_bytes(plistlib.dumps(info));subprocess.run(["xattr","-cr",str(app)],check=True);subprocess.run(["codesign","--force","--sign","-",str(app)],check=True);subprocess.run(["codesign","--verify","--deep","--strict",str(app)],check=True)
  subprocess.run(["ditto","-c","-k","--sequesterRsrc","--keepParent",str(app),str(out/f"teaching-agent-{persona}-macos-arm64.zip")],check=True)
  print(label,"built and ad-hoc signed",flush=True)

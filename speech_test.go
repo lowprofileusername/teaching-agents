@@ -11,7 +11,7 @@ import (
 )
 
 func TestVoicePackRejectsPathsAndIncompleteInstallation(t *testing.T) {
-	for _, p := range []string{"", "../outside", "/absolute"} {
+	for _, p := range []string{"", "../outside", "/absolute", `\rooted`, `C:\absolute`, `C:relative`, `\\host\share`, `..\outside`, `sub/../../outside`} {
 		if _, e := packFile(t.TempDir(), p); e == nil {
 			t.Fatalf("accepted %q", p)
 		}
