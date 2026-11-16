@@ -24,9 +24,9 @@ import {timecode,retrievalQuery} from './retrieval.mjs';
 mountWorkbenchShell();
 const $=s=>document.querySelector(s),el=(tag,text,cls)=>{const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(cls)x.className=cls;return x};
 let token=location.hash.slice(1)||sessionStorage.getItem('sessionToken')||'',profile={persona:'original'},ready=false,libraryReady=false,busy=false,history=[],videos=[],audioState=null,currentAudioURL=null,assetURLs=new Map(),currentLibraryPath='',uploaded=null,conversation=[],currentTask='overview',ruleCatalog=null,reviewItems=[],reviewResults=new Map(),reviewFile=null;
-const branchID=new URLSearchParams(location.search).get('branch'),freshWindow=new URLSearchParams(location.search).has('fresh');let workspaceMemory=null,moduleHistory=null,layoutManager=null;const voiceRequested=new URLSearchParams(location.search).has('voice');
+const branchID=new URLSearchParams(location.search).get('branch'),freshWindow=new URLSearchParams(location.search).has('fresh');let workspaceMemory=null,moduleHistory=null,layoutManager=null,projectID=crypto.randomUUID(),startingTask=false;const voiceRequested=new URLSearchParams(location.search).has('voice');
 if(token){sessionStorage.setItem('sessionToken',token);window.history.replaceState(null,'',location.pathname)}
-const taskSessions=new Map(),jobs=new Map();let workspace=null,importing=false,exportMode='chat';let nativeDesktop=null,activeExpert='',expertCatalog=null,specialistCatalog=null;
+const taskSessions=new Map(),projectSessions=new Map(),projectExtras=new Map(),jobs=new Map();let workspace=null,importing=false,exportMode='chat';let nativeDesktop=null,activeExpert='',expertCatalog=null,specialistCatalog=null;
 const chatScroll=createChatScroll($('#messages'),$('#followLatest'),()=>currentTask);
 const teacherSpeech=createSpeech({token,template:()=>$('#teacherTemplate').value,onStatus:text=>{$('#voiceStatus').textContent=text;$('#voiceFloatingStatus').textContent=text}});
 async function api(path,data,signal=null){const ctrl=new AbortController(),onCancel=()=>ctrl.abort();if(signal?.aborted)ctrl.abort();else signal?.addEventListener('abort',onCancel,{once:true});const timer=setTimeout(()=>ctrl.abort(),45000);try{const r=await fetch(path,{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json','X-Session-Token':token},body:JSON.stringify(data)});if(!r.ok){const e=await r.json().catch(()=>({error:'服务响应错误'}));throw Error(e.error==='context deadline exceeded'?'本次数据库检索超时，模型尚未调用。':e.error)}return r}catch(e){if(e.name==='AbortError')throw Error(signal?.aborted?'本任务已取消。':'本机接口等待超过45秒，请检查连接。');throw e}finally{clearTimeout(timer);signal?.removeEventListener('abort',onCancel)}}
@@ -35,10 +35,12 @@ const lecturePlayer=createLecturePlayer({json,blob:async(path,data)=>(await api(
 function currentJob(){return [...jobs.values()].find(j=>j.id===currentTask&&j.session===taskSessions.get(currentTask))}
 function syncTaskControls(){
  busy=!!currentJob();const any=jobs.size>0;
- for(const id of ['competitionTrack','competitionEdition','courseName','connectLibrary','activateProfile','deleteProfile'])$('#'+id).disabled=any;
+ for(const id of ['connectLibrary','activateProfile','deleteProfile'])$('#'+id).disabled=any;
+ const projectBusy=[...jobs.values()].some(j=>j.session._project?.id===projectID);
+ for(const id of ['competitionTrack','competitionEdition','courseName','projectTeacher'])$('#'+id).disabled=projectBusy;
  for(const id of ['specialistRole','expertPerspective','scope','send','reviewAll','reviewImages','visionConfirmed','exportWord','reattachWord','reviewStructure','materialFile','reviewSection','clearMaterial','workspaceUpload','forkWindow'])$('#'+id).disabled=busy;
  $('#cancelRequest').hidden=!busy;
- for(const b of $('#taskNav').children){const id=b.dataset.task,j=[...jobs.values()].find(j=>j.id===id),s=taskSessions.get(id);b.textContent=taskByID(id).title+(j?' · '+(j.kind==='review'?'审阅中':'处理中'):s?.jobState==='done'?' · 已完成':s?.jobState==='cancelled'?' · 已取消':s?.jobState==='error'?' · 未完成':'');b.dataset.running=String(!!j);b.title=j?.phase||s?.status||''}
+ for(const b of $('#taskNav').children){const id=b.dataset.task,j=[...jobs.values()].find(j=>j.id===id),s=projectSession(id);b.textContent=taskByID(id).title+(j?' · '+(j.kind==='review'?'审阅中':'处理中'):s?.jobState==='done'?' · 已完成':s?.jobState==='cancelled'?' · 已取消':s?.jobState==='error'?' · 未完成':'');b.dataset.running=String(!!j);b.title=j?.phase||s?.status||''}
  const activity=$('#workspaceActivity');if(activity)activity.textContent=any?`${jobs.size} 个任务正在进行 · 可切换工作区`:'各工作区可独立提问与审阅';
  const j=currentJob();if(j)$('#status').textContent=j.phase+`（${Math.floor((Date.now()-j.phaseAt)/1000)} 秒）`;else if(taskSessions.get(currentTask)?.status)$('#status').textContent=taskSessions.get(currentTask).status;
 }
@@ -59,7 +61,7 @@ function inspector(tab='assistant'){if(tab==='evidence'){$('.appShell').classLis
 function updateAnswerIndex(){const nav=$('#answerIndex');if(!nav)return;nav.replaceChildren();for(const h of $('#messages').querySelectorAll('.assistant .answerModule>h2,.assistant .answerModule>h3,.assistant .answerModule>h4')){const b=el('button',h.textContent);b.type='button';b.onclick=()=>h.scrollIntoView({block:'start',behavior:'smooth'});nav.append(b)}nav.hidden=!nav.children.length}
 
 workspace=createWorkspaces({replay:root=>lecturePlayer.mount(root),
- state:()=>({task:currentTask,uploaded,reviewItems,videos,track:$('#competitionTrack').value,course:$('#courseName').value,documents:Object.fromEntries(['report','lesson','presentation'].map(id=>[id,id===currentTask?uploaded:taskSessions.get(id)?.uploaded]).filter(([,d])=>d))}),
+ state:()=>({task:currentTask,uploaded,reviewItems,videos,track:$('#competitionTrack').value,course:$('#courseName').value,documents:Object.fromEntries(['report','lesson','presentation'].map(id=>[id,id===currentTask?uploaded:projectSession(id)?.uploaded]).filter(([,d])=>d))}),
  select:selectTask,upload:()=>{if(busy||importing)return;showWorkView('material');$('.materialPanel').open=true;$('#materialFile').click()},notice:text=>$('#status').textContent=text,
  structure:()=>$('#reviewStructure').click(),section:id=>{$('#reviewSection').value=id},unit:i=>$('#materialUnit').value=String(i),reviewAll:()=>$('#reviewAll').click(),
  ask:(q,m)=>{inspector();ask(q,m)},browse:async tag=>{$('#scope').value=tag;inspector('evidence');await browse()}
@@ -158,7 +160,7 @@ async function openExport(){exportMode='chat';$('#exportFormat').disabled=false;
 $('#exportChat').onclick=openExport;$('#exportClose').onclick=()=>$('#exportDialog').close();
 $('#exportForm').onsubmit=async e=>{e.preventDefault();$('#exportSave').disabled=true;try{const format=exportMode==='workspace'?'json':$('#exportFormat').value,content=exportMode==='workspace'?JSON.stringify(persistentSnapshot(),null,2):exportConversation(conversation,format,{library:currentLibraryPath,includeReasoning:$('#exportReasoning').checked});const out=await json('/api/conversation-export',{action:'save',directory:$('#exportDirectory').value.trim(),format,content});$('#exportStatus').textContent='已保存：\n'+out.path+'\n'+out.bytes+' 字节。'}catch(e){$('#exportStatus').textContent=e.message}finally{$('#exportSave').disabled=false}};
 async function openConversationWindow(fork){if(importing||(fork&&!!currentJob())){$('#status').textContent='当前任务尚未完成，可先新建空白窗口或切换其他任务。';return;}
- const snapshot=fork?{...branchSnapshot(conversation,history,currentLibraryPath,$('#scope').value,materialContext()),task:currentTask,project:{track:$('#competitionTrack').value,edition:$('#competitionEdition').value,course:$('#courseName').value},expert:$('#expertPerspective').value}:null;
+ const snapshot=fork?{...branchSnapshot(conversation,history,currentLibraryPath,$('#scope').value,materialContext()),task:currentTask,project:projectState(),expert:$('#expertPerspective').value}:null;
  // Open the browser placeholder within the click activation.
  if(nativeDesktop===null){$('#status').textContent='窗口服务尚未就绪，请稍后重试。';return}
  let popup=null;try{
@@ -170,7 +172,7 @@ async function openConversationWindow(fork){if(importing||(fork&&!!currentJob())
 $('#newWindow').onclick=()=>openConversationWindow(false);$('#forkWindow').onclick=()=>openConversationWindow(true);
 async function restoreBranch(){if(!branchID)return;try{
  const data=await json('/api/windows',{action:'consume',id:branchID});if(data.library!==currentLibraryPath)throw Error('资料库已改变，未继承旧上下文。请切回原库后重新打开追问窗口。');
- selectTask(data.task||'overview');for(const [id,key] of [['competitionTrack','track'],['competitionEdition','edition'],['courseName','course']])if(data.project?.[key])$('#'+id).value=data.project[key];
+ selectTask(data.task||'overview');if(data.project)applyProject(data.project);
  const snap=branchSnapshot(data.turns||[],data.history||[],data.library,data.scope,data.material);history=snap.history;conversation=snap.turns;$('#messages').replaceChildren();for(const t of conversation)renderTurn(t);
  if(videos.some(v=>v.tag===snap.scope))$('#scope').value=snap.scope;
  if(data.expert&&[...$('#expertPerspective').options].some(o=>o.value===data.expert)){$('#expertPerspective').value=data.expert;activeExpert=data.expert}
@@ -188,7 +190,12 @@ function updateRubric(){
  $('#rubricDimensions').replaceChildren(...(r?.part?.dimensions||[]).map(t=>el('span',t)));
  if(r&&currentTask==='lesson')$('#rubricDimensions').append(el('p',r.group.video_requirements,'fine'));
 }
-function snapshotTask(){const s=taskSessions.get(currentTask)||{};Object.assign(s,{uploaded,reviewFile,reviewItems,reviewResults,history,conversation,unit:$('#materialUnit').value,section:$('#reviewSection').value,attachMaterial:$('#attachMaterial').checked,question:$('#question').value,scope:$('#scope').value,expert:$('#expertPerspective').value,specialist:$('#specialistRole').value});taskSessions.set(currentTask,s);return s}
+function projectState(){return {id:projectID,teacher:$('#projectTeacher').value,track:$('#competitionTrack').value,edition:$('#competitionEdition').value,course:$('#courseName').value}}
+function applyProject(p={}){projectID=p.id||crypto.randomUUID();for(const [node,key] of [['projectTeacher','teacher'],['competitionTrack','track'],['competitionEdition','edition'],['courseName','course']])$('#'+node).value=p[key]||(key==='edition'?'7':'');}
+function rememberProjectExtras(){projectExtras.set(projectID,{notes:workspace.exportState().notes,replay:lecturePlayer.exportState()})}
+function switchProject(p){if(p?.id!==projectID){rememberProjectExtras();const extra=projectExtras.get(p?.id);workspace.restoreState(extra?.notes||{});lecturePlayer.restoreState(extra?.replay||null)}applyProject(p)}
+function projectSession(id){const s=taskSessions.get(id);return s?._project?.id===projectID?s:projectSessions.get(projectID+':'+id)}
+function snapshotTask(){const s=taskSessions.get(currentTask)||{};Object.assign(s,{_project:projectState(),uploaded,reviewFile,reviewItems,reviewResults,history,conversation,unit:$('#materialUnit').value,section:$('#reviewSection').value,attachMaterial:$('#attachMaterial').checked,question:$('#question').value,scope:$('#scope').value,expert:$('#expertPerspective').value,specialist:$('#specialistRole').value});taskSessions.set(currentTask,s);projectSessions.set(projectID+':'+currentTask,s);return s}
 function restoreMaterialControls(unit='0',section='all'){
  $('#materialUnit').replaceChildren(...(uploaded?.units||[]).map((u,i)=>{const o=el('option',u.label);o.value=i;return o}));$('#materialUnit').value=unit;initReviewSections();$('#reviewSection').value=section;
  $('#materialStatus').textContent=uploaded?uploaded.name+' · '+uploaded.units.length+'单元 · '+uploaded.scope:'本工作区尚未添加材料。';$('#materialFile').value='';
@@ -196,19 +203,19 @@ function restoreMaterialControls(unit='0',section='all'){
 function selectTask(id,restoring=false){$('#visionConfirmed').checked=false;
  if(importing){$('#status').textContent='正在解析上传文件，请稍后切换；AI审阅可在后台继续。';return}
  id=taskByID(id).id;if(id!==currentTask&&!restoring)moduleHistory?.remember();
- if(id!==currentTask||restoring){if(currentTask==='replay')lecturePlayer.pause();if(!restoring)taskSessions.set(currentTask,snapshotTask());currentTask=id;const snap=taskSessions.get(id)||{};
+ if(id!==currentTask||restoring){if(currentTask==='replay')lecturePlayer.pause();if(!restoring)taskSessions.set(currentTask,snapshotTask());if(!restoring){const target=projectSession(id)||{_project:projectState()};taskSessions.set(id,target)}currentTask=id;const snap=taskSessions.get(id)||{};if(snap._project)applyProject(snap._project);
  uploaded=snap.uploaded||null;reviewFile=snap.reviewFile||null;reviewItems=snap.reviewItems||[];reviewResults=snap.reviewResults||new Map();history=snap.history||[];conversation=snap.conversation||[];
  $('#attachMaterial').checked=!!snap.attachMaterial;$('#question').value=snap.question||'';$('#scope').value=snap.scope||'';$('#expertPerspective').value=snap.expert||'';activeExpert=snap.expert||'';$('#specialistRole').value=snap.specialist||'auto';$('#messages').replaceChildren();for(const t of conversation)renderTurn(t);restoreMaterialControls(snap.unit,snap.section);if(snap.result)showResult(snap.result);else{clearImages();$('#sources').replaceChildren();$('#found').textContent='本工作区尚无检索来源';}
  }
  for(const b of $('#taskNav').children)b.setAttribute('aria-current',b.dataset.task===currentTask?'page':'false');
- $('.appShell').classList.remove('show-inspector');$('#evidenceTab').setAttribute('aria-selected','false');$('#taskTitle').textContent=taskByID(id).title;$('#taskSubtitle').textContent=taskByID(id).subtitle;
+ $('.appShell').classList.remove('show-inspector');$('#evidenceTab').setAttribute('aria-selected','false');$('#taskTitle').textContent=taskByID(id).title;$('#taskSubtitle').textContent=([$('#projectTeacher').value,$('#courseName').value].filter(Boolean).join(' · ')||'尚未命名的备赛项目')+'｜'+taskByID(id).subtitle;
  $('#materialHeading').textContent=currentTask==='lesson'?'课堂字幕与批次审阅':currentTask==='report'?'报告上传与批次审阅':currentTask==='presentation'?'汇报上传与审阅':'添加材料与审阅范围';
  const prevSection=$('#reviewSection').value;initReviewSections();if([...$('#reviewSection').options].some(o=>o.value===prevSection))$('#reviewSection').value=prevSection;updateReviewPlan();$('#taskAction').textContent=currentTask==='library'?'搜索专家证据':'向顾问提问';updateRubric();paintSpecialist();workspace?.refresh();
  $('.materialPanel').hidden=['overview','library','consistency','replay'].includes(id);$('#workspaceUpload').hidden=['overview','library','consistency','replay'].includes(id);showWorkView(id==='replay'?'material':taskSessions.get(id)?.view||'material');if(id==='replay'){$('.workspace').scrollTop=0;window.scrollTo(0,0);}chatScroll.restore();syncTaskControls();moduleHistory?.show(id);
 }
 $('#taskAction').onclick=()=>{inspector();if(currentTask==='library'){$('#question').focus();return}$('#question').value=taskQuestion(currentTask);$('#question').focus()};
-function projectChanged(){history=[];reviewItems=[];reviewResults.clear();for(const s of taskSessions.values()){s.history=[];s.reviewItems=[];s.reviewResults=new Map()}updateRubric();updateReviewPlan();workspace.refresh();$('#status').textContent='备赛信息已更新，原问答保留展示；材料需按新信息重新审阅。'}
-$('#competitionTrack').onchange=projectChanged;$('#competitionEdition').onchange=projectChanged;$('#courseName').onchange=projectChanged;
+function projectChanged(){history=[];reviewItems=[];reviewResults.clear();for(const s of new Set([...taskSessions.values(),...projectSessions.values()])){if(s._project?.id&&s._project.id!==projectID)continue;s._project=projectState();s.history=[];s.reviewItems=[];s.reviewResults=new Map()}updateRubric();updateReviewPlan();workspace.refresh();$('#status').textContent='备赛信息已更新，原问答保留展示；材料需按新信息重新审阅。'}
+$('#projectTeacher').onchange=projectChanged;$('#competitionTrack').onchange=projectChanged;$('#competitionEdition').onchange=projectChanged;$('#courseName').onchange=projectChanged;
 $('#openBuiltinRules').onclick=async()=>{try{const r=rubricFor(ruleCatalog,$('#competitionTrack').value,currentTask),res=await api('/api/document-pdf',{id:'builtin:rules6'}),u=URL.createObjectURL(await res.blob());window.open(u+'#page='+(r?.part?.page||14),'_blank','noopener');setTimeout(()=>URL.revokeObjectURL(u),600000)}catch(e){$('#status').textContent=e.message}};
 try{ruleCatalog=await json('/api/builtin',{})}catch(e){$('#rubricStatus').textContent=e.message}selectTask(currentTask);
 
@@ -285,14 +292,14 @@ await restoreBranch();
 
 setInterval(()=>{if(jobs.size)syncTaskControls()},1000);
 
-function persistentSnapshot(){snapshotTask();return{version:1,layout:layoutManager?.exportState(),currentTask,library:currentLibraryPath,project:{track:$('#competitionTrack').value,edition:$('#competitionEdition').value,course:$('#courseName').value},notes:workspace.exportState().notes,replay:lecturePlayer.exportState(),sessions:Object.fromEntries([...taskSessions].map(([id,s])=>[id,encodeSession(s)]))}}
+function persistentSnapshot(){snapshotTask();return{version:1,layout:layoutManager?.exportState(),currentTask,library:currentLibraryPath,project:projectState(),notes:workspace.exportState().notes,replay:lecturePlayer.exportState(),sessions:Object.fromEntries(tasks.map(t=>[t.id,projectSession(t.id)]).filter(([,s])=>s).map(([id,s])=>[id,encodeSession(s)]))}}
 function restorePersistent(state){
  if(state?.version!==1||!state.sessions||typeof state.sessions!=='object')throw Error('不是可恢复的工作记录格式');
  if(state.notes&&(typeof state.notes!=='object'||Array.isArray(state.notes)||Object.values(state.notes).some(v=>!v||typeof v!=='object'||Array.isArray(v)||(v.selected&&!Array.isArray(v.selected))||(v.page!==undefined&&(!Number.isInteger(v.page)||v.page<0)))))throw Error('工作区标注格式无效，原工作未改变');
  const parsed=new Map();for(const [id,s] of Object.entries(state.sessions)){if(!tasks.some(t=>t.id===id))continue;parsed.set(id,decodeSession(s))}
  if(jobs.size||importing)throw Error('请先完成或取消当前运行中的任务，再恢复记录');
- moduleHistory?.reset();taskSessions.clear();for(const [id,s] of parsed){if(state.library!==currentLibraryPath){s.history=[];if(s.uploaded)s.uploaded.reviewSignature='';s.status='记录来自另一资料库；展示历史，但新问题不会沿用旧上下文。'}taskSessions.set(id,s)}
- for(const [id,key] of [['competitionTrack','track'],['competitionEdition','edition'],['courseName','course']])$('#'+id).value=state.project?.[key]||'';
+ moduleHistory?.reset();taskSessions.clear();projectSessions.clear();projectExtras.clear();for(const [id,s] of parsed){if(state.library!==currentLibraryPath){s.history=[];if(s.uploaded)s.uploaded.reviewSignature='';s.status='记录来自另一资料库；展示历史，但新问题不会沿用旧上下文。'}taskSessions.set(id,s)}
+ applyProject(state.project);for(const [id,s] of taskSessions){if(!s._project)s._project=projectState();projectSessions.set(s._project.id+':'+id,s);}
  layoutManager?.restoreState(state.layout);workspace.restoreState(state.notes||{});lecturePlayer.restoreState(state.library===currentLibraryPath?state.replay:null);selectTask(state.currentTask||'overview',true);
 }
 layoutManager=createLayoutResize({changed:()=>workspaceMemory?.changed()});
@@ -305,7 +312,7 @@ $('#workspaceImport').onchange=async()=>{try{const f=$('#workspaceImport').files
 for(const event of ['input','change','click'])document.addEventListener(event,()=>workspaceMemory.changed());
 setInterval(()=>workspaceMemory.changed(),10000);
 window.addEventListener('beforeunload',e=>{if(jobs.size){e.preventDefault();e.returnValue='';}});
-installDialogChrome();document.body.dataset.ready="true";document.body.setAttribute("aria-busy","false");
+installDialogChrome();
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.querySelector("dialog[open]"))$("#closeEvidence").click()});
 
 async function reviewDocumentImages(){
@@ -331,8 +338,10 @@ $('#reattachWordFile').onchange=async()=>{const f=$('#reattachWordFile').files[0
 
 if(voiceRequested)$('#voiceOpen').click();
 
-moduleHistory=createModuleTasks({request:data=>json('/api/module-tasks',data),current:()=>currentTask,capture:()=>({module:currentTask,s:snapshotTask()}),library:()=>currentLibraryPath,project:()=>({track:$('#competitionTrack').value,edition:$('#competitionEdition').value,course:$('#courseName').value}),extras:()=>({notes:workspace.exportState().notes[currentTask]||{},replay:currentTask==='replay'?lecturePlayer.exportState():null}),panel:$('#moduleTaskList'),status:$('#moduleTaskStatus'),apply:(id,s,p,extra)=>{taskSessions.set(id,s);workspace.restoreModule(id,extra?.notes);if(id==='replay')lecturePlayer.restoreState(extra?.replay);if(p&&!jobs.size)for(const [node,key] of [['competitionTrack','track'],['competitionEdition','edition'],['courseName','course']])$('#'+node).value=p[key]||'';selectTask(id,true)}});
-$('#moduleTaskNew').onclick=()=>moduleHistory.fresh().catch(e=>$('#moduleTaskStatus').textContent=e.message);
+moduleHistory=createModuleTasks({request:data=>json('/api/module-tasks',data),current:()=>currentTask,capture:()=>({module:currentTask,s:snapshotTask()}),library:()=>currentLibraryPath,project:projectState,extras:()=>({notes:workspace.exportState().notes[currentTask]||{},replay:currentTask==='replay'?lecturePlayer.exportState():null}),panel:$('#moduleTaskList'),status:$('#moduleTaskStatus'),apply:async(id,s,p,extra)=>{if(p?.id!==projectID){await workspaceMemory.fresh();switchProject(p)}taskSessions.set(id,s);workspace.restoreModule(id,extra?.notes);if(id==='replay')lecturePlayer.restoreState(extra?.replay);if(p){applyProject(p);s._project=projectState();}projectSessions.set(projectID+':'+id,s);selectTask(id,true)}});
+$('#moduleTaskNew').onclick=()=>startBlankTask(false);
+$('#workspaceNewTask').onclick=()=>startBlankTask(false);
+$('#workspaceResetTask').onclick=()=>startBlankTask(true);
 $('#moduleTaskRefresh').onclick=()=>moduleHistory.show(currentTask);
 for(const event of ['input','change','click'])document.addEventListener(event,()=>moduleHistory.changed());
 setInterval(()=>moduleHistory.changed(),10000);await moduleHistory.show(currentTask);
@@ -345,3 +354,26 @@ $('#webSearchOpen').onclick=()=>{$('#webSearchDialog').showModal();webSearchPane
 const replayClose=el('button','返回完整回放 ×');replayClose.type='button';replayClose.id='replayChatClose';replayClose.onclick=()=>showWorkView('material');$('.conversation').prepend(replayClose);
 
 const layoutReset=el('button','恢复默认布局');layoutReset.type='button';layoutReset.id='layoutReset';layoutReset.onclick=()=>layoutManager.reset();$('.headerActions').append(layoutReset);
+
+// New teachers get a new whole-workbench record. Old task objects remain tracked
+// so running jobs can finish into their original history without touching the new project.
+function markTaskStarting(value){startingTask=value;for(const id of ['moduleTaskNew','workspaceNewTask','workspaceResetTask','newTeacherProject'])$('#'+id).disabled=value;}
+async function startBlankTask(reset=false){
+ if(importing||startingTask){$('#moduleTaskStatus').textContent='请等待当前材料解析或新建完成。';return}
+ markTaskStarting(true);try{if(reset)currentJob()?.ctrl.abort();teacherSpeech.stop();$('#audio').pause();audioState=null;await moduleHistory.fresh();$('#status').textContent=reset?'已保存旧任务并重置本工作区；可从历史恢复。':'空白任务已创建，可添加新材料或直接提问。';await workspaceMemory.flush()}catch(e){$('#moduleTaskStatus').textContent=e.message}finally{markTaskStarting(false)}
+}
+const newProjectDialog=document.createElement('dialog');newProjectDialog.id='newTeacherDialog';
+newProjectDialog.innerHTML='<form id="newTeacherForm"><div class="dialogHeader"><h2>给新老师建立备赛项目</h2><button type="button" id="newTeacherClose" class="dialogClose">关闭 ×</button></div><div class="dialogContent"><p>保存当前项目，清空各工作区的材料、问答、审阅结果、备注和播放选择。API 与资料库连接保留。</p><label>教师 / 项目名称<input id="newTeacherName" maxlength="120" placeholder="例如：张老师 · 新文科备赛"></label><label>课程名称<input id="newTeacherCourse" maxlength="160" placeholder="可稍后填写"></label><label>赛道<select id="newTeacherTrack"></select></label><p class="fine">旧项目可在“历史与恢复”找回；进行中的旧任务继续保存到原任务，不会进入新项目。</p><p id="newTeacherStatus" role="status"></p><button id="newTeacherStart" type="submit">保存旧项目，开始新项目</button></div></form>';
+document.body.append(newProjectDialog);$('#newTeacherTrack').replaceChildren(...[...$('#competitionTrack').options].map(o=>o.cloneNode(true)));
+$('#newTeacherClose').onclick=()=>newProjectDialog.close();
+$('#newTeacherProject').onclick=()=>{if(importing||startingTask)return;$('#newTeacherForm').reset();$('#newTeacherStatus').textContent='';newProjectDialog.showModal();$('#newTeacherName').focus()};
+$('#newTeacherForm').onsubmit=async e=>{
+ e.preventDefault();if(importing||startingTask)return;markTaskStarting(true);$('#newTeacherStart').disabled=true;
+ try{await moduleHistory.flush();await workspaceMemory.fresh();rememberProjectExtras();teacherSpeech.stop();$('#audio').pause();audioState=null;lecturePlayer.reset();taskSessions.clear();workspace.restoreState({});
+ applyProject({id:crypto.randomUUID(),teacher:$('#newTeacherName').value.trim(),course:$('#newTeacherCourse').value.trim(),track:$('#newTeacherTrack').value,edition:'7'});
+ for(const t of tasks)taskSessions.set(t.id,{_project:projectState(),conversation:[],history:[],reviewItems:[],reviewResults:new Map()});
+ selectTask('overview',true);await moduleHistory.flush();await workspaceMemory.flush();newProjectDialog.close();$('#moduleTaskStatus').textContent='新老师项目已建立，所有工作区均为空白；旧内容在历史中保留。';
+ }catch(e){$('#newTeacherStatus').textContent=e.message}finally{markTaskStarting(false);$('#newTeacherStart').disabled=false}
+};
+
+document.body.dataset.ready="true";document.body.setAttribute("aria-busy","false");

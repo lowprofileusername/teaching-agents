@@ -17,3 +17,5 @@
 .shellTopActions>button{white-space:nowrap;flex-shrink:0}
 
 .shellVersion{font-size:10px;color:#81909e;white-space:nowrap}
+
+.taskStartActions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}.workbenchHeader{flex-wrap:wrap}.taskStartActions button{white-space:nowrap}#newTeacherDialog{width:min(580px,90vw)}#newTeacherDialog label{display:grid;gap:6px;margin:14px 0}#newTeacherDialog input,#newTeacherDialog select{width:100%;box-sizing:border-box}

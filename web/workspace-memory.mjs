@@ -1,6 +1,6 @@
 import {cleanTurn} from './conversation.mjs';
 export function encodeSession(s){
- const out={};for(const key of ['_taskRecord','uploaded','reviewItems','history','unit','section','attachMaterial','question','scope','expert','specialist','jobState','status','view'])if(s[key]!==undefined)out[key]=s[key];
+ const out={};for(const key of ['_taskRecord','_project','uploaded','reviewItems','history','unit','section','attachMaterial','question','scope','expert','specialist','jobState','status','view'])if(s[key]!==undefined)out[key]=s[key];
  out.conversation=(s.conversation||[]).map(cleanTurn);out.reviewResults=[...(s.reviewResults||new Map())];return out;
 }
 export function decodeSession(s){
@@ -18,7 +18,7 @@ export function createWorkspaceMemory({request,snapshot,restore,indicator}){
  function flush(){if(!enabled)return Promise.resolve();clearTimeout(timer);chain=chain.catch(()=>{}).then(async()=>{
   if(conflict)throw Error('工作记录冲突，请在历史记录中另存副本');
   const state=snapshot(),raw=JSON.stringify(state);if(raw===last)return;
-  tell('正在保存工作记录…');try{const x=await request({action:'save',id,revision,title:state.project?.course||'未命名备赛项目',state});revision=x.revision;last=raw;tell('已保存 '+new Date(x.updated).toLocaleTimeString()+' · 可关闭后恢复')}
+  tell('正在保存工作记录…');try{const x=await request({action:'save',id,revision,title:[state.project?.teacher,state.project?.course].filter(Boolean).join(' · ')||'未命名备赛项目',state});revision=x.revision;last=raw;tell('已保存 '+new Date(x.updated).toLocaleTimeString()+' · 可关闭后恢复')}
   catch(e){if(e.message.includes('另一窗口'))conflict=true;tell('未保存：'+e.message);throw e}
  });return chain}
  function changed(){if(!enabled)return;clearTimeout(timer);timer=setTimeout(()=>flush().catch(()=>{}),900)}
