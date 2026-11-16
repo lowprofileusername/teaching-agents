@@ -22,6 +22,7 @@ var desktopState struct {
 	roamUntil  time.Time
 	roamSpeed  float64
 	roamScale  float64
+	dragUntil  time.Time
 	branches   map[string]desktopBranch
 }
 
@@ -39,6 +40,9 @@ func (a *App) desktop(w http.ResponseWriter, r *http.Request) {
 		Active   bool    `json:"active"`
 		Speed    float64 `json:"speed"`
 		Scale    float64 `json:"scale"`
+		Phase    string  `json:"phase"`
+		X        int     `json:"x"`
+		Y        int     `json:"y"`
 	}
 	if !a.read(w, r, &x) {
 		return
@@ -99,6 +103,28 @@ func (a *App) desktop(w http.ResponseWriter, r *http.Request) {
 		}
 		desktopState.roamSpeed = max(40, min(220, x.Speed))
 		jsonOut(w, 200, map[string]any{"direction": desktopState.direction})
+		return
+	}
+	if x.Action == "drag" {
+		if !oneOf(x.Phase, "begin", "move", "end") || x.X < -100000 || x.X > 100000 || x.Y < -100000 || x.Y > 100000 {
+			fail(w, 400, "无效拖动参数")
+			return
+		}
+		if desktopState.control == nil {
+			fail(w, 409, "原生窗口未就绪")
+			return
+		}
+		desktopState.roamUntil = time.Time{}
+		desktopState.dragUntil = time.Now().Add(2 * time.Second)
+		if x.Phase == "end" {
+			desktopState.dragUntil = time.Time{}
+		}
+		raw, _ := json.Marshal(map[string]any{"phase": x.Phase, "x": x.X, "y": x.Y})
+		if e := desktopState.control("drag", string(raw)); e != nil {
+			fail(w, 500, e.Error())
+			return
+		}
+		jsonOut(w, 200, map[string]bool{"ok": true})
 		return
 	}
 	if x.Action == "size" {

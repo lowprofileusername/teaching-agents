@@ -36,6 +36,10 @@ func startDesktop(a *App, link string) error {
 	})
 	var mu sync.Mutex
 	var pet *application.WebviewWindow
+	var dragAnchor struct {
+		active                             bool
+		screenX, screenY, windowX, windowY int
+	}
 	count := 0
 	var visible atomic.Bool
 	open := func(windowURL string) {
@@ -131,6 +135,34 @@ func startDesktop(a *App, link string) error {
 		mu.Lock()
 		defer mu.Unlock()
 		switch action {
+		case "drag":
+			if pet == nil {
+				return nativeUnavailable()
+			}
+			var d struct {
+				Phase string `json:"phase"`
+				X     int    `json:"x"`
+				Y     int    `json:"y"`
+			}
+			if e := json.Unmarshal([]byte(unused), &d); e != nil {
+				return e
+			}
+			if d.Phase == "begin" {
+				dragAnchor.active = true
+				dragAnchor.screenX = d.X
+				dragAnchor.screenY = d.Y
+				dragAnchor.windowX, dragAnchor.windowY = pet.Position()
+			}
+			if dragAnchor.active && d.Phase != "begin" {
+				pet.SetPosition(dragAnchor.windowX+d.X-dragAnchor.screenX, dragAnchor.windowY+d.Y-dragAnchor.screenY)
+			}
+			if d.Phase == "end" {
+				dragAnchor.active = false
+				x, y := pet.Position()
+				w, h := pet.Size()
+				_ = a.saveGeometry("teacher", windowGeometry{X: x, Y: y, Width: w, Height: h})
+			}
+
 		case "open":
 			open(a.origin + "/?fresh=1#" + a.token)
 		case "open_voice":
@@ -174,7 +206,7 @@ func startDesktop(a *App, link string) error {
 				desktopState.Lock()
 				mu.Lock()
 				if pet != nil && visible.Load() {
-					active := now.Before(desktopState.roamUntil) && resolvedTeacherPosture(desktopState.posture, desktopState.status, desktopState.activityAt, now) != "sit"
+					active := !now.Before(desktopState.dragUntil) && now.Before(desktopState.roamUntil) && resolvedTeacherPosture(desktopState.posture, desktopState.status, desktopState.activityAt, now) != "sit"
 					screen, e := pet.GetScreen()
 					if e != nil || screen == nil {
 						screen = host.Screen.GetPrimary()

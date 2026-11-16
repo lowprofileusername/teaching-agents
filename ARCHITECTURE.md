@@ -2,7 +2,7 @@
 
 ## Decision
 
-Retain Go and Wails. Introduce React + TypeScript for the workbench shell. Migrate service UI controllers gradually; do not rewrite working SQLite/media/Word/credential code to change the layout. No backend Rust migration in v0.4.3.
+Retain Go and Wails. Introduce React + TypeScript for the workbench shell. Migrate service UI controllers gradually; do not rewrite working SQLite/media/Word/credential code to change the layout. No backend Rust migration in v0.4.4.
 
 The shell owns the topbar, left navigation/history column, main workspace slot, optional evidence inspector and settings entry. Existing controllers own their material/answer/player DOM islands and requests. `Slot` preserves element identity; React must not reconcile an island's interior. This is an explicit migration boundary, not a claim that the entire frontend is React. Layout CSS is separate from service styles. Generated bundle is embedded in Go; production requires neither npm nor Node. CI checks TypeScript and regenerates bundle on Windows and Mac.
 

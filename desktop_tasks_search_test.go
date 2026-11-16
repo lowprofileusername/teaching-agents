@@ -120,3 +120,49 @@ func TestWebSearchAdaptersAndValidation(t *testing.T) {
 		t.Fatal(r, e)
 	}
 }
+
+func TestDesktopDragBridge(t *testing.T) {
+	desktopState.Lock()
+	old := desktopState.control
+	var phases []string
+	desktopState.control = func(action, raw string) error {
+		if action != "drag" {
+			t.Fatalf("unexpected action %s", action)
+		}
+		var d struct {
+			Phase string `json:"phase"`
+			X, Y  int
+		}
+		if e := json.Unmarshal([]byte(raw), &d); e != nil {
+			t.Fatal(e)
+		}
+		phases = append(phases, d.Phase)
+		return nil
+	}
+	desktopState.Unlock()
+	defer func() {
+		desktopState.Lock()
+		desktopState.control = old
+		desktopState.dragUntil = time.Time{}
+		desktopState.Unlock()
+	}()
+	a := &App{}
+	for _, body := range []string{`{"action":"drag","phase":"begin","x":100,"y":200}`, `{"action":"drag","phase":"move","x":180,"y":150}`, `{"action":"drag","phase":"end","x":180,"y":150}`} {
+		w := httptest.NewRecorder()
+		a.desktop(w, httptest.NewRequest("POST", "/api/desktop", strings.NewReader(body)))
+		if w.Code != 200 {
+			t.Fatal(w.Body.String())
+		}
+	}
+	if strings.Join(phases, ",") != "begin,move,end" {
+		t.Fatal(phases)
+	}
+	w := httptest.NewRecorder()
+	a.desktop(w, httptest.NewRequest("POST", "/api/desktop", strings.NewReader(`{"action":"drag","phase":"move","x":200000,"y":0}`)))
+	if w.Code != 400 {
+		t.Fatal("out-of-range coordinate accepted")
+	}
+	if !desktopState.dragUntil.IsZero() {
+		t.Fatal("drag remained active")
+	}
+}
