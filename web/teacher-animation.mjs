@@ -1,4 +1,5 @@
-// 24 actual image poses per stride. Animation time is independent of RAF rate.
+import {walkFaces,femaleWalkOrder,maleWalkOrder} from './walk-calibration.mjs';
+// Calibrated image poses per stride; repeated transition poses ease the arm reversal. Animation time is independent of RAF rate.
 export const WALK_FRAMES=8, WALK_FRAME_MS=110;
 export const wrapView=n=>((Math.round(n)%24)+24)%24;
 export class TeacherMotion {
@@ -20,7 +21,14 @@ export class SpriteAtlas {
  let sum=0,count=0;for(let y=Math.round(y0+(y1-y0)*.22);y<y0+(y1-y0)*.5;y++)for(let x=x0;x<=x1;x++)if(data[((oy+y)*c.width+ox+x)*4+3]>100){sum+=x;count++}
  this.frames.push({ox,oy,ch,y0,y1,center:count?sum/count:this.cw/2,height:y1-y0+1});}
  this.height=Math.max(...this.frames.map(f=>f.height));}
- draw(ctx,index,w,h,mirror=false,normalizeHeight=false){const f=this.frames[index],scale=(h*.94)/(normalizeHeight?f.height:this.height);ctx.clearRect(0,0,w,h);ctx.save();if(mirror){ctx.translate(w,0);ctx.scale(-1,1)}ctx.drawImage(this.image,f.ox,f.oy,this.cw,f.ch,w/2-f.center*scale,h*.985-f.y1*scale,this.cw*scale,f.ch*scale);ctx.restore()}
+ draw(ctx,index,w,h,mirror=false,normalizeHeight=false){const f=this.frames[index],scale=(h*.94)/(normalizeHeight?f.height:this.height);ctx.clearRect(0,0,w,h);ctx.save();if(mirror){ctx.translate(w,0);ctx.scale(-1,1)}
+ if(normalizeHeight==='face'&&f.face){
+  const [x,y,fw,fh]=f.face,s=h*.095/fw,left=w*.54-(x+fw/2)*s,top=h*.075-y*s,neck=Math.min(f.y1-1,y+fh*1.5),join=top+neck*s,bottom=h*.985;
+  // Keep face width, face anchor and feet constant. Only the torso/leg band
+  // absorbs the generated sprite's inconsistent head-to-body ratio. No blends.
+  ctx.drawImage(this.image,f.ox,f.oy,this.cw,neck,left,top,this.cw*s,neck*s);
+  ctx.drawImage(this.image,f.ox,f.oy+neck,this.cw,f.y1+1-neck,left,join,this.cw*s,bottom-join);
+ }else ctx.drawImage(this.image,f.ox,f.oy,this.cw,f.ch,w/2-f.center*scale,h*.985-f.y1*scale,this.cw*scale,f.ch*scale);ctx.restore()}
 }
 export const femaleTurnOrder=[[0,0],[1,0],[1,1],[2,0],[1,2],[0,1],[2,1],[3,3],[2,2],[3,1],[0,2],[3,2],[4,1],[4,2],[2,3],[4,0],[3,0],[5,0],[4,3],[0,3],[1,3],[5,1],[5,2],[5,3]];
 export const cardinalViews=template=>template==='female'?[0,5,10,19]:[0,6,12,18];
@@ -31,12 +39,12 @@ export class SpriteSequence {
 export class TeacherAnimator {
  constructor(canvas){this.canvas=canvas;this.ctx=canvas.getContext('2d');this.ctx.imageSmoothingQuality='high';this.motion=new TeacherMotion();this.template='';this.images={};this.ready=false;this.loadID=0}
  async setTemplate(template){if(this.template===template&&this.ready)return;this.template=template;this.ready=false;const id=++this.loadID;const images={};
- const load=async(name,cols,rows)=>{const image=new Image();image.src=`assets/${name}_sheet.png`;await image.decode();return new SpriteAtlas(image,cols,rows)};
+ const load=async(name,cols,rows)=>{const image=new Image();image.src=`assets/${name}_sheet.png`;await image.decode();const atlas=new SpriteAtlas(image,cols,rows);if(walkFaces[name])atlas.frames.forEach((f,i)=>{const face=[...walkFaces[name][i]];face[1]+=Math.floor(i/cols)*atlas.ch-f.oy;f.face=face});return atlas};
  if(template==='female'){
  const [sit,walks,turns]=await Promise.all([load('female_sit',4,2),Promise.all(Array.from({length:4},(_,i)=>load(`female_walk_hd${i}`,2,2))),Promise.all(Array.from({length:6},(_,i)=>load(`female_turn_hd${i}`,2,2)))]);
- images.sit=sit;images.walk=new SpriteSequence(walks,Array.from({length:16},(_,i)=>[Math.floor(i/4),i%4]));images.turn=new SpriteSequence(turns,femaleTurnOrder);
- }else{[images.sit,images.walk,images.turn]=await Promise.all([load('male_sit',4,2),load('male_walk',4,2),load('male_turn24',6,4)])}
- if(id!==this.loadID)return;this.images=images;this.ready=true;this.motion=new TeacherMotion(template==='female'?16:8,template==='female'?75:110)
+ images.sit=sit;images.walk=new SpriteSequence(walks,femaleWalkOrder.map(i=>[Math.floor(i/4),i%4]));images.turn=new SpriteSequence(turns,femaleTurnOrder);
+ }else{[images.sit,images.walk,images.turn]=await Promise.all([load('male_sit',4,2),load('male_walk',4,2),load('male_turn24',6,4)]);images.walk=new SpriteSequence([images.walk],maleWalkOrder.map(i=>[0,i]))}
+ if(id!==this.loadID)return;this.images=images;this.ready=true;this.motion=new TeacherMotion(images.walk.frames.length,90)
  }
- draw(ms,{sit=false,walking=false,direction='right',view=null}){if(!this.ready)return;let state=view===null?this.motion.tick(ms,sit,walking):{sheet:'turn',frame:wrapView(view),pose:'rotating'};if(state.pose==='standing')state={sheet:'turn',frame:cardinalViews(this.template)[direction==='left'?3:1],pose:'standing'};this.images[state.sheet].draw(this.ctx,state.frame,this.canvas.width,this.canvas.height,direction==='left'&&state.sheet==='walk',state.sheet!=='sit');this.canvas.dataset.pose=state.pose;this.canvas.dataset.frame=String(state.frame);this.canvas.dataset.template=this.template}
+ draw(ms,{sit=false,walking=false,direction='right',view=null}){if(!this.ready)return;let state=view===null?this.motion.tick(ms,sit,walking):{sheet:'turn',frame:wrapView(view),pose:'rotating'};if(state.pose==='standing')state={sheet:'turn',frame:cardinalViews(this.template)[direction==='left'?3:1],pose:'standing'};this.images[state.sheet].draw(this.ctx,state.frame,this.canvas.width,this.canvas.height,direction==='left'&&state.sheet==='walk',state.sheet==='walk'?'face':state.sheet!=='sit');this.canvas.dataset.pose=state.pose;this.canvas.dataset.frame=String(state.frame);this.canvas.dataset.template=this.template}
 }

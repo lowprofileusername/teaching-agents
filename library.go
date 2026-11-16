@@ -290,9 +290,10 @@ func (a *App) librarySearch(w http.ResponseWriter, r *http.Request) {
 	last := started
 	mark := func(name string) { now := time.Now(); timings[name] = now.Sub(last).Milliseconds(); last = now }
 	var x struct {
-		Q      string `json:"q"`
-		Tag    string `json:"tag"`
-		PageNo int    `json:"page_no"`
+		Q               string  `json:"q"`
+		Tag             string  `json:"tag"`
+		PageNo          int     `json:"page_no"`
+		ExpectedLibrary *string `json:"expected_library"`
 	}
 	if !a.read(w, r, &x) {
 		return
@@ -301,7 +302,11 @@ func (a *App) librarySearch(w http.ResponseWriter, r *http.Request) {
 		fail(w, 400, "检索问题过长")
 		return
 	}
-	db, _, e := getLibrary()
+	db, path, e := getLibrary()
+	if x.ExpectedLibrary != nil && *x.ExpectedLibrary != path {
+		fail(w, 409, "资料库已改变，本次检索取消以避免来源混用")
+		return
+	}
 	if e != nil {
 		jsonOut(w, 200, map[string]any{"pages": []any{}, "raw_ocr": []any{}, "official_hits": []any{}, "research_hits": []any{}, "document_hits": builtinSearch(r.Context(), x.Q), "timings": map[string]int64{"total_ms": time.Since(started).Milliseconds()}, "retrieval": "仅使用内置往届参考；未连接讲座资料库"})
 		return

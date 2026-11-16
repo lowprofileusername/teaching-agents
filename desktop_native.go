@@ -58,7 +58,7 @@ func startDesktop(a *App, link string) error {
 				x = max(0, screen.WorkArea.Width-276)
 				y = max(0, screen.WorkArea.Height-548)
 			}
-			pet = host.Window.NewWithOptions(application.WebviewWindowOptions{InitialPosition: application.WindowXY, Screen: screen, X: x, Y: y, Name: "teacher-companion", Title: "桌面教师 · 原创教师", Width: 260, Height: 540, DisableResize: true, AlwaysOnTop: true, Frameless: true, BackgroundType: application.BackgroundTypeTransparent, Mac: application.MacWindow{Backdrop: application.MacBackdropTransparent}, URL: a.origin + "/pet.html#" + a.token, BackgroundColour: application.NewRGBA(0, 0, 0, 0)})
+			pet = host.Window.NewWithOptions(application.WebviewWindowOptions{InitialPosition: application.WindowXY, Screen: screen, X: x, Y: y, Name: "teacher-companion", Title: "桌面教师 · 原创教师", Width: 260, Height: 540, DisableResize: true, AlwaysOnTop: true, Frameless: true, BackgroundType: application.BackgroundTypeTransparent, Mac: application.MacWindow{Backdrop: application.MacBackdropTransparent}, Windows: application.WindowsWindow{WebView2CompositionHosting: true, DisableFramelessWindowDecorations: true, HiddenOnTaskbar: true}, URL: a.origin + "/pet.html#" + a.token, BackgroundColour: application.NewRGBA(0, 0, 0, 0)})
 			pet.OnWindowEvent(events.Common.WindowRuntimeReady, func(e *application.WindowEvent) { placePet() })
 			pet.RegisterHook(events.Common.WindowClosing, func(e *application.WindowEvent) { visible.Store(false); pet.Hide(); e.Cancel() })
 		} else {

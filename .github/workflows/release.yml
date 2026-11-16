@@ -33,6 +33,7 @@ jobs:
           node tests/teacher-animation.mjs
           node tests/workspace-data.mjs
           node tests/document-review.mjs
+          node tests/lecture-timeline.mjs
       - name: Build two original teachers
         shell: pwsh
         run: |
@@ -44,6 +45,16 @@ jobs:
       - name: Start and verify actual Windows executables
         shell: pwsh
         run: ./tests/windows-smoke.ps1
+      - name: Verify actual Windows teacher transparency
+        shell: pwsh
+        run: ./tests/windows-transparency.ps1
+      - name: Save native transparency evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: windows-teacher-transparency
+          path: ${{ runner.temp }}/teacher-transparency/*
+          if-no-files-found: ignore
       - name: Package documentation and checksums
         shell: pwsh
         run: |

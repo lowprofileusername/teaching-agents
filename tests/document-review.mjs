@@ -8,3 +8,16 @@ const snap=branchSnapshot([{role:'assistant',text:'答案',reasoning:'接口思�
 assert(!exportConversation([{role:'assistant',text:'审阅',status:'reviewed_text'}],'md').includes('非完整回答'));
 const res=new Response('event: progress\ndata: {"answer":"半句"}\n\n',{headers:{'content-type':'text/event-stream'}});await assert.rejects(()=>consumeChatStream(res,()=>{}),/未收到完整回答/);
 console.log('document coverage, missing review rejection, branch isolation and incomplete streams passed');
+const valid=JSON.stringify({items:b.parts.map(p=>({id:p.id,comment:'保留「}」与引号"和\\字。',replacement:''}))});
+for(const raw of [valid,'```json\n'+valid+'\n```','下面是结果：\n'+valid+'\n以上完成。','<think>忽略 {"items":[]}</think>\n'+valid])assert.equal(parseReview(raw,b).length,b.parts.length);
+assert.throws(()=>parseReview(valid+'\n'+valid,b),/多份/);assert.throws(()=>parseReview(valid.slice(0,-3),b));assert.throws(()=>parseReview(JSON.stringify({items:[null]}),b));
+assert(reviewBatches([{title:'大量短段',paragraphs:Array.from({length:40},(_,i)=>({id:'p'+i,text:'短段'}))}]).every(x=>x.parts.length<=6));
+const {requestReview}=await import('../web/document-review.mjs');let calls=0;const recovered=await requestReview(b,async()=>({answer:++calls===1?'我会提供建议。':valid}));assert.equal(calls,2);assert.equal(recovered.length,b.parts.length);
+calls=0;await assert.rejects(()=>requestReview(b,async()=>{calls++;return {answer:valid,answer_truncated:true}}),/截断/);assert.equal(calls,2);
+calls=0;await assert.rejects(()=>requestReview(b,async()=>{calls++;return {answer:valid,context:{material_truncated:true}}}),/未完整送达/);assert.equal(calls,1);
+const ctrl=new AbortController();calls=0;await assert.rejects(()=>requestReview(b,async()=>{calls++;ctrl.abort();return {answer:valid}},{signal:ctrl.signal}),/取消/);assert.equal(calls,1);
+console.log('wrapped JSON, ambiguous/truncated rejection, bounded retry and cancellation passed');
+const {socialReply}=await import('../web/chat-intent.mjs');assert(socialReply('专家你好！'));assert(socialReply('谢谢老师'));assert.equal(socialReply('你好，请帮我修改报告'), '');assert.equal(socialReply('好的，继续审阅'), '');assert.equal(socialReply('怎么修改？'), '');
+const {questionScope}=await import('../web/question-scope.mjs');const deck={name:'ppt',scope:'文字提取',units:[{no:1,label:'幻灯片第1页',text:'第一页'},{no:19,label:'幻灯片第19页',text:'第十九页'}]};assert.equal(questionScope('这一页怎么样',deck,1).material.text,'第十九页');assert.equal(questionScope('看第19页',deck,0).index,1);assert(questionScope('第50页',deck,0).error);assert.equal(questionScope('整份PPT怎么样',deck,1),null);assert(questionScope('你好这一页怎么样',null,1).error);
+const {structureMap,parseStructurePlan}=await import('../web/document-structure.mjs');const sm=structureMap({paragraphs:ps},'report');assert.equal(sm.length,2);assert.equal(parseStructurePlan(JSON.stringify({overview:'结构已映射',issues:[{kind:'移位',source_ids:['h1'],target_id:'h2',reason:'移至目标之后以补前提'}]}),sm).issues.length,1);assert.throws(()=>parseStructurePlan(JSON.stringify({overview:'x',issues:[{kind:'移位',source_ids:['h1'],target_id:'missing',reason:'x'}]}),sm),/无效/);
+const relocated=JSON.parse(valid);relocated.items[0].placement={kind:'移位',target_section_id:'h2',reason:'放在问题后面'};assert.equal(parseReview(JSON.stringify(relocated),b,sm)[0].placement.target_section_id,'h2');relocated.items[0].placement.target_section_id='fake';assert.throws(()=>parseReview(JSON.stringify(relocated),b,sm),/无效/);
