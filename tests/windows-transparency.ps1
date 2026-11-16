@@ -20,6 +20,8 @@ New-Item -ItemType Directory -Force $qa | Out-Null
 $fixture=Join-Path $qa 'fixture.sqlite3'
 python tests/make_fixture.py $fixture
 if ($LASTEXITCODE -ne 0) { throw 'Fixture creation failed' }
+$env:WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS='--remote-debugging-port=9222'
+$env:TEACHER_QA_DIR=$qa
 $env:TEACHING_LIBRARY_DB=$fixture
 $env:TEACHING_AGENT_PROFILES=Join-Path $qa 'profiles.json'
 $checks=@()
@@ -52,6 +54,7 @@ foreach ($persona in @('original','male')) {
   for($attempt=0;$attempt -lt 40;$attempt++){
    Start-Sleep -Milliseconds 250
    [Windows.Forms.Application]::DoEvents()
+   [TeacherWindowProbe]::SetWindowPos($hwnd,[IntPtr](-1),60,50,260,540,0x0040) | Out-Null
    $rect=New-Object TeacherWindowProbe+Rect
    [TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$rect) | Out-Null
    $bmp=New-Object Drawing.Bitmap(260,540);$g=[Drawing.Graphics]::FromImage($bmp)
@@ -64,7 +67,8 @@ foreach ($persona in @('original','male')) {
    $bmp.Save((Join-Path $qa "$persona-transparency.png"),[Drawing.Imaging.ImageFormat]::Png);$bmp.Dispose()
    if($matched -and $painted -gt 100){break}
   }
-  $checks+=@{persona=$persona;corners_show_backdrop=$matched;person_pixels=$painted}
+  node tests/windows-webview-probe.mjs
+  $checks+=@{rect=@($rect.Left,$rect.Top,$rect.Right,$rect.Bottom);persona=$persona;corners_show_backdrop=$matched;person_pixels=$painted}
   if(-not $matched -or $painted -le 100){throw "Teacher alpha test failed: backdrop=$matched personSamples=$painted"}
   Write-Output "PASS ${persona}: real native window shows coloured background around visible teacher"
  } finally {if($backdrop){$backdrop.Close();$backdrop.Dispose()};if(-not $proc.HasExited){Stop-Process -Id $proc.Id -Force};$checks | ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $qa 'checks.json')}
