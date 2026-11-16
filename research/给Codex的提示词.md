@@ -8,7 +8,7 @@
 
 ## ===== 复制以下内容给 Codex =====
 
-你在仓库 `lowprofileusername/teaching-agents`（Go + Wails + 内嵌 WebView，本地教学创新大赛备赛工作台）工作。请先 `git pull`，我已经把第七届全国高校教师教学创新大赛 AI 赛道的研究资料推送到 main（commit ff99ebc）。你的任务是：**基于这些资料改进工作台，并把资料真正内置为 agent 可检索的参考**。严格按下面要求做，不要推倒现有架构。
+你在仓库 `lowprofileusername/teaching-agents`（Go + Wails + 内嵌 WebView，本地教学创新大赛备赛工作台）工作。请先 `git pull`，我已经把第七届全国高校教师教学创新大赛 AI 赛道的研究资料推送到 main。开工前先读 `research/资料总览与Codex使用说明.md` 了解资料地图与实施顺序，验收标准见 `research/如何验收Codex的改造.md`。你的任务是：**基于这些资料改进工作台，并把资料真正内置为 agent 可检索的参考**。严格按下面要求做，不要推倒现有架构。
 
 ### 背景：这个工作台现在是什么
 
