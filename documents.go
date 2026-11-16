@@ -194,6 +194,16 @@ func (a *App) documentPDF(w http.ResponseWriter, r *http.Request) {
 	if !a.read(w, r, &x) {
 		return
 	}
+	if x.ID == "builtin:rules6" {
+		b, e := builtinFiles.ReadFile("knowledge/rules_6_2026.pdf")
+		if e != nil {
+			fail(w, 500, "内置原PDF不可读")
+			return
+		}
+		w.Header().Set("Content-Type", "application/pdf")
+		_, _ = w.Write(b)
+		return
+	}
 	db, _, e := getLibrary()
 	if e != nil {
 		fail(w, 409, e.Error())
@@ -484,5 +494,13 @@ func (a *App) parseMaterial(w http.ResponseWriter, r *http.Request) {
 			empty++
 		}
 	}
-	jsonOut(w, 200, map[string]any{"name": name, "units": units, "empty_units": empty, "scope": "原生文字提取；未读取图片中的字、SmartArt、母版文字、备注、图表曲线或版式；Word按段落组，PPTX按实际幻灯片顺序。文件仅在内存解析，不保存原文件。"})
+	var paragraphs []DocumentParagraph
+	if strings.EqualFold(path.Ext(name), ".docx") {
+		paragraphs, e = docxParagraphs(b)
+		if e != nil {
+			fail(w, 400, e.Error())
+			return
+		}
+	}
+	jsonOut(w, 200, map[string]any{"name": name, "paragraphs": paragraphs, "units": units, "empty_units": empty, "scope": "原生文字提取；未读取图片中的字、SmartArt、母版文字、备注、图表曲线或版式；Word按段落组，PPTX按实际幻灯片顺序。文件仅在内存解析，不保存原文件。"})
 }

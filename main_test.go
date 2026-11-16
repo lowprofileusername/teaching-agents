@@ -62,18 +62,25 @@ func TestAuthAndChat(t *testing.T) {
 	if upstreamCalls != 1 {
 		t.Fatal(upstreamCalls)
 	}
-	if c := send("/api/clone", a.token, "", `{}`); c != 409 {
+	if c := send("/api/clone", a.token, "", `{}`); c != 404 {
 		t.Fatal(c)
 	}
 }
-func TestOriginalPersona(t *testing.T) {
-	old := defaultPersona
-	defaultPersona = "original"
-	defer func() { defaultPersona = old }()
-	a := &App{}
-	w := httptest.NewRecorder()
-	a.clone(w, httptest.NewRequest("POST", "/api/clone", strings.NewReader(`{}`)))
-	if w.Code != 403 {
-		t.Fatal(w.Code)
+func TestTeacherProfileFollowsDesktopSelection(t *testing.T) {
+	a := &App{origin: "http://example.com"}
+	desktopState.Lock()
+	old := desktopState.template
+	desktopState.Unlock()
+	defer func() { desktopState.Lock(); desktopState.template = old; desktopState.Unlock() }()
+	for _, item := range []struct{ template, persona string }{{"female", "original"}, {"male", "male"}} {
+		desktopState.Lock()
+		desktopState.template = item.template
+		desktopState.Unlock()
+		w := httptest.NewRecorder()
+		a.handler().ServeHTTP(w, httptest.NewRequest("GET", "http://example.com/profile.json", nil))
+		var got map[string]string
+		if err := json.Unmarshal(w.Body.Bytes(), &got); err != nil || got["persona"] != item.persona {
+			t.Fatalf("profile %s: %s", item.template, w.Body.String())
+		}
 	}
 }

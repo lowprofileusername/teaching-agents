@@ -154,7 +154,7 @@ func (a *App) library(w http.ResponseWriter, r *http.Request) {
 	}
 	db, path, e := getLibrary()
 	if e != nil {
-		fail(w, 409, e.Error())
+		jsonOut(w, 200, map[string]any{"path": "", "format": "builtin", "bytes": 0, "videos": []any{}, "counts": map[string]int{"video": 0, "page": 0, "utterance": 0, "builtin_rules": 27}, "coverage_note": "内置第六届9赛道参考可用；未连接外部讲座库"})
 		return
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), 20*time.Second)
@@ -303,7 +303,7 @@ func (a *App) librarySearch(w http.ResponseWriter, r *http.Request) {
 	}
 	db, _, e := getLibrary()
 	if e != nil {
-		fail(w, 409, e.Error())
+		jsonOut(w, 200, map[string]any{"pages": []any{}, "raw_ocr": []any{}, "official_hits": []any{}, "research_hits": []any{}, "document_hits": builtinSearch(r.Context(), x.Q), "timings": map[string]int64{"total_ms": time.Since(started).Milliseconds()}, "retrieval": "仅使用内置往届参考；未连接讲座资料库"})
 		return
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
@@ -484,7 +484,7 @@ func (a *App) librarySearch(w http.ResponseWriter, r *http.Request) {
 	documents := knowledgeSearch(ctx, db, x.Q, x.Tag)
 	mark("reports_ms")
 	timings["total_ms"] = time.Since(started).Milliseconds()
-	jsonOut(w, 200, map[string]any{"timings": timings, "pages": pages, "raw_ocr": raw, "official_hits": official, "research_hits": research, "document_hits": documents, "matched_pages": len(rank), "returned_pages": len(pages), "retrieval": "关键词检索；跨场结果保留多专家来源。研究卡为研究判断，不是原话；原始转写与OCR未视为听校金标准。"})
+	jsonOut(w, 200, map[string]any{"timings": timings, "pages": pages, "raw_ocr": raw, "official_hits": official, "research_hits": research, "document_hits": append(builtinSearch(ctx, x.Q), documents...), "matched_pages": len(rank), "returned_pages": len(pages), "retrieval": "关键词检索；跨场结果保留多专家来源。研究卡为研究判断，不是原话；原始转写与OCR未视为听校金标准。"})
 }
 func (a *App) libraryAsset(w http.ResponseWriter, r *http.Request) {
 	var x struct {

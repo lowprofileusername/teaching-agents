@@ -1,0 +1,1628 @@
+{
+  "schema_version": 1,
+  "updated": "2026-11-16",
+  "video_count": 36,
+  "expert_count": 34,
+  "scope": "36场讲座署名主讲及圆桌参与者，按姓名与学校消歧；不把被提及的其他学者计入",
+  "policy": "公开职业资料的简要事实摘要；不采集住址、私人联系方式、家庭及敏感信息；来源事实、讲座元数据、AI咨询方向分别存储。未确认字段留空。职称是来源记载，不保证实时。",
+  "experts": [
+    {
+      "id": "caiyiyu",
+      "name": "蔡亦渔",
+      "institution": "新加坡南洋理工大学",
+      "lecture_tags": [
+        "caiyiyu",
+        "roundtable_future"
+      ],
+      "lecture_courses": [
+        "教育智能体与竞赛制项目式教学（主旨，非单一课程）"
+      ],
+      "public_bio": "新加坡南洋理工大学教师，NTU机器人研究中心页面使用Associate Professor职称，研究智能机器人化及沉浸式技术。",
+      "research_focus": [
+        "虚拟与增强现实",
+        "人工智能",
+        "机器人",
+        "点云与建筑信息模型"
+      ],
+      "teaching_focus": [
+        "教育与培训中的沉浸式技术",
+        "教育智能体与竞赛制项目式学习（本库主题）"
+      ],
+      "advisory_focus": [
+        "项目式学习与竞赛任务",
+        "智能体教学情境",
+        "沉浸式工具的适用条件"
+      ],
+      "sources": [
+        {
+          "id": "caiyiyu:web:1",
+          "url": "https://www.ntu.edu.sg/rrc/robotics-research-centre-groups/intelligent-robotisation-group",
+          "title": "南洋理工大学RRC：Intelligent Robotisation Group",
+          "supports": "职称、VR/AR/AI/机器人方向和教育培训应用",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "中文转载有“终身教授”表述，本卡保留本校官网Associate Professor，不自行提升职级。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "caominhui",
+      "name": "曹敏惠",
+      "institution": "华中农业大学",
+      "lecture_tags": [
+        "caominhui"
+      ],
+      "lecture_courses": [
+        "有机化学"
+      ],
+      "public_bio": "华中农业大学化学学院教授，主讲有机化学等课程；公开教师主页列为课程思政名师及课程负责人。",
+      "research_focus": [
+        "药用植物活性成分提取与结构修饰",
+        "超分子识别"
+      ],
+      "teaching_focus": [
+        "有机化学",
+        "基础化学实验",
+        "课程思政",
+        "智慧课程"
+      ],
+      "advisory_focus": [
+        "化学专业知识与思政融合",
+        "知识图谱和学伴的课堂使用",
+        "从知识讲授走向能力评价"
+      ],
+      "sources": [
+        {
+          "id": "caominhui:web:1",
+          "url": "https://chem.hzau.edu.cn/info/1022/2279.htm",
+          "title": "华中农业大学化学学院：曹敏惠",
+          "supports": "科研方向及课程",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "caominhui:web:2",
+          "url": "https://faculty.hzau.edu.cn/caominhui/en/index.htm",
+          "title": "华中农业大学教师主页：曹敏惠",
+          "supports": "教授身份、课程思政与课程建设经历",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "caominhui:web:3",
+          "url": "https://cfd.fudan.edu.cn/upload/2026011664812797.pdf",
+          "title": "复旦大学教发会议：智慧课程有机化学案例",
+          "supports": "知识图谱、AI学伴、教学与评价应用",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "chensiyun",
+      "name": "陈思云",
+      "institution": "广东科技学院",
+      "lecture_tags": [
+        "chensiyun"
+      ],
+      "lecture_courses": [
+        "立体裁剪"
+      ],
+      "public_bio": "广东科技学院艺术设计学院副教授、高级技师，服装设计与工程专业教师，承担《立体裁剪》核心课程。",
+      "research_focus": [
+        "功能性服装",
+        "非遗服饰文化",
+        "数字化服装"
+      ],
+      "teaching_focus": [
+        "立体裁剪",
+        "服装设计与工程",
+        "数字化实践教学"
+      ],
+      "advisory_focus": [
+        "实践操作课的示范与反馈",
+        "AI设计与实际制作衔接",
+        "作品评价与过程证据"
+      ],
+      "sources": [
+        {
+          "id": "chensiyun:web:1",
+          "url": "https://www.gdust.edu.cn/ysx/xbgk/szdw/",
+          "title": "广东科技学院：艺术设计学院师资队伍",
+          "supports": "副教授、高级技师、立体裁剪课程",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "chensiyun:web:2",
+          "url": "https://api.arttechpress.com/uploads/file/asp/2025100916041442f4e0904.pdf",
+          "title": "陈思云服装教学论文：作者简介",
+          "supports": "功能性服装、非遗服饰、数字化服装研究方向",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "chensiyun:web:3",
+          "url": "https://www.gdust.edu.cn/ysx/ysx/20200624/608.html",
+          "title": "广东科技学院：立体裁剪线上课程分享",
+          "supports": "实操性课程资源与教学组织",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f1_chenchunli",
+      "name": "陈春丽",
+      "institution": "上海交通大学",
+      "lecture_tags": [
+        "f1_chenchunli"
+      ],
+      "lecture_courses": [
+        "高等数学（AI课程建设与课堂实践）"
+      ],
+      "public_bio": "上海交通大学数学科学学院副教授，主讲高等数学和数学分析，教学发展中心介绍其反刍式及问题驱动教学。",
+      "research_focus": [
+        "微分几何",
+        "孤立子理论",
+        "可积系统"
+      ],
+      "teaching_focus": [
+        "高等数学",
+        "数学分析",
+        "反刍式教学",
+        "问题驱动教学"
+      ],
+      "advisory_focus": [
+        "数学课程结构重组",
+        "概念理解与个性化拓展",
+        "AI建课之后的课堂实施"
+      ],
+      "sources": [
+        {
+          "id": "f1_chenchunli:web:1",
+          "url": "https://ctld.sjtu.edu.cn/prize/teaching_excellence/detail/73",
+          "title": "上海交通大学教学发展中心：陈春丽",
+          "supports": "身份、研究方向、课程与教学方法",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f1_jianghongquan",
+      "name": "姜宏佺",
+      "institution": "哈尔滨医科大学",
+      "lecture_tags": [
+        "f1_jianghongquan"
+      ],
+      "lecture_courses": [
+        "神经系统疾病（临床医学专业）；部分平台显示神经系统与精神疾病"
+      ],
+      "public_bio": "哈尔滨医科大学教授，神经病学教学团队教师；首届教创赛地方高校副高组二等奖获得者。",
+      "research_focus": [
+        "神经系统疾病",
+        "肌萎缩侧索硬化相关研究"
+      ],
+      "teaching_focus": [
+        "神经病学",
+        "线上、线下与临床融合",
+        "教学质量评价"
+      ],
+      "advisory_focus": [
+        "医学生临床思维任务",
+        "课堂与临床证据衔接",
+        "医学课程建设和教学评价"
+      ],
+      "sources": [
+        {
+          "id": "f1_jianghongquan:web:1",
+          "url": "https://www.hrbmu.edu.cn/xyh/info/1044/1097.htm",
+          "title": "哈尔滨医科大学：姜宏佺教创赛获奖",
+          "supports": "教授身份、获奖组别、三位一体医学教学",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f1_jianghongquan:web:2",
+          "url": "https://www.hrbmu.edu.cn/info/1098/1626.htm",
+          "title": "哈尔滨医科大学：渐冻症探索研究",
+          "supports": "参与神经病学与ALS研究",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f1_jianghongquan:web:3",
+          "url": "https://www.hrbmu.edu.cn/gjzx/info/1036/1724.htm",
+          "title": "哈尔滨医科大学高评中心：教学成果申报指导",
+          "supports": "教学质量评估中心工作关联",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "首届参赛报名时为副教授；不能把二等奖改成一等奖。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f1_zhaoyi",
+      "name": "赵毅",
+      "institution": "哈尔滨工业大学",
+      "lecture_tags": [
+        "f1_zhaoyi"
+      ],
+      "lecture_courses": [
+        "概率论与数理统计"
+      ],
+      "public_bio": "哈尔滨工业大学（深圳）理学院教师，个人主页学科为数学、统计学；大学官方校友交流页列为教授、博士生导师。",
+      "research_focus": [
+        "数学",
+        "统计学"
+      ],
+      "teaching_focus": [
+        "概率论与数理统计",
+        "数学教学智能体（本库主题）"
+      ],
+      "advisory_focus": [
+        "数学智能体的问题定位",
+        "学生过程性诊断",
+        "数学任务与反馈评价"
+      ],
+      "sources": [
+        {
+          "id": "f1_zhaoyi:web:1",
+          "url": "https://homepage.hit.edu.cn/zhaoyi",
+          "title": "哈尔滨工业大学：赵毅教师主页",
+          "supports": "学校校区及数学统计学学科",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f1_zhaoyi:web:2",
+          "url": "https://fst.bnbu.edu.cn/stat_alumni/info/1007/1020.htm",
+          "title": "北师香港浸会大学：赵毅校友交流介绍",
+          "supports": "教授、博士生导师与统计教学经历",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "已排除沈阳工程学院电气工程同名赵毅。官网个人页未列完整细分研究方向，不以同名人物资料补齐。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f3_huanghailan",
+      "name": "黄海兰",
+      "institution": "武汉大学",
+      "lecture_tags": [
+        "f3_huanghailan"
+      ],
+      "lecture_courses": [
+        "数字地形测量学（主要案例；另含跨学科目标示例）"
+      ],
+      "public_bio": "武汉大学测绘学院副教授、工学博士，承担测绘专业教学并开展课程思政教学设计。",
+      "research_focus": [
+        "卫星测高理论及应用",
+        "测量数据处理"
+      ],
+      "teaching_focus": [
+        "数字地形测量学（本库主案例）",
+        "测绘实践",
+        "课程思政"
+      ],
+      "advisory_focus": [
+        "课程目标可观察化",
+        "工科任务中的思政设计",
+        "专业实践与评价一致性"
+      ],
+      "sources": [
+        {
+          "id": "f3_huanghailan:web:1",
+          "url": "https://www.sgg.whu.edu.cn/info/1403/38141.htm",
+          "title": "武汉大学测绘学院：黄海兰",
+          "supports": "职称、学位、科研方向",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f3_huanghailan:web:2",
+          "url": "https://news.whu.edu.cn/info/1004/66911.htm",
+          "title": "武汉大学：黄海兰教书育人报道",
+          "supports": "课程思政、教学设计及竞赛实践",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "讲座中的历史学等跨学科示例不是她本人的任教专业，不能据此改成历史学专家。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f3_majianqing",
+      "name": "马建青",
+      "institution": "浙江大学",
+      "lecture_tags": [
+        "f3_majianqing"
+      ],
+      "lecture_courses": [
+        "思想道德与法治（主案例）；大学生心理健康教程（教材演示）"
+      ],
+      "public_bio": "浙江大学马克思主义学院教授、博士生导师，研究思想政治教育及心理健康教育。",
+      "research_focus": [
+        "思想政治教育",
+        "心理健康教育"
+      ],
+      "teaching_focus": [
+        "思想道德与法治（本库主案例）",
+        "心理健康教育",
+        "思政课教学"
+      ],
+      "advisory_focus": [
+        "思政课案例与学生体验",
+        "价值讨论的课堂组织",
+        "AI辅助思政教学的边界"
+      ],
+      "sources": [
+        {
+          "id": "f3_majianqing:web:1",
+          "url": "https://person.zju.edu.cn/0082227/905521.html",
+          "title": "浙江大学：马建青个人主页",
+          "supports": "教授身份和研究方向",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f3_majianqing:web:2",
+          "url": "https://www.lsu.edu.cn/2023/1127/c111a336578/page.htm",
+          "title": "丽水学院：马建青讲座介绍",
+          "supports": "思政课教学、心理健康教育及教学名师背景",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "已排除浙大宁波理工学院环境研究领域同名教师。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f3_zhaoerdong",
+      "name": "赵洱岽",
+      "institution": "北京理工大学",
+      "lecture_tags": [
+        "f3_zhaoerdong",
+        "roundtable_future"
+      ],
+      "lecture_courses": [
+        "管理沟通；引用金融工程学、传热学案例（归属见页）"
+      ],
+      "public_bio": "北京理工大学管理学院教授、博士生导师，公开主页列为未来管理学习研究中心主任。",
+      "research_focus": [
+        "数字经济管理",
+        "电力经济管理"
+      ],
+      "teaching_focus": [
+        "管理沟通",
+        "沟通的力量",
+        "混合式教学",
+        "课程思政"
+      ],
+      "advisory_focus": [
+        "管理类课程能力目标",
+        "价值引领融入专业任务",
+        "AI时代课程改革与沟通教学"
+      ],
+      "sources": [
+        {
+          "id": "f3_zhaoerdong:web:1",
+          "url": "https://som.bit.edu.cn/gbszdw/gbjxzy/gbszzyrlzyglx/b182213.htm",
+          "title": "北京理工大学管理学院：赵洱岽",
+          "supports": "2026年身份、科研领域、管理沟通与思政课程",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f4_luan",
+      "name": "卢安",
+      "institution": "东莞理工学院法国国立工艺学院联合学院",
+      "lecture_tags": [
+        "f4_luan"
+      ],
+      "lecture_courses": [
+        "数据结构与算法；大型数据库技术实践"
+      ],
+      "public_bio": "东莞理工学院教师，公开学院主页列为博士、副教授、数据与智能课程组负责人。",
+      "research_focus": [
+        "数据库",
+        "大数据",
+        "RFID与物联网相关研究"
+      ],
+      "teaching_focus": [
+        "人工智能与数据课程",
+        "工程教育",
+        "PCDI课堂实践（本库主题）"
+      ],
+      "advisory_focus": [
+        "计算机课程项目化任务",
+        "工程教育中的产教协同",
+        "数据与算法教学评价"
+      ],
+      "sources": [
+        {
+          "id": "f4_luan:web:1",
+          "url": "https://cs.dgut.edu.cn/info/1226/9478.htm",
+          "title": "东莞理工学院计算机学院：卢安",
+          "supports": "个人简介、数据库与大数据方向、物联网经历",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "官网计算机学院归属与本库法国联合学院场次标签并存，不擅自认定岗位迁转。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f4_luochengli",
+      "name": "罗成立",
+      "institution": "阳光学院信息工程学院",
+      "lecture_tags": [
+        "f4_luochengli"
+      ],
+      "lecture_courses": [
+        "信息工程课程群；Python程序设计、嵌入式开发、AI辅助软件测试"
+      ],
+      "public_bio": "阳光学院信息工程学院教授，公开学院介绍列为院长及软件技术研发中心负责人。",
+      "research_focus": [
+        "人工智能应用",
+        "智能信息系统",
+        "AI与VR数字资源"
+      ],
+      "teaching_focus": [
+        "Python程序设计",
+        "应用型工程教育",
+        "产教融合项目"
+      ],
+      "advisory_focus": [
+        "应用型高校真实项目",
+        "工程日志与能力产物",
+        "AI课堂与产业任务衔接"
+      ],
+      "sources": [
+        {
+          "id": "f4_luochengli:web:1",
+          "url": "https://gyhlw.ygu.edu.cn/info/1093/1370.htm",
+          "title": "阳光学院：罗成立简介",
+          "supports": "身份、研发方向、Python课程与工程项目",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f4_luochengli:web:2",
+          "url": "https://news.ygu.edu.cn/info/1003/11907.htm",
+          "title": "阳光学院：让每个学生都看见",
+          "supports": "2026年产教融合获奖及应用型培养实践",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f4_xiexiaoling",
+      "name": "解晓灵",
+      "institution": "北京物资学院",
+      "lecture_tags": [
+        "f4_xiexiaoling"
+      ],
+      "lecture_courses": [
+        "仓储与库存管理；物流类人才培养与教育数智化转型"
+      ],
+      "public_bio": "北京物资学院物流学院教师，2026年校内公示列为副教授；参与物流教学案例与数字教材实践。",
+      "research_focus": [
+        "前置仓动态路区规划",
+        "物流配送与物流方案决策"
+      ],
+      "teaching_focus": [
+        "仓储与库存管理",
+        "物流教学案例",
+        "数字教材与AI课程建设"
+      ],
+      "advisory_focus": [
+        "物流真实案例转教学任务",
+        "智能体与智慧场景",
+        "数字教材和评价设计"
+      ],
+      "sources": [
+        {
+          "id": "f4_xiexiaoling:web:1",
+          "url": "https://wlxy.bwu.edu.cn/info/1119/15575.htm",
+          "title": "北京物资学院：2026年学位论文答辩公示",
+          "supports": "副教授职称与学院关联",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f4_xiexiaoling:web:2",
+          "url": "https://wlxy.bwu.edu.cn/info/1057/13215.htm",
+          "title": "北京物资学院：2023年科研成果",
+          "supports": "前置仓动态路区规划项目",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f4_xiexiaoling:web:3",
+          "url": "https://yjsb.bwu.edu.cn/info/1015/1613.htm",
+          "title": "北京物资学院：MEM优秀教学案例",
+          "supports": "北京冬奥物流中心选址教学案例",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f4_xiexiaoling:web:4",
+          "url": "https://wlxy.bwu.edu.cn/info/1015/14868.htm",
+          "title": "北京物资学院：物流专业教学研讨会",
+          "supports": "数字教材与AI课程建设报告",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f5_chenhoujin",
+      "name": "陈后金",
+      "institution": "北京交通大学",
+      "lecture_tags": [
+        "f5_chenhoujin",
+        "roundtable_future"
+      ],
+      "lecture_courses": [
+        "信号与系统；数字信号处理及电工电子课程群"
+      ],
+      "public_bio": "北京交通大学电子信息工程学院教授、博士，研究信号处理、电子系统与人工智能。",
+      "research_focus": [
+        "信号处理与电子系统",
+        "信息处理与人工智能",
+        "通信工程"
+      ],
+      "teaching_focus": [
+        "信号与系统",
+        "数字信号处理",
+        "教师AI素养与专业发展（本库主题）"
+      ],
+      "advisory_focus": [
+        "工程课程知识体系",
+        "AI教学资源建设",
+        "课程群与教师团队能力发展"
+      ],
+      "sources": [
+        {
+          "id": "f5_chenhoujin:web:1",
+          "url": "https://faculty.bjtu.edu.cn/115/",
+          "title": "北京交通大学：陈后金教师名录",
+          "supports": "身份、教育背景、研究方向及历史工作经历",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "电子信息工程学院院长任期在该页标为2008—2018，不写为现任院长。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f5_liuling",
+      "name": "刘玲",
+      "institution": "北京大学教师教学发展中心",
+      "lecture_tags": [
+        "f5_liuling"
+      ],
+      "lecture_courses": [],
+      "public_bio": "北京大学教师教学发展中心工作人员，公开中心介绍为博士、工程师，负责综合事务并开展教师培训与教学支持。",
+      "research_focus": [
+        "创新教法",
+        "教学设计",
+        "教师专业发展",
+        "学习数据分析"
+      ],
+      "teaching_focus": [
+        "慕课设计与建设支持",
+        "混合式教学",
+        "教师AI素养（本库讲座）"
+      ],
+      "advisory_focus": [
+        "教师AI培训怎样转化成课堂行动",
+        "学习投入评价",
+        "教师发展项目设计"
+      ],
+      "sources": [
+        {
+          "id": "f5_liuling:web:1",
+          "url": "https://cetl.pku.edu.cn/peking/cetl/view1/about.jsp",
+          "title": "北京大学教师教学发展中心：人员介绍",
+          "supports": "岗位、学历职称、培训与慕课支持",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f5_liuling:web:2",
+          "url": "https://aied.pku.edu.cn/jzry/yjry1/js/ab6e84cee89f421d93944dceba7be9cb.htm",
+          "title": "北京大学智能教育基地：刘玲",
+          "supports": "研究兴趣与混合教学研究",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f5_liuling:web:3",
+          "url": "https://www.lab.pku.edu.cn/info/1801/37451.htm",
+          "title": "北京大学实验技术队伍：刘玲",
+          "supports": "北大问学平台、学习数据分析与教学设计",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "f5_wangshiyu",
+      "name": "王世宇",
+      "institution": "成都中医药大学",
+      "lecture_tags": [
+        "f5_wangshiyu",
+        "wangshiyu_keynote"
+      ],
+      "lecture_courses": [
+        "教师专业发展主题；多课程案例，非单一课程"
+      ],
+      "public_bio": "成都中医药大学教授、中药学博士，公开2026年讲座介绍列为公共卫生学院院长。",
+      "research_focus": [
+        "药事管理与中医药教育（按任职及课程归纳）"
+      ],
+      "teaching_focus": [
+        "药事管理学",
+        "中医药创新创业",
+        "智慧课程建设",
+        "教师专业发展"
+      ],
+      "advisory_focus": [
+        "智慧课程建设要素",
+        "创新报告论证",
+        "从工具使用到育人能力提升"
+      ],
+      "sources": [
+        {
+          "id": "f5_wangshiyu:web:1",
+          "url": "https://zs.cdutcm.edu.cn/Homecdutcm/Detail?id=1742",
+          "title": "成都中医药大学：公共卫生学院院长访谈",
+          "supports": "学历身份、药事管理与创新创业课程、成果奖",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "f5_wangshiyu:web:2",
+          "url": "https://www.hebmu.edu.cn/a/2026/11/13/00FA3E47452F464B97EAB53C8FC1BB13.html",
+          "title": "河北医科大学：王世宇讲座预告",
+          "supports": "2026年身份与AI育人主题",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "两场讲座合并为一位专家；2026-11-19是预告讲座日期，采集时尚未发生，不记为已完成活动。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "jinhaijing",
+      "name": "金海京",
+      "institution": "赣南师范大学",
+      "lecture_tags": [
+        "jinhaijing"
+      ],
+      "lecture_courses": [
+        "教育测量与评价"
+      ],
+      "public_bio": "赣南师范大学教育科学学院副教授、教育学博士，2026年院系主页列为教育学与教育管理方向教师。",
+      "research_focus": [
+        "教育学",
+        "教育管理",
+        "教师评价素养",
+        "综合素质评价"
+      ],
+      "teaching_focus": [
+        "教育测量与评价",
+        "混合式教学",
+        "自适应学习课程改革"
+      ],
+      "advisory_focus": [
+        "评价指标和量规设计",
+        "项目驱动4P流程",
+        "学情、任务、反馈与成效对齐"
+      ],
+      "sources": [
+        {
+          "id": "jinhaijing:web:1",
+          "url": "https://jkxy.gnnu.edu.cn/info/1055/1069.htm",
+          "title": "赣南师范大学：金海京",
+          "supports": "2026年身份、研究招生方向、评价与自适应教学项目",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "lijing",
+      "name": "李静",
+      "institution": "郑州大学",
+      "lecture_tags": [
+        "lijing"
+      ],
+      "lecture_courses": [
+        "流体力学"
+      ],
+      "public_bio": "郑州大学教师，2026年土木工程学院报道列为副教授，《流体力学》团队获第六届教创赛人工智能赛道一等奖。",
+      "research_focus": [],
+      "teaching_focus": [
+        "流体力学",
+        "材料力学",
+        "数智赋能课程设计",
+        "混合式智慧教学"
+      ],
+      "advisory_focus": [
+        "AI赛道课程重构",
+        "知识图谱与个性化支持",
+        "力学概念学习与智能评价"
+      ],
+      "sources": [
+        {
+          "id": "lijing:web:1",
+          "url": "https://www5.zzu.edu.cn/tmgc/ssjg.jsp?currentnum=136&newskeycode2=&searchScope=0&wbtreeid=1162",
+          "title": "郑州大学土木工程学院：李静国赛获奖记录",
+          "supports": "流体力学课程、第六届AI赛道一等奖",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "lijing:web:2",
+          "url": "https://www5.zzu.edu.cn/tmgc/ssjg.jsp?currentnum=138&newskeycode2=&searchScope=0&wbtreeid=1162",
+          "title": "郑州大学土木工程学院：教师教学事迹",
+          "supports": "2026年副教授身份与AI教学实践",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "lijing:web:3",
+          "url": "https://hkxy.zua.edu.cn/info/1243/6333.htm",
+          "title": "郑州航空工业管理学院：李静一流课程专题报告",
+          "supports": "材料力学、流体力学课程建设",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "lijing:web:4",
+          "url": "https://www.zzife.edu.cn/html/1010/2026-05-13/content-28021.html",
+          "title": "郑州财经学院：李静数智赋能课程讲座",
+          "supports": "知识图谱、任务引擎、个性化学习与智能评价",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "本轮未确认独立科研方向；仅保留专家资料和知识，不恢复李静头像或仿声入口。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "linli",
+      "name": "林丽",
+      "institution": "新疆农业大学",
+      "lecture_tags": [
+        "roundtable_future"
+      ],
+      "lecture_courses": [],
+      "public_bio": "新疆农业大学教授、研究生导师，2025年学校介绍列为教务处处长、智慧水利专业负责人。",
+      "research_focus": [
+        "智慧水利与教学建设（按专业职责归纳）"
+      ],
+      "teaching_focus": [
+        "国家一流课程建设",
+        "教师教学发展",
+        "圆桌主持"
+      ],
+      "advisory_focus": [
+        "院校课程建设机制",
+        "教师与学生角色转变",
+        "智慧课程实施保障"
+      ],
+      "sources": [
+        {
+          "id": "linli:web:1",
+          "url": "https://www.xjau.edu.cn/2025/0307/c145a106206/page.htm",
+          "title": "新疆农业大学：女教职工代表林丽",
+          "supports": "教授身份、教务与智慧水利专业职责、一流课程",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "linli:web:2",
+          "url": "https://chce.xjau.edu.cn/2021/0413/c1339a74138/page.htm",
+          "title": "新疆农业大学：林丽教授",
+          "supports": "水利土木学院教师身份",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "仅圆桌主持，无独立单场讲座；不能把全部圆桌观点归给主持人。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "liuxueshen_xgk",
+      "name": "刘学莘",
+      "institution": "福建农林大学",
+      "lecture_tags": [
+        "liuxueshen_xgk",
+        "liuxueshen_dasai"
+      ],
+      "lecture_courses": [
+        "家具结构设计",
+        "教学创新备赛工作坊（多课程案例，非单一课程）"
+      ],
+      "public_bio": "福建农林大学材料工程学院教师；2026年校内报道使用教授职称，较早介绍使用副教授。曾获第二届教创赛一等奖。",
+      "research_focus": [
+        "家具设计",
+        "传统木作文化的教育传播"
+      ],
+      "teaching_focus": [
+        "家具结构设计",
+        "在线课程",
+        "教学目标、学情、活动与评价设计"
+      ],
+      "advisory_focus": [
+        "新工科项目化教学",
+        "教学创新报告结构",
+        "课程思政与专业内容整合"
+      ],
+      "sources": [
+        {
+          "id": "liuxueshen_xgk:web:1",
+          "url": "https://www.fafu.edu.cn/_t22/2026/1112/c128a100181/page.htm",
+          "title": "福建农林大学：AI赋能人才培养专题研修",
+          "supports": "2026年教授职称、木竹产业与AI教学改革分享",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "liuxueshen_xgk:web:2",
+          "url": "https://www.fafu.edu.cn/2024/0319/c118a82043/pagem.htm",
+          "title": "福建农林大学：教师如何做好创新性教学设计",
+          "supports": "教学设计六方面、第二届教创赛一等奖",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "liuxueshen_xgk:web:3",
+          "url": "https://www.fafu.edu.cn/2021/0604/c605a61061/pagem.htm",
+          "title": "福建农林大学：刘学莘文化教育事迹",
+          "supports": "家具设计、传统木作、慕课教学",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "两场讲座合并为一位专家；职称按有日期来源保留变化。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "liuzhanhe",
+      "name": "刘战合",
+      "institution": "郑州航空工业管理学院",
+      "lecture_tags": [
+        "liuzhanhe"
+      ],
+      "lecture_courses": [
+        "小型无人机设计制作实践"
+      ],
+      "public_bio": "郑州航空工业管理学院航空宇航学院教授，参与飞行器创新实验室及学生科创指导。",
+      "research_focus": [
+        "飞行器总体设计",
+        "隐身性能评估",
+        "气动特性评估"
+      ],
+      "teaching_focus": [
+        "飞行器创新实践",
+        "小型无人机设计制作（本库课程）"
+      ],
+      "advisory_focus": [
+        "实验教学中设计与验证闭环",
+        "科研项目转成学生任务",
+        "作品性能与能力评价"
+      ],
+      "sources": [
+        {
+          "id": "liuzhanhe:web:1",
+          "url": "https://hkxy.zua.edu.cn/szdw.htm",
+          "title": "郑州航空工业管理学院：师资队伍",
+          "supports": "教授身份",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "liuzhanhe:web:2",
+          "url": "https://sczx.zua.edu.cn/info/1107/1337.htm",
+          "title": "郑州航空工业管理学院：刘战合科创指导访谈",
+          "supports": "2018年科研方向、无人机项目及学生科研指导",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "科研方向说明来源发表于2018年，不推定覆盖其全部最新工作。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "luguodong",
+      "name": "陆国栋",
+      "institution": "浙江大学",
+      "lecture_tags": [
+        "luguodong",
+        "roundtable_future"
+      ],
+      "lecture_courses": [],
+      "public_bio": "浙江大学机械工程学院教授、博士生导师，公开资料兼具工程教育及教学成果培育工作经历。",
+      "research_focus": [
+        "机械设计及理论",
+        "工程教育"
+      ],
+      "teaching_focus": [
+        "工程教育改革",
+        "教学成果培育",
+        "AI时代教师发展"
+      ],
+      "advisory_focus": [
+        "教学创新与成果凝练",
+        "课程改革的系统设计",
+        "成果推广条件与教师角色"
+      ],
+      "sources": [
+        {
+          "id": "luguodong:web:1",
+          "url": "https://person.zju.edu.cn/0083071",
+          "title": "浙江大学：陆国栋教师主页",
+          "supports": "教授身份和机械设计研究方向，页面更新2023-04-06",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "luguodong:web:2",
+          "url": "https://www.hrbmu.edu.cn/gjzx/info/1036/1724.htm",
+          "title": "哈尔滨医科大学：陆国栋教学成果申报指导",
+          "supports": "工程教育与成果培育主题",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "panshoudong",
+      "name": "潘守东",
+      "institution": "清华大学",
+      "lecture_tags": [
+        "panshoudong"
+      ],
+      "lecture_courses": [
+        "跨课程AI教学实践（非单一课程）"
+      ],
+      "public_bio": "公开高校培训通知列为学堂在线副总裁，围绕AI赋能高等教育与智慧课程作实践分享。",
+      "research_focus": [],
+      "teaching_focus": [
+        "AI教学平台",
+        "智慧课程建设",
+        "教育数字化实践"
+      ],
+      "advisory_focus": [
+        "平台能力和课程需求匹配",
+        "AI课程建设流程",
+        "平台实施与维护条件"
+      ],
+      "sources": [
+        {
+          "id": "panshoudong:web:1",
+          "url": "https://bksy.ecnu.edu.cn/3a/b8/c40631a670392/page.htm",
+          "title": "华东师范大学：学堂在线AI教学成果巡讲通知",
+          "supports": "2025年职务与报告主题",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "panshoudong:web:2",
+          "url": "https://www.tsinghua.edu.cn/jyjx/zxjy/ptjs.htm",
+          "title": "清华大学：学堂在线平台介绍",
+          "supports": "学堂在线与清华平台的关系",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "本库单位字段“清华大学”源于平台场次命名；不据此称其清华教授或教师。未确认学术职称、学位及独立科研方向。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "songxiaofei",
+      "name": "宋晓菲",
+      "institution": "浙江工业大学",
+      "lecture_tags": [
+        "songxiaofei"
+      ],
+      "lecture_courses": [
+        "酶工程"
+      ],
+      "public_bio": "浙江工业大学生物工程学院博士、硕士生导师，教师主页列为讲师；第六届教创赛人工智能赛道一等奖。",
+      "research_focus": [
+        "合成生物学",
+        "代谢工程",
+        "酶工程"
+      ],
+      "teaching_focus": [
+        "酶工程",
+        "智能生物制造",
+        "科研与创新实践"
+      ],
+      "advisory_focus": [
+        "AI介入专业推理的必要性",
+        "酶工程项目任务和工具选择",
+        "人机分工与学习成效证据"
+      ],
+      "sources": [
+        {
+          "id": "songxiaofei:web:1",
+          "url": "https://homepage.zjut.edu.cn/sxf2100/",
+          "title": "浙江工业大学：宋晓菲教师主页",
+          "supports": "身份、研究方向、授课内容与第六届AI赛道获奖",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "tangdan",
+      "name": "唐丹",
+      "institution": "西华大学",
+      "lecture_tags": [
+        "tangdan"
+      ],
+      "lecture_courses": [
+        "中国法律史"
+      ],
+      "public_bio": "西华大学法学与社会学学院教授，法律史学背景；校方教师主页记载青教赛与教创赛国家级一等奖。",
+      "research_focus": [
+        "法律史学"
+      ],
+      "teaching_focus": [
+        "中国法律史",
+        "中华法文化",
+        "师生学习共同体",
+        "翻转课堂"
+      ],
+      "advisory_focus": [
+        "新文科能力目标",
+        "法文化与课程思政",
+        "把记忆型内容转为分析实践"
+      ],
+      "sources": [
+        {
+          "id": "tangdan:web:1",
+          "url": "https://fxyshx.xhu.edu.cn/92/6b/c10010a168555/page.htm",
+          "title": "西华大学：唐丹教师主页",
+          "supports": "身份、法律史研究、课程与教学共同体成果",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "wanghaiyan",
+      "name": "王海燕",
+      "institution": "云南财经大学",
+      "lecture_tags": [
+        "wanghaiyan"
+      ],
+      "lecture_courses": [
+        "概率论与数理统计"
+      ],
+      "public_bio": "云南财经大学统计与数学学院教师，校报介绍为副教授、《概率论与数理统计》课程负责人。",
+      "research_focus": [
+        "组合最优化",
+        "概率论与数理统计"
+      ],
+      "teaching_focus": [
+        "数学分析",
+        "概率论与数理统计",
+        "AI个性化教学"
+      ],
+      "advisory_focus": [
+        "数学学情诊断",
+        "知识图谱与自适应学习",
+        "虚实结合任务与统计素养评价"
+      ],
+      "sources": [
+        {
+          "id": "wanghaiyan:web:1",
+          "url": "https://www.ynufe.edu.cn/__local/D/B9/DF/116D2FE05F75BB0F81E9146C90C_AEC65B00_337723.pdf?e=.pdf",
+          "title": "云南财经大学校报：王海燕",
+          "supports": "职称、课程、教学项目",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "wanghaiyan:web:2",
+          "url": "https://library.ttcdw.com/dev/upload/webUploader/202409/172708136456e21dcacf8e2f13.pdf",
+          "title": "王海燕等教学研究论文（作者简介）",
+          "supports": "组合优化与概率统计研究方向",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "wanghaiyan:web:3",
+          "url": "https://ddh.ynufe.edu.cn/info/1281/66502.htm",
+          "title": "云南财经大学：AI个性化教学案例获奖",
+          "supports": "概率统计AI大模型个性化教学实践",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "wangqiong",
+      "name": "汪琼",
+      "institution": "北京大学",
+      "lecture_tags": [
+        "wangqiong"
+      ],
+      "lecture_courses": [
+        "智能时代新教法主旨报告；非单一课程案例"
+      ],
+      "public_bio": "北京大学教育学院教育技术学教授，研究数字化学习环境、教学设计与教育技术评价。",
+      "research_focus": [
+        "学习设计",
+        "数字化学习环境",
+        "教育信息化政策",
+        "教育技术项目评估"
+      ],
+      "teaching_focus": [
+        "教师教学能力提升",
+        "在线学习",
+        "成人培训设计"
+      ],
+      "advisory_focus": [
+        "新教法选择",
+        "学习活动设计",
+        "教师培训与AI应用的成效评价"
+      ],
+      "sources": [
+        {
+          "id": "wangqiong:web:1",
+          "url": "https://www.gse.pku.edu.cn/szdw/jxkyry/jyjzx/1051jyxy32247.htm",
+          "title": "北京大学教育学院：汪琼",
+          "supports": "身份、研究领域与授课方向",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "xiangmiaolian",
+      "name": "向妙莲",
+      "institution": "江西农业大学",
+      "lecture_tags": [
+        "xiangmiaolian"
+      ],
+      "lecture_courses": [
+        "植物有害生物检疫"
+      ],
+      "public_bio": "江西农业大学农学院教授、博士生导师，植物保护教学与研究人员；学校介绍记载国赛一等奖及混合式教学设计一等奖。",
+      "research_focus": [
+        "农作物病虫害防治",
+        "果蔬采后抗病机制"
+      ],
+      "teaching_focus": [
+        "植物有害生物检疫",
+        "混合式教学",
+        "农科课程思政"
+      ],
+      "advisory_focus": [
+        "新农科真实生产问题",
+        "检疫情境与实践评价",
+        "农科学生责任与专业能力融合"
+      ],
+      "sources": [
+        {
+          "id": "xiangmiaolian:web:1",
+          "url": "https://jwc.jxau.edu.cn/kcsz/info/1071/1541.htm",
+          "title": "江西农业大学：向妙莲",
+          "supports": "身份、病虫害防治方向及教学荣誉",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "xiangmiaolian:web:2",
+          "url": "https://nongxue.jxau.edu.cn/info/1030/1240.htm",
+          "title": "江西农业大学农学院：向妙莲",
+          "supports": "果蔬采后抗病科研项目",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "xinye",
+      "name": "辛页",
+      "institution": "西南医科大学",
+      "lecture_tags": [
+        "xinye"
+      ],
+      "lecture_courses": [
+        "医学影像与核医学（教学领域，正式课程全称待核）"
+      ],
+      "public_bio": "西南医科大学医学影像系教师、附属医院放射科医师；学校记载其获第三届教创赛一等奖。",
+      "research_focus": [
+        "胸部CT影像",
+        "肺癌筛查队列与胸部体成分相关研究"
+      ],
+      "teaching_focus": [
+        "医学影像教学",
+        "学生中心教学设计",
+        "教创赛备赛"
+      ],
+      "advisory_focus": [
+        "新医科临床案例设计",
+        "影像证据与诊断思维",
+        "报告、课堂和汇报的对应"
+      ],
+      "sources": [
+        {
+          "id": "xinye:web:1",
+          "url": "https://news.swmu.edu.cn/info/1006/89947.htm",
+          "title": "西南医科大学：辛页教学创新专题培训",
+          "supports": "身份、第三届国赛一等奖与备赛教学设计",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "xinye:web:2",
+          "url": "https://dwxcb.swmu.edu.cn/info/1031/27143.htm",
+          "title": "西南医科大学：胸部影像研究获奖",
+          "supports": "2026年胸部CT与肺癌筛查队列研究",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "不从其他人的影像系简介拼接个人职称；临床研究资料只用于专业方向辨识，不作为临床诊疗建议。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "xiongyun",
+      "name": "熊芸",
+      "institution": "武汉工程大学",
+      "lecture_tags": [
+        "xiongyun"
+      ],
+      "lecture_courses": [
+        "化工分离工程"
+      ],
+      "public_bio": "武汉工程大学化工与制药学院教授、博士、硕士生导师。",
+      "research_focus": [
+        "功能与智能高分子材料",
+        "新型膜分离技术与材料"
+      ],
+      "teaching_focus": [
+        "化工分离工程",
+        "科研与产业真实问题教学",
+        "智慧教学"
+      ],
+      "advisory_focus": [
+        "化工复杂工程问题任务化",
+        "产科教融合",
+        "AI与化工案例的课程应用"
+      ],
+      "sources": [
+        {
+          "id": "xiongyun:web:1",
+          "url": "https://mep.wit.edu.cn/info/1028/35361.htm",
+          "title": "武汉工程大学：熊芸教师简介",
+          "supports": "身份、学历、研究领域",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "xiongyun:web:2",
+          "url": "https://mep.wit.edu.cn/info/1101/59132.htm",
+          "title": "武汉工程大学：熊芸以智赋能向新而行",
+          "supports": "2026年科研反哺教学与产业项目实践",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "yeqi",
+      "name": "叶齐",
+      "institution": "福建农林大学",
+      "lecture_tags": [
+        "yeqi"
+      ],
+      "lecture_courses": [
+        "普通生物学"
+      ],
+      "public_bio": "福建农林大学生命科学学院教师，国家智慧教育平台《普通生物学》开课教师；校方2026年报道其获第六届教创赛一等奖。",
+      "research_focus": [],
+      "teaching_focus": [
+        "普通生物学",
+        "生物科学课程思政",
+        "递进式育人实践"
+      ],
+      "advisory_focus": [
+        "生物学知识与价值教育融合",
+        "课程思政活动递进",
+        "学生反馈支撑教学迭代"
+      ],
+      "sources": [
+        {
+          "id": "yeqi:web:1",
+          "url": "https://higher.smartedu.cn/course/62d33c2bce6ac77184c5fca5",
+          "title": "国家高等教育智慧教育平台：普通生物学",
+          "supports": "学校、开课教师、课程范围",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "yeqi:web:2",
+          "url": "https://www.fafu.edu.cn/2026/0904/c127a98484/page.htm",
+          "title": "福建农林大学：生命科学学院秋季工作会议",
+          "supports": "学院归属、2026年国赛获奖与思政教学经验",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "本轮未找到可靠完整个人履历和明确科研方向，不把南京工业大学同名博士经历自动归给此人。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "yumeifang",
+      "name": "俞梅芳",
+      "institution": "嘉兴大学",
+      "lecture_tags": [
+        "yumeifang"
+      ],
+      "lecture_courses": [
+        "乡土建筑空间设计"
+      ],
+      "public_bio": "嘉兴大学设计学院环境设计教师。公开校内资料及作品记录涉及室内空间与乡村设计教学。",
+      "research_focus": [
+        "环境设计与艺术乡建（按公开课程及著作归纳）"
+      ],
+      "teaching_focus": [
+        "乡土建筑空间设计",
+        "室内设计",
+        "校企村协同实践"
+      ],
+      "advisory_focus": [
+        "真实项目贯穿课程",
+        "产教融合中的多方评价",
+        "把乡村需求转成学生设计产物"
+      ],
+      "sources": [
+        {
+          "id": "yumeifang:web:1",
+          "url": "https://sjxy.zjxu.edu.cn/info/1290/6361.htm",
+          "title": "嘉兴大学设计学院：产教融合、以赛带练",
+          "supports": "俞梅芳参与环境设计、室内设计校企联合教学",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "yumeifang:web:2",
+          "url": "https://space.nankai.edu.cn/mspace/searchDetailLocal/mc65f6a9d66ac2b19b7d9fb813577623e",
+          "title": "南开大学馆藏：江浙地区艺术介入乡村振兴路径选择与对策研究",
+          "supports": "赵斌、俞梅芳共同著作及乡村振兴研究主题",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "yumeifang:web:3",
+          "url": "https://zjrb.zjol.com.cn/html/2024-12/04/content_3787781.htm?div=-1",
+          "title": "浙江日报：乡土建筑空间设计报道",
+          "supports": "2024年报道的副教授身份、校企村课程及第四届产教融合国赛一等奖",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "未取得独立完整教师履历；已排除上海同名退休教师与嘉兴同名农民画作者，不能混入其经历。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "yuxinjie",
+      "name": "于歆杰",
+      "institution": "清华大学",
+      "lecture_tags": [
+        "yuxinjie"
+      ],
+      "lecture_courses": [
+        "电路原理"
+      ],
+      "public_bio": "清华大学电机系教授、博士生导师，《电路原理》课程负责人。",
+      "research_focus": [
+        "磁电材料",
+        "脉冲功率电源",
+        "智能优化",
+        "无线电能传输"
+      ],
+      "teaching_focus": [
+        "电路原理",
+        "慕课和混合式教学",
+        "教学学术"
+      ],
+      "advisory_focus": [
+        "工科基础课概念教学",
+        "AI工具与学习目标匹配",
+        "教学成果的持续迭代"
+      ],
+      "sources": [
+        {
+          "id": "yuxinjie:web:1",
+          "url": "https://www.eea.tsinghua.edu.cn/faculties/yuxj.htm",
+          "title": "清华大学电机系：于歆杰",
+          "supports": "任职、科研方向、电路课程及教学奖励",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "yuxinjie:web:2",
+          "url": "https://news.ouc.edu.cn/2024/0906/c78a117232/page.htm",
+          "title": "中国海洋大学：教学学术主题报告会",
+          "supports": "教学学术、慕课、混合式教学与成果培育",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "zhangjing",
+      "name": "张静",
+      "institution": "长江大学",
+      "lecture_tags": [
+        "zhangjing"
+      ],
+      "lecture_courses": [
+        "大学物理"
+      ],
+      "public_bio": "长江大学物理与光电工程学院教授、硕士生导师，大学物理国家级一流课程负责人。",
+      "research_focus": [
+        "物理教育",
+        "科学教育",
+        "复杂概念学习进阶",
+        "跨学科科学实践"
+      ],
+      "teaching_focus": [
+        "大学物理",
+        "科学思维",
+        "AI赋能教学模式"
+      ],
+      "advisory_focus": [
+        "基础课程的概念难点",
+        "学生思维进阶评价",
+        "真实问题驱动的科学实践"
+      ],
+      "sources": [
+        {
+          "id": "zhangjing:web:1",
+          "url": "https://psat.yangtzeu.edu.cn/info/1048/1171.htm",
+          "title": "长江大学：张静教师主页",
+          "supports": "教授身份、研究内容、大学物理课程与教学成果",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    },
+    {
+      "id": "zhenghong",
+      "name": "郑宏",
+      "institution": "厦门大学",
+      "lecture_tags": [
+        "zhenghong",
+        "roundtable_future"
+      ],
+      "lecture_courses": [
+        "诗与远方：旅行中的文化与启迪"
+      ],
+      "public_bio": "厦门大学教师发展中心副教授，研究高等教育与教师发展；学校2024年已发布退休仪式报道。",
+      "research_focus": [
+        "高等教育基本理论",
+        "高等教育国际化",
+        "通识教育",
+        "大学教师发展"
+      ],
+      "teaching_focus": [
+        "通识教育课程",
+        "教学咨询",
+        "AI时代课堂变革（本库主题）"
+      ],
+      "advisory_focus": [
+        "通识课育人目标",
+        "跨学科内容重构",
+        "教师角色与学生学习体验"
+      ],
+      "sources": [
+        {
+          "id": "zhenghong:web:1",
+          "url": "https://ctld.xmu.edu.cn/info/1005/3153.htm",
+          "title": "厦门大学教师发展中心：专家队伍",
+          "supports": "副教授、研究方向及咨询工作",
+          "checked": "2026-11-16"
+        },
+        {
+          "id": "zhenghong:web:2",
+          "url": "https://ctld.xmu.edu.cn/info/1006/4773.htm",
+          "title": "厦门大学教师发展中心：郑宏退休仪式",
+          "supports": "2024年退休状态",
+          "checked": "2026-11-16"
+        }
+      ],
+      "notes": "不能把历史“咨询部主任”直接写为现任；不与同名政治人物混淆。",
+      "checked": "2026-11-16",
+      "advisory_basis": "AI依据公开专业资料和本库讲座主题归纳的咨询方向，不是专家本人承诺或观点原话",
+      "lecture_basis": "现有36场资料库video及video_participant表；课程名称保留原库限定，不代表全部个人授课经历",
+      "identity_mode": "基于公开资料的专家视角参考，非本人、非授权代言"
+    }
+  ]
+}

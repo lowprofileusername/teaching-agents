@@ -29,12 +29,16 @@ jobs:
           node tests/markdown.mjs
           node tests/retrieval-context.mjs
           node tests/evidence.mjs
-      - name: Build three static personas
+          node tests/speech.mjs
+          node tests/teacher-animation.mjs
+          node tests/workspace-data.mjs
+          node tests/document-review.mjs
+      - name: Build two original teachers
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
-          foreach ($persona in @('lijing','original','male')) {
-            go build -trimpath -ldflags "-s -w -X main.defaultPersona=$persona" -o "dist/teaching-agent-$persona-windows-amd64.exe" .
+          foreach ($persona in @('original','male')) {
+            go build -tags desktop -trimpath -ldflags "-s -w -X main.defaultPersona=$persona" -o "dist/teaching-agent-$persona-windows-amd64.exe" .
             if ($LASTEXITCODE -ne 0) { throw "Build failed: $persona" }
           }
       - name: Start and verify actual Windows executables

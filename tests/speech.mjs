@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {speechChunks} from '../web/speech.mjs';
+const input='这是第一段。'+ '中文English🙂'.repeat(100)+'。最后一句。';
+const chunks=speechChunks(input);
+assert(chunks.every(x=>Array.from(x).length<=160));
+assert.equal(chunks.join(''),input);
+assert.equal(speechChunks('**你好** [1] [song:R12]')[0],'你好');
+assert.equal(speechChunks('   ').length,0);
+assert(!speechChunks('```js\nconsole.log(1)\n```').join('').includes('console'));
+console.log('speech segmentation preserves text, removes markup, and bounds requests');

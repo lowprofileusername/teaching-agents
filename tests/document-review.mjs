@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {reviewSections,reviewBatches,parseReview,combineParagraphEdits} from '../web/document-review.mjs';
+import {branchSnapshot,exportConversation,consumeChatStream} from '../web/conversation.mjs';
+const ps=[{id:'toc',text:'一、课程概述 1',toc:true},{id:'h1',text:'一、课程概述',level:1},{id:'p1',text:'中文English🙂'.repeat(160)},{id:'h2',text:'二、真实问题',level:1},{id:'p2',text:'需要保留的实际证据。'}];
+const sections=reviewSections({paragraphs:ps});assert.equal(sections.length,2);const batches=reviewBatches(sections,500);assert.equal(batches.flatMap(b=>b.parts).map(p=>p.text).join(''),ps.filter(p=>!p.toc).map(p=>p.text).join(''));
+const b=batches[0];assert.throws(()=>parseReview('{"items":[]}',b),/漏审/);const records=batches.flatMap(batch=>parseReview(JSON.stringify({items:batch.parts.map(p=>({id:p.id,comment:'建议保留',replacement:''}))}),batch));assert(combineParagraphEdits(records,ps).every(p=>!p.replacement));
+const snap=branchSnapshot([{role:'assistant',text:'答案',reasoning:'接口思考'}],[{role:'user',content:'追问'}],'/库','','x');assert.equal(snap.history.length,1);assert(!JSON.stringify(snap.history).includes('接口思考'));
+assert(!exportConversation([{role:'assistant',text:'审阅',status:'reviewed_text'}],'md').includes('非完整回答'));
+const res=new Response('event: progress\ndata: {"answer":"半句"}\n\n',{headers:{'content-type':'text/event-stream'}});await assert.rejects(()=>consumeChatStream(res,()=>{}),/未收到完整回答/);
+console.log('document coverage, missing review rejection, branch isolation and incomplete streams passed');
