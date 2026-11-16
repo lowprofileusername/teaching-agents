@@ -17,3 +17,5 @@ app_lijing_snapshot.txt
 
 teaching-agent-profiles.json*
 .profiles-*
+
+frontend/node_modules/

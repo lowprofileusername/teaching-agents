@@ -1,4 +1,4 @@
-# 教学创新备赛工作台 v0.4.2
+# 教学创新备赛工作台 v0.4.3
 
 面向准备教学创新大赛的高校教师。两个启动形象：原创女教师、原创男教师；程序内可以切换。形象不限制资料库范围，AI 回答不代表任何真人专家本人。
 
@@ -8,7 +8,7 @@
 - Apple Silicon / M4：下载 `macos-arm64.zip`，解压打开 `.app`，要求 macOS 15 及以上。应用是 ad-hoc 签名，尚未 Developer ID 公证；首次打开可能需要系统设置确认，不需要关闭系统安全保护。
 - 两个版本均在本机启动仅监听 `127.0.0.1` 的服务。使用 `-browser` 可改为浏览器模式，`-no-browser` 用于接口测试。
 - 程序目录需可写。配置与可控的运行缓存放在程序旁；也可用 `TEACHING_AGENT_PROFILES` 指定配置文件的绝对路径。在共享盘运行时，请先确认已经挂载。macOS、WebView 和系统凭据库自行管理的缓存不在此保证范围内。
-- “API / 资料库设置”支持保存多个 HTTP/HTTPS Chat Completions 接口，填写 Base URL、模型名和密钥；无认证的本机服务可留空。Unsloth 示例为 `http://127.0.0.1:8888/v1`，不是 `/chat`。另一台电脑的模型要填它的局域网 IP。
+- “设置与连接 → 模型与资料库”支持保存多个 HTTP/HTTPS Chat Completions 接口，填写 Base URL、模型名和密钥；无认证的本机服务可留空。Unsloth 示例为 `http://127.0.0.1:8888/v1`，不是 `/chat`。另一台电脑的模型要填它的局域网 IP。
 - 密钥保存在 Windows 凭据管理器或 macOS 钥匙串，配置 JSON 仅保存随机凭据引用。换电脑需重新输入。HTTP 用于可信本机或局域网，公网建议 HTTPS。
 
 ## 七个工作区
@@ -35,7 +35,7 @@
 
 ## 资料库与独立参考
 
-支持 `expert_videos_v1.sqlite3`、可直接查询的无损媒体压缩版 `expert_videos_v2_portable.sqlite3`，以及 Claude 的 `expert_videos.db`。源 SQLite 始终只读；一次连接一个库。Claude 库在内存建立文本适配表，图片和音频按需读取，不自动合并两个库。
+支持 `expert_videos_v1.sqlite3`、可直接查询的无损媒体压缩版 `expert_videos_v2_portable.sqlite3`，Claude 的 `expert_videos.db`，以及 WorkBuddy wb1 的 `expert_videos_workbuddy.sqlite3` / `expert_videos_workbuddy_revised.sqlite3`。WorkBuddy 标记和作者质量台账会展示，不把对方的验收记录当作本轮听校。源 SQLite 始终只读；一次连接一个库。Claude 库在内存建立文本适配表，图片和音频按需读取，不自动合并两个库。
 
 Claude 分卷先按顺序二进制合并：Mac `cat expert_videos.db.part0 expert_videos.db.part1 > expert_videos.db`；Windows CMD `copy /b expert_videos.db.part0+expert_videos.db.part1 expert_videos.db`。不要在已有完整文件上重复覆盖。
 
@@ -75,7 +75,7 @@ MACOSX_DEPLOYMENT_TARGET=15.0 CGO_CFLAGS=-mmacosx-version-min=15.0 CGO_LDFLAGS=-
 布局参考 MaClaw 的导航轨、任务区和工作台组织方式；代码独立实现，未复制其源码或人物素材。原生窗口使用 MIT 许可的 Wails。第三方许可见 `THIRD_PARTY_LICENSES.txt`。
 
 
-### v0.4.2 操作入口
+### v0.4.3 操作入口
 
 - 点击左侧教师头像查看介绍与能力。
 - “材料与工作区 / AI 审阅结果”切换中央内容，“查看来源证据”打开可关闭的侧栏。
@@ -97,3 +97,20 @@ MACOSX_DEPLOYMENT_TARGET=15.0 CGO_CFLAGS=-mmacosx-version-min=15.0 CGO_LDFLAGS=-
 在“材料与审阅范围”中选择章节或页面，确认当前聊天 API 支持图片，再点击“审阅所选范围的图片 / PDF页面”。文字与图片意见独立计数，可取消后继续。PDF按物理页；Word图片按正文段落编号锚定，不能当作Word排版页码。图片看不清或编码不支持会保留未处理提示，模型意见不是数据真实性认证。
 
 DOCX审阅后点击“写回 Word 批注 / 修订”，选择仅批注或批注加修订，并指定输出文件夹。所有内容另存新文件；正文原文和段落编号必须与缓存原件一致，否则拒绝写回。原有图片、表格、样式与批注保留，普通文本建议采用段落级可接受/拒绝修订；新文字继承首个文本运行的样式，复杂段落保留建议批注，不自动移位或破坏对象。源文档带宏或数字签名时拒绝写回。导出只包含已完成意见，部分审阅不等于全文验收。
+
+
+## v0.4.3 界面与任务
+
+左侧固定七个模块和各模块的历史任务；可新建、恢复，并在同一模块同时运行不同任务。中间为材料/整页审阅结果/回看播放器；来源证据按需展开。课程赛道与设置从顶栏进入，教师完整原图在介绍内可查看。导航、证据、正文高度、文档目录、讲座节点、字幕和回放提问栏可拖动，双击分隔线复位，“设置与连接”也能恢复默认布局。
+
+回看讲座的问题绑定所选讲者和当前时间；整场转写分批完整送入模型，再合并摘要。任何批次截断或超预算都不会计为整场完成。整理库增加综合字幕视图，原转写版本仍可选择；标注“疑为”不代表实际听校。
+
+联网默认关闭。可配置10种引擎的启用、排序、优先/错峰/汇总策略；收费引擎需自己的账户。浏览器保底使用新临时目录和独立上下文，不复用登录Cookie；开启人工验证时可打开验证页由用户完成，软件不绕过验证码。浏览器需已安装Chrome/Edge。只把查询发送给搜索服务，不自动上传完整报告。
+
+桌面教师支持两轴移动、直接拖动、速度/大小调整和固定位置。悬停、旋转与朗读时暂停行走；试听使用所配置的语音接口，不自动替换成系统声音。当前仍是序列帧、多角度图片，并非真三维。
+
+## 开发架构
+
+Go + Wails 保留原生服务。`frontend/src/Shell.tsx` 为 React + TypeScript 布局组件，构建为 `web/shell.mjs`；现有问答、文档与播放器控制器以保持节点身份的接口嵌入，属于渐进迁移，尚非全应用 React 化。生产运行无需Node。
+
+构建：在 frontend 运行 `npm ci`、`npm run build`，再运行现有 Go 构建命令；CI 两平台都会检查 TypeScript 与编译前端。详细技术选型见 `ARCHITECTURE.md`。

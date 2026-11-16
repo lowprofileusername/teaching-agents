@@ -225,7 +225,7 @@ func (a *App) chat(w http.ResponseWriter, r *http.Request) {
 		evidenceBudget = inputBudget * 85 / 100
 	}
 	materialBudget := inputBudget * 30 / 100
-	if c.StructuredReview || c.StructureReview || len(c.Images) > 0 {
+	if c.StructuredReview || c.StructureReview || c.RequireFullMaterial || len(c.Images) > 0 {
 		materialBudget = inputBudget * 65 / 100
 		evidenceBudget = inputBudget * 20 / 100
 	}
@@ -292,6 +292,8 @@ func (a *App) handler() http.Handler {
 	mux.HandleFunc("/api/desktop", a.desktop)
 	mux.HandleFunc("/api/windows", a.windows)
 	mux.HandleFunc("/api/workspaces", a.workspaceAPI)
+	mux.HandleFunc("/api/module-tasks", a.moduleTasks)
+	mux.HandleFunc("/api/web-search", a.webSearchAPI)
 	mux.HandleFunc("/api/local-voice", a.localVoice)
 	mux.HandleFunc("/api/builtin", a.builtinRules)
 	mux.HandleFunc("/api/experts", a.experts)

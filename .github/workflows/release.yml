@@ -21,6 +21,10 @@ jobs:
         with:
           go-version: '1.27.4'
           cache: true
+      - name: Build typed React shell
+        run: |
+          npm ci --prefix frontend --no-audit --no-fund
+          npm run build --prefix frontend
       - name: Test Windows implementation
         run: go test -v ./...
       - name: Test PDF text extraction
@@ -36,6 +40,7 @@ jobs:
           node tests/document-review.mjs
           node tests/material-visuals.mjs
           node tests/lecture-timeline.mjs
+          node tests/lecture-question.mjs
       - name: Build two original teachers
         shell: pwsh
         run: |
@@ -90,6 +95,10 @@ jobs:
         with:
           go-version: '1.27.4'
           cache: true
+      - name: Build typed React shell
+        run: |
+          npm ci --prefix frontend --no-audit --no-fund
+          npm run build --prefix frontend
       - name: Test native Mac implementation
         run: go test -v ./...
       - name: Package Apple Silicon apps

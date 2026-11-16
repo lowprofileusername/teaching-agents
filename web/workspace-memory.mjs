@@ -1,6 +1,6 @@
 import {cleanTurn} from './conversation.mjs';
 export function encodeSession(s){
- const out={};for(const key of ['uploaded','reviewItems','history','unit','section','attachMaterial','question','scope','expert','specialist','jobState','status','view'])if(s[key]!==undefined)out[key]=s[key];
+ const out={};for(const key of ['_taskRecord','uploaded','reviewItems','history','unit','section','attachMaterial','question','scope','expert','specialist','jobState','status','view'])if(s[key]!==undefined)out[key]=s[key];
  out.conversation=(s.conversation||[]).map(cleanTurn);out.reviewResults=[...(s.reviewResults||new Map())];return out;
 }
 export function decodeSession(s){

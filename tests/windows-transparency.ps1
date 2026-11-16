@@ -12,6 +12,7 @@ public class TeacherWindowProbe {
  [DllImport("user32.dll")] public static extern bool SetCursorPos(int x,int y);
  [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h,out Rect r);
  public struct Rect { public int Left,Top,Right,Bottom; }
+ [DllImport("user32.dll")] public static extern void mouse_event(uint flags,uint dx,uint dy,uint data,UIntPtr extra);
  public static IntPtr Find(uint pid) {IntPtr found=IntPtr.Zero;EnumWindows((h,p)=>{uint owner;GetWindowThreadProcessId(h,out owner);var s=new StringBuilder(256);GetWindowText(h,s,256);if(owner==pid&&s.ToString().StartsWith("桌面教师")){found=h;return false;}return true;},IntPtr.Zero);return found;}
  public static IntPtr FindWorkbench(uint pid) {IntPtr found=IntPtr.Zero;EnumWindows((h,p)=>{uint owner;GetWindowThreadProcessId(h,out owner);var s=new StringBuilder(256);GetWindowText(h,s,256);if(owner==pid&&s.ToString().StartsWith("教学创新备赛工作台")){found=h;return false;}return true;},IntPtr.Zero);return found;}
 }
@@ -81,6 +82,25 @@ foreach ($persona in @('original','male')) {
   node tests/windows-webview-probe.mjs
   $checks+=@{rect=@($rect.Left,$rect.Top,$rect.Right,$rect.Bottom);persona=$persona;corners_show_backdrop=$matched;person_pixels=$painted}
   if(-not $matched -or $painted -le 100){throw "Teacher alpha test failed: backdrop=$matched personSamples=$painted"}
+  Invoke-RestMethod "$base/api/desktop" -Method Post -Headers $headers -ContentType 'application/json' -Body '{"action":"posture","posture":"active"}' | Out-Null
+  Start-Sleep -Milliseconds 2200
+  $before=New-Object TeacherWindowProbe+Rect;[TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$before)|Out-Null
+  Start-Sleep -Milliseconds 650
+  $after=New-Object TeacherWindowProbe+Rect;[TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$after)|Out-Null
+  if([Math]::Abs($after.Left-$before.Left) -lt 8 -or [Math]::Abs($after.Top-$before.Top) -lt 4){throw 'Teacher did not roam on both axes'}
+  [TeacherWindowProbe]::SetCursorPos($after.Left+110,$after.Top+420)|Out-Null
+  Start-Sleep -Milliseconds 350
+  $paused=New-Object TeacherWindowProbe+Rect;[TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$paused)|Out-Null
+  Start-Sleep -Milliseconds 400
+  $still=New-Object TeacherWindowProbe+Rect;[TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$still)|Out-Null
+  if([Math]::Abs($still.Left-$paused.Left) -gt 4 -or [Math]::Abs($still.Top-$paused.Top) -gt 4){throw 'Hover did not pause teacher movement'}
+  [TeacherWindowProbe]::mouse_event(2,0,0,0,[UIntPtr]::Zero)
+  for($k=1;$k -le 10;$k++){[TeacherWindowProbe]::SetCursorPos($still.Left+110+$k*8,$still.Top+420-$k*5)|Out-Null;Start-Sleep -Milliseconds 25}
+  [TeacherWindowProbe]::mouse_event(4,0,0,0,[UIntPtr]::Zero)
+  Start-Sleep -Milliseconds 300
+  $dragged=New-Object TeacherWindowProbe+Rect;[TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$dragged)|Out-Null
+  if([Math]::Abs($dragged.Left-$still.Left) -lt 30 -or [Math]::Abs($dragged.Top-$still.Top) -lt 20){throw 'Dragging the teacher canvas did not move the native window'}
+  $checks[-1].roam_xy=@($after.Left-$before.Left,$after.Top-$before.Top);$checks[-1].drag_xy=@($dragged.Left-$still.Left,$dragged.Top-$still.Top)
   Write-Output "PASS ${persona}: real native window shows coloured background around visible teacher"
  } finally {if($backdrop){$backdrop.Close();$backdrop.Dispose()};if(-not $proc.HasExited){try{Invoke-RestMethod "$base/api/desktop" -Method Post -Headers $headers -ContentType 'application/json' -Body '{"action":"quit"}' | Out-Null;$proc.WaitForExit(5000) | Out-Null}catch{};if(-not $proc.HasExited){Stop-Process -Id $proc.Id -Force}};$checks | ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $qa 'checks.json')}
 }

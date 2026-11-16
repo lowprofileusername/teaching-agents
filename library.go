@@ -120,6 +120,11 @@ func autoLibrary() {
 	rel := filepath.Join("codex_analysis_tmp", "qa", "compact_database", "expert_videos_v1.sqlite3")
 	exe, _ := os.Executable()
 	paths := []string{filepath.Join(filepath.Dir(exe), "..", "..", "..", rel), filepath.Join("/Volumes/Share", projectFolder, rel), filepath.Join(`Z:\`, projectFolder, rel), filepath.Join(`\\10.0.0.3\Share`, projectFolder, rel)}
+	wb := "expert_videos_workbuddy.sqlite3"
+	paths = append([]string{filepath.Join(filepath.Dir(exe), wb), filepath.Join("/Volumes/Share", projectFolder, wb), filepath.Join(`Z:\`, projectFolder, wb), filepath.Join(`\\10.0.0.3\Share`, projectFolder, wb)}, paths...)
+	for _, base := range []string{filepath.Dir(exe), filepath.Join("/Volumes/Share", projectFolder), filepath.Join(`Z:\`, projectFolder), filepath.Join(`\\10.0.0.3\Share`, projectFolder)} {
+		paths = append([]string{filepath.Join(base, "expert_videos_workbuddy_revised.sqlite3")}, paths...)
+	}
 	if custom := os.Getenv("TEACHING_LIBRARY_DB"); custom != "" {
 		paths = append([]string{custom}, paths...)
 	}
@@ -177,12 +182,19 @@ func (a *App) library(w http.ResponseWriter, r *http.Request) {
 		pathSaved = a.saveLibraryPath(path)
 	}
 	format, note, readme := "codex", "R是检索单元编号，不一定是原PPT页码", ""
+	var quality map[string]any
 	if isClaudeLibrary(db) {
 		format = "claude"
 		note = "P是此库去重页顺序，不是原PPT角标；研究分析与转写不等于原声听校"
 		readme = claudeReadme(ctx, db)
+	} else if isWorkBuddyLibrary(ctx, db) {
+		format = "workbuddy"
+		note = "WorkBuddy综合版：R为检索编号，original_page_no才是原角标；含Claude闪现/逐秒层与D1–D6记录；AI复核≠真人听校"
+		readme = workbuddyReadme(ctx, db)
+		quality = workbuddyQuality(ctx, db)
 	}
-	jsonOut(w, 200, map[string]any{"format": format, "coverage_note": note, "source_readme": readme, "path_saved": pathSaved, "path": path, "bytes": info.Size(), "read_only": true, "videos": videos, "counts": counts})
+
+	jsonOut(w, 200, map[string]any{"format": format, "coverage_note": note, "source_readme": readme, "quality": quality, "path_saved": pathSaved, "path": path, "bytes": info.Size(), "read_only": true, "videos": videos, "counts": counts})
 }
 
 var hanWords = regexp.MustCompile(`[\p{Han}]+|[a-zA-Z0-9_]+`)

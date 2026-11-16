@@ -97,7 +97,12 @@ func startDesktop(a *App, link string) error {
 		}
 		if screen := host.Screen.GetPrimary(); screen != nil {
 			area := screen.WorkArea
-			pet.SetPosition(area.X+max(0, area.Width-276), area.Y+max(0, area.Height-548))
+			if g, ok := a.loadGeometry("teacher"); ok {
+				w, h := pet.Size()
+				pet.SetPosition(max(area.X, min(area.X+max(0, area.Width-w), g.X)), max(area.Y, min(area.Y+max(0, area.Height-h), g.Y)))
+				return
+			}
+			pet.SetPosition(area.X+max(0, area.Width-236), area.Y+max(0, area.Height-448))
 			x, y := pet.Position()
 			b, _ := json.Marshal(map[string]any{"screen": screen, "x": x, "y": y})
 			_ = os.WriteFile(filepath.Join(dir, "teacher-window.json"), b, 0600)
@@ -109,24 +114,18 @@ func startDesktop(a *App, link string) error {
 			screen := host.Screen.GetPrimary()
 			x, y := 0, 0
 			if screen != nil {
-				x = max(0, screen.WorkArea.Width-276)
-				y = max(0, screen.WorkArea.Height-548)
+				x = max(0, screen.WorkArea.Width-236)
+				y = max(0, screen.WorkArea.Height-448)
 			}
-			pet = host.Window.NewWithOptions(application.WebviewWindowOptions{InitialPosition: application.WindowXY, Screen: screen, X: x, Y: y, Name: "teacher-companion", Title: "桌面教师 · 原创教师", Width: 260, Height: 540, DisableResize: true, AlwaysOnTop: true, Frameless: true, BackgroundType: application.BackgroundTypeTransparent, Mac: application.MacWindow{Backdrop: application.MacBackdropTransparent}, Windows: application.WindowsWindow{WebView2CompositionHosting: true, DisableFramelessWindowDecorations: true, HiddenOnTaskbar: true}, URL: a.origin + "/pet.html#" + a.token, BackgroundColour: application.NewRGBA(0, 0, 0, 0)})
+			pet = host.Window.NewWithOptions(application.WebviewWindowOptions{InitialPosition: application.WindowXY, Screen: screen, X: x, Y: y, Name: "teacher-companion", Title: "桌面教师 · 原创教师", Width: 220, Height: 440, DisableResize: true, AlwaysOnTop: true, Frameless: true, BackgroundType: application.BackgroundTypeTransparent, Mac: application.MacWindow{Backdrop: application.MacBackdropTransparent}, Windows: application.WindowsWindow{WebView2CompositionHosting: true, DisableFramelessWindowDecorations: true, HiddenOnTaskbar: true}, URL: a.origin + "/pet.html#" + a.token, BackgroundColour: application.NewRGBA(0, 0, 0, 0)})
 			pet.OnWindowEvent(events.Common.WindowRuntimeReady, func(e *application.WindowEvent) { placePet() })
 			pet.RegisterHook(events.Common.WindowClosing, func(e *application.WindowEvent) { visible.Store(false); pet.Hide(); e.Cancel() })
 		} else {
 			pet.Show()
-			placePet()
 		}
 	}
 	showPet()
-	host.Event.OnApplicationEvent(events.Common.ApplicationStarted, func(event *application.ApplicationEvent) {
-		if screen := host.Screen.GetPrimary(); screen != nil {
-			area := screen.WorkArea
-			pet.SetPosition(area.X+max(0, area.Width-276), area.Y+max(0, area.Height-548))
-		}
-	})
+	host.Event.OnApplicationEvent(events.Common.ApplicationStarted, func(event *application.ApplicationEvent) { placePet() })
 	desktopState.Lock()
 	desktopState.control = func(action, unused string) error {
 		mu.Lock()
@@ -134,45 +133,24 @@ func startDesktop(a *App, link string) error {
 		switch action {
 		case "open":
 			open(a.origin + "/?fresh=1#" + a.token)
+		case "open_voice":
+			open(a.origin + "/?voice=1#" + a.token)
 		case "open_branch":
 			open(a.origin + "/?branch=" + unused + "#" + a.token)
 		case "show_pet":
 			showPet()
-		case "step":
-			if visible.Load() && pet != nil {
-				x, y := pet.Position()
-				screen, e := pet.GetScreen()
-				if screen != nil {
-					if normalized := host.Screen.GetByID(screen.ID); normalized != nil {
-						screen = normalized
-					}
-				}
-				if e != nil || screen == nil {
-					screen = host.Screen.GetPrimary()
-				}
-				if screen != nil {
-					area := screen.WorkArea
-					dx := 2
-					if unused == "left" {
-						dx = -2
-					}
-					x += dx
-					lo := area.X
-					hi := area.X + max(0, area.Width-260)
-					if x <= lo {
-						x = lo
-						desktopState.direction = "right"
-					}
-					if x >= hi {
-						x = hi
-						desktopState.direction = "left"
-					}
-					pet.SetPosition(x, y)
-				}
+		case "size":
+			var scale float64
+			if json.Unmarshal([]byte(unused), &scale) == nil && pet != nil {
+				pet.SetSize(220, int(200+240*scale))
+				pet.ExecJS(fmt.Sprintf("document.documentElement.style.setProperty('--teacher-height','%dpx')", int(240*scale)))
 			}
 		case "hide_pet":
 			visible.Store(false)
 			if pet != nil {
+				x, y := pet.Position()
+				w, h := pet.Size()
+				_ = a.saveGeometry("teacher", windowGeometry{x, y, w, h})
 				pet.Hide()
 			}
 		case "quit":
@@ -182,6 +160,50 @@ func startDesktop(a *App, link string) error {
 	}
 	desktopState.stop = func() { host.Quit() }
 	desktopState.Unlock()
+	travelDone := make(chan struct{})
+	defer close(travelDone)
+	go func() {
+		ticker := time.NewTicker(time.Second / 60)
+		defer ticker.Stop()
+		var motion teacherRoam
+		for {
+			select {
+			case <-travelDone:
+				return
+			case now := <-ticker.C:
+				desktopState.Lock()
+				mu.Lock()
+				if pet != nil && visible.Load() {
+					active := now.Before(desktopState.roamUntil) && resolvedTeacherPosture(desktopState.posture, desktopState.status, desktopState.activityAt, now) != "sit"
+					screen, e := pet.GetScreen()
+					if e != nil || screen == nil {
+						screen = host.Screen.GetPrimary()
+					}
+					if screen != nil {
+						if n := host.Screen.GetByID(screen.ID); n != nil {
+							screen = n
+						}
+						r := screen.WorkArea
+						x, y := pet.Position()
+						w, h := pet.Size()
+						speed := desktopState.roamSpeed
+						if speed == 0 {
+							speed = 120
+						}
+						nx, ny, d := motion.step(now, x, y, r.X, r.Y, r.X+max(0, r.Width-w), r.Y+max(0, r.Height-h), speed, active)
+						if d != "" {
+							desktopState.direction = d
+						}
+						if nx != x || ny != y {
+							pet.SetPosition(nx, ny)
+						}
+					}
+				}
+				mu.Unlock()
+				desktopState.Unlock()
+			}
+		}
+	}()
 	defer func() {
 		desktopState.Lock()
 		desktopState.control = nil

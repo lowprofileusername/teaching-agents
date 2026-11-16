@@ -43,6 +43,9 @@ func lectureTimeline(ctx context.Context, db *sql.DB, tag string) (map[string]an
 	if e != nil {
 		return nil, e
 	}
+	if revised, err := rowsJSON(ctx, db, `SELECT id,t0,t1,text,'comprehensive_editorial_v1' AS version,quality_status,original_text,source_version,annotation_json FROM subtitle_revision WHERE tag=? ORDER BY t0,t1`, tag); err == nil {
+		utterances = append(revised, utterances...)
+	}
 	return map[string]any{"video": video[0], "entries": entries, "images": images, "utterances": utterances, "notice": "依据资料库的画面出现区间同步代表截图与原声；不是原视频逐帧播放。空档与时间重叠会标明，转写未获整场听校。"}, nil
 }
 func (a *App) libraryLecture(w http.ResponseWriter, r *http.Request) {

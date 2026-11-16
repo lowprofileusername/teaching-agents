@@ -19,6 +19,9 @@ var desktopState struct {
 	posture    string
 	activityAt time.Time
 	direction  string
+	roamUntil  time.Time
+	roamSpeed  float64
+	roamScale  float64
 	branches   map[string]desktopBranch
 }
 
@@ -29,10 +32,13 @@ type desktopBranch struct {
 
 func (a *App) desktop(w http.ResponseWriter, r *http.Request) {
 	var x struct {
-		Action   string `json:"action"`
-		Template string `json:"template"`
-		State    string `json:"state"`
-		Posture  string `json:"posture"`
+		Action   string  `json:"action"`
+		Template string  `json:"template"`
+		State    string  `json:"state"`
+		Posture  string  `json:"posture"`
+		Active   bool    `json:"active"`
+		Speed    float64 `json:"speed"`
+		Scale    float64 `json:"scale"`
 	}
 	if !a.read(w, r, &x) {
 		return
@@ -86,6 +92,27 @@ func (a *App) desktop(w http.ResponseWriter, r *http.Request) {
 		jsonOut(w, 200, map[string]bool{"ok": true})
 		return
 	}
+	if x.Action == "roam" {
+		desktopState.roamUntil = time.Time{}
+		if x.Active {
+			desktopState.roamUntil = time.Now().Add(750 * time.Millisecond)
+		}
+		desktopState.roamSpeed = max(40, min(220, x.Speed))
+		jsonOut(w, 200, map[string]any{"direction": desktopState.direction})
+		return
+	}
+	if x.Action == "size" {
+		desktopState.roamScale = max(.65, min(1.2, x.Scale))
+		if desktopState.control != nil {
+			raw, _ := json.Marshal(desktopState.roamScale)
+			if e := desktopState.control("size", string(raw)); e != nil {
+				fail(w, 500, e.Error())
+				return
+			}
+		}
+		jsonOut(w, 200, map[string]bool{"ok": true})
+		return
+	}
 	if x.Action == "step" {
 		if desktopState.direction == "" {
 			desktopState.direction = "left"
@@ -103,7 +130,7 @@ func (a *App) desktop(w http.ResponseWriter, r *http.Request) {
 		fail(w, 409, "此构建为浏览器模式；桌面教师需要原生桌面构建")
 		return
 	}
-	if !oneOf(x.Action, "open", "show_pet", "hide_pet", "quit") {
+	if !oneOf(x.Action, "open", "open_voice", "show_pet", "hide_pet", "quit") {
 		fail(w, 400, "未知窗口操作")
 		return
 	}
