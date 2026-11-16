@@ -29,15 +29,43 @@
 7. **交付留痕**：给出"修正清单表"（文件 / 原内容 / 改为 / 依据），以及最终 PASS/FAIL 表。
 
 
-### 核验对象
+### 核验对象（全量，不是只查 AI 赛道资料）
 
-1. `knowledge/ai_track_deep.json`
-2. `research/给Codex的AI赛道深度融入任务书.md`
+**用户明确要求：助手写过的所有 MD 文件都要审查一遍。** 下面按仓库 main 分支实际清单逐个核查，一个都不能漏。
+
+**第一类：助手写的知识/资料 MD（16 个）**
+1. `research/AI赛道_报告PPT视频_全网备赛资料.md`
+2. `research/AI赛道专题资料_第六届获奖案例与36场专家方法.md`
 3. `research/AI赛道深度资料_两场冠军课程与第六届案例.md`
-4. `research/AI赛道专题资料_第六届获奖案例与36场专家方法.md`
-5. `research/给Codex的撤回与修正指令_事实性断言核查.md`
-6. `research/README.md`、`research/资料总览与Codex使用说明.md` 中与上述资料相关的条目
-7. 分支 `feat/ai-track-builder` 上的 builder 代码：`builder.go`、`builder_policy.go`、`builtin.go`、`builtin_references.go`、`specialists.go`、`generate_test.go`、`ai_track_test.go`（用 `git show origin/feat/ai-track-builder:<path>` 读取）
+4. `research/创新报告样例资源清单.md`
+5. `research/第七届AI赛道_报告写作指南.md`
+6. `research/第五届_平台获奖课程索引115门.md`
+7. `research/第五届新文科_视频资源索引.md`
+8. `research/教学Agent优化建议.md`
+9. `research/如何验收Codex的改造.md`
+10. `research/third-party/华师慧_10份国赛获奖报告要点汇编.md`（第三方转载，核查归属标注是否正确）
+11. `research/third-party/超星_河北金融学院2个完整案例.md`（同上）
+
+**第二类：助手写给 Codex 的提示词/任务书 MD（8 个，逐条查是否有瞎编指令）**
+12. `research/给Codex的提示词.md`
+13. `research/给Codex的返工指令_可直接粘贴.md`
+14. `research/给Codex的增量修正指令_做到一半用.md`
+15. `research/给Codex的撤回与修正指令_事实性断言核查.md`
+16. `research/给Codex的下一步增强指导_报告与PPT.md`
+17. `research/给Codex的下一步增强指导_赛道专属方法论.md`
+18. `research/给Codex的AI赛道深度融入任务书.md`
+19. `research/独立自查提示词_核验助手产出与Codex执行前检查.md`（本文件，核查后如发现自身漏洞也一并修正）
+
+**第三类：索引/总览 MD（3 个，核查引用是否指向存在的文件、说法是否一致）**
+20. `research/README.md`
+21. `research/资料总览与Codex使用说明.md`
+22. `research/source-evidence/README.md`、`research/third-party/README.md`
+
+**第四类：结构化数据与源代码**
+23. `knowledge/ai_track_deep.json` 及 `knowledge/` 下助手写的其他 JSON（逐条 source_locator/source_url/verification）
+24. 分支 `feat/ai-track-builder` 上的 builder 代码：`builder.go`、`builder_policy.go`、`builtin.go`、`builtin_references.go`、`specialists.go`、`generate_test.go`、`ai_track_test.go`（用 `git show origin/feat/ai-track-builder:<path>` 读取）
+
+> 清单以仓库 main 分支实际文件为准；如发现助手写了但不在上述清单里的 MD，一并纳入核查。
 
 ### 可用依据（都在仓库里）
 
@@ -46,6 +74,19 @@
 - 第六届案例的 `source_url` 是外部链接，可用 WebFetch 打开核验。
 
 ### 逐项核查清单（每项给 PASS / FAIL / 无法核验 + 证据）
+
+**A0. 全量 MD 通用核查（上面 22 个 MD 每个都要过一遍）**
+
+对每一个 MD，逐项判断：
+1. **事实性断言有无出处**：文中的"官方要求""专家建议""评分标准""获奖数据""统计比例"，是否能在 `source-evidence/`、官方 URL、或该 MD 自己标注的来源里找到？找不到＝FAIL，逐条列出。
+2. **归属标注是否正确**：第三方内容（华师慧、超星、公众号复盘）是否标了"第三方/非官方/非报告全文"？专家观点是否标了"迁移建议非官方"？AI 综合是否和真人专家、官方标准分开？
+3. **届次与来源是否区分**：第六届规则有没有被说成第七届官方标准？省赛/校赛口径有没有冒充国赛？第七届未发布通知有没有被当成定稿？
+4. **有没有虚构**：学生人数、前后测、提升率、学生原话、第三方采用、获奖归因到课程——有任何具体数字/引语而原文没有＝FAIL。
+5. **链接是否存在**：文中给出的 URL 是否可打开（WebFetch 抽验）；标注"已附链接"的是否真的附了。
+6. **内部一致性**：同一事实在不同 MD 里说法是否一致（尤其"两场主角"、"45 分钟 vs 40–50 分钟"、"690–710 秒是否硬要求"、"独立伦理章是否硬性"这几处历史改动点）。
+7. **给 Codex 的指令是否安全**（仅第二类）：有没有把 AI 自拟建议写成"必须/硬性/官方要求"？有没有让 Codex 生成无出处内容或编造成效数字？有没有与撤回指令冲突而没标优先级？
+
+**发现问题直接按"修正范围+修正纪律"修正**，不要只在表里写 FAIL 就完事。
 
 **A. JSON 数据真实性**
 1. `priority_sessions` 是否确为李静、宋晓菲两场？到 `source-evidence/00_视频样本总账.md` 查 `lijing` 与 `songxiaofei` 两条：李静是否标注"人工智能"赛道、6.6min、L2、证据C；宋晓菲是否 25.8min、L2、证据B、引用需标注。若对不上＝FAIL。
@@ -85,11 +126,11 @@
 |---|---|---|---|
 
 **最后给总判定**：三选一——
-- "助手产出全部有据可查，无需修正"；
+- "助手全部 MD（含 22 个 MD + JSON + builder 源码）审查完毕，全部有据可查，无需修正"；
 - "发现 N 处问题，已全部修正并通过回归核验，分支 `fix/independent-audit` 可合并"；
 - "发现 N 处问题，其中 M 处无法核验需用户确认"（列出具体缺什么证据）。
 
-不要客气，发现问题就改，改了就要有依据。你改的是助手（我）写的东西，改对了就是帮用户把关。
+报告开头先给一句"共审查 MD __ 个 / JSON __ 个 / 源码文件 __ 个"，让覆盖范围是可见的。**不要客气，发现问题就改，改了就要有依据。** 你改的是助手（我）写的东西，改对了就是帮用户把关。
 
 ## ===== 提示词 A 结束 =====
 
