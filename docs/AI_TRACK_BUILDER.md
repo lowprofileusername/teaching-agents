@@ -40,6 +40,16 @@ v0.5.0 在已合并 builder 的 main 上增量扩展，不改默认八顾问及�
 - 面板（`reviseDialog`）逐条接受/拒绝，选择保存在会话；"复制已接受修订后的文字"与"写回 Word"都只应用已接受修订。Word 写回为**字级** `w:del/w:ins`（`document_export_spans.go`）：按 rune 区间切分 run，未触及的文字与格式（rPr）原样保留，tab/br 可被删除或保留；批注成为 Word 批注并附修订明细。含图片/域/链接/已有修订等复杂对象的段落自动降级：有整段替换则退为整段修订，否则仅批注。服务端 `validateSpans` 再校验 delete 与原文一致、区间不重叠、insert 不触 `generatedFactRisk`。原文件始终不被自动修改。
 - 测试：`tests/revise.mjs`（协议/应用/字数/导出桥接）、`revise_test.go`（模式互斥守卫+提示词送达）、`document_export_spans_test.go`（跨run/多处修订/纯插入删除/tab与br/复杂降级/校验拒绝/批注模式/ID唯一）。
 
+## 大纲架构师（syllabus-architect）
+
+各赛道通用的竞赛版课程教学大纲框架生成器（kind=syllabus），依据见 `research/教学大纲_标准与写法参考.md`：
+
+- 要素来自省赛通知配套材料明文（河南/广东/江苏九要素、海南八要素+等）：名称/性质/课时学分/对象/简介/目标/内容与教学安排/评价/教材资源；另采纳公开竞赛模板的课程思政目标、先修后续、成绩占比表。
+- **框架通用、内容按赛道侧重**：AI 赛道强制 AI 融合说明 + 至少一个单元标注 AI 应用环节，目标建议含数字素养/智能伦理（缺则提醒不阻断）；产教融合实践学时≥30%；实验教学写实验类型。
+- 校验：必备要素缺项拒绝；`syllabusFactRisk` 只禁成效断言（满意度/提升率/获奖/采用），允许学时/学分/占比等结构数据（拟议分配标待核实）；用户事实"待补："占位；匿名复用 PPT 校验；consistency 必填保证与报告/实录/教案同源。
+- scoring_map 用固定 id（syllabus:basic/objectives/ideology/content/assessment/resources/ai）覆盖本赛道评分维度。
+- 入口：专业分工下拉选"大纲架构师"（动态渲染），建议在创新报告工作区使用；不改动 7 工作区与默认映射。测试：`builder_syllabus_test.go`、`tests/syllabus.mjs`。
+
 ## 可复现测试
 
 ```sh

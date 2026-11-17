@@ -13,7 +13,7 @@ import (
 )
 
 func isBuilder(id string) bool {
-	return id == "architect" || id == "video-planner" || id == "presentation-architect"
+	return id == "architect" || id == "video-planner" || id == "presentation-architect" || id == "syllabus-architect"
 }
 func builderEdition(c Chat) int {
 	if n := queryEdition(strings.Split(c.Question, "\n本轮备赛信息")[0]); n != 0 {
@@ -70,6 +70,7 @@ type BuilderAnnotation struct {
 }
 type BuilderPlan struct {
 	Slides       []BuilderSlide      `json:"slides,omitempty"`
+	Syllabus     *BuilderSyllabus    `json:"syllabus,omitempty"`
 	Warnings     []string            `json:"warnings,omitempty"`
 	DemoDuration int                 `json:"demo_duration_minutes"`
 	Demo         []BuilderDemo       `json:"demo_script"`
@@ -250,6 +251,13 @@ func validateBuilderPlan(raw, role string, available map[string]map[string]any, 
 		}
 	} else if len(p.Slides) > 0 {
 		return p, fmt.Errorf("当前角色不能混入PPT方案")
+	}
+	if role == "syllabus-architect" {
+		if e := validateSyllabus(&p, policy.AI, ids); e != nil {
+			return p, e
+		}
+	} else if p.Syllabus != nil {
+		return p, fmt.Errorf("当前角色不能混入大纲方案")
 	}
 	if e := validateFullDraft(p, policy.Depth); e != nil {
 		return p, e

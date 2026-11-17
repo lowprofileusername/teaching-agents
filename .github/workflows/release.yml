@@ -43,6 +43,7 @@ jobs:
           node tests/lecture-question.mjs
           node tests/builder.mjs
           node tests/revise.mjs
+          node tests/syllabus.mjs
       - name: Build two original teachers
         shell: pwsh
         run: |

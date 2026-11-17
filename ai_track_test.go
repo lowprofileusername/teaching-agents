@@ -77,10 +77,10 @@ func TestAITrackSpecialistsPreserveDefaults(t *testing.T) {
 	if queryEdition("第七届报告，参考第六届做法") != 7 {
 		t.Fatal("reference edition overrides requested edition")
 	}
-	if len(teachingSpecialists) != 11 {
-		t.Fatal("expected old eight plus three builders")
+	if len(teachingSpecialists) != 12 {
+		t.Fatal("expected old eight plus four builders")
 	}
-	for _, id := range []string{"architect", "video-planner"} {
+	for _, id := range []string{"architect", "video-planner", "syllabus-architect"} {
 		p, e := specialistPrompt(id, "report", "人工智能")
 		if e != nil || !strings.Contains(p, "迁移") && id == "video-planner" {
 			t.Fatal(p, e)
