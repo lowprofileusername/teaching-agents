@@ -10,25 +10,26 @@ const chat=createPetChat({token});document.body.append(chat.panel);
 $('mmChat').onclick=()=>{closeMenu();chat.toggle()};
 $('chatOpen').onclick=()=>{$('controls').classList.remove('expanded');chat.open()};
 const names={idle:'就绪，可拖动人物或打开工作台',retrieving:'正在检索教学资料',reviewing:'正在审阅材料',thinking:'正在等待模型回答',answering:'正在生成建议',done:'本次回答已完成',error:'任务遇到问题，请查看工作台'};
-let state={template:'female',posture:'active',state:'idle',native:false,direction:'left'},hover=false,speaking=false,generating=false,pendingStep=false,lastStep=0,previous=0,view=null,dragStart=null,windowDrag=null,movePending=null,moveFlight=null;
+let state={template:'female',posture:'still',state:'idle',native:false,direction:'left'},hover=false,speaking=false,generating=false,pendingStep=false,lastStep=0,previous=0,view=null,dragStart=null,windowDrag=null,movePending=null,moveFlight=null;
 let lastHover=0,hoverTimer=null,burst=0,burstTimer=null,pointerStart=null,dragMoved=false,braced=false,prevState='';
 async function call(data){const r=await fetch('/api/desktop',{method:'POST',headers:{'Content-Type':'application/json','X-Session-Token':token},body:JSON.stringify(data)});const x=await r.json();if(!r.ok)throw Error(x.error);return x}
 function stateSound(s){if(s===prevState)return;prevState=s;if(s==='done')sound.play('celebrate');else if(s==='error')sound.play('concern');else if(s==='thinking')sound.play('focus');else if(s==='retrieving'||s==='reviewing')sound.play('notice')}
-async function update(){try{state=await call({action:'status'});$('template').value=state.template;await animator.setTemplate(state.template);$('state').textContent=names[state.state]||names.idle;stateSound(state.state);$('postureStatus').textContent=state.posture==='sit'?'坐下休息中，仍可继续对话':'自由活动；鼠标碰到停步，移开继续走';for(const [id,mode] of [['sit','sit'],['rise','active'],['auto','auto']])$(id).setAttribute('aria-pressed',String(state.posture_mode===mode))}catch(e){$('state').textContent=e.message}}
+async function update(){try{state=await call({action:'status'});$('template').value=state.template;await animator.setTemplate(state.template);$('state').textContent=names[state.state]||names.idle;stateSound(state.state);$('postureStatus').textContent=state.posture==='sit'?'坐下休息中，仍可继续对话':state.posture==='still'?'站立停步（默认）；点“起来走走”才移动':'自由活动；鼠标碰到停步，移开继续走';for(const [id,mode] of [['sit','sit'],['still','still'],['rise','active'],['auto','auto']])$(id).setAttribute('aria-pressed',String(state.posture_mode===mode))}catch(e){$('state').textContent=e.message}}
 $('template').onchange=async()=>{try{await call({action:'template',template:$('template').value});await update()}catch(e){$('state').textContent=e.message}};
 const open=()=>call({action:'open'}).catch(e=>{$('state').textContent=e.message});
 $('open').onclick=open;$('mmOpen').onclick=()=>{closeMenu();open()};
 $('hide').onclick=()=>call({action:'hide_pet'}).catch(e=>{$('state').textContent=e.message});
 $('mmHide').onclick=()=>{closeMenu();call({action:'hide_pet'}).catch(e=>{$('state').textContent=e.message})};
-for(const [id,posture] of [['sit','sit'],['rise','active'],['auto','auto']])$(id).onclick=async()=>{try{await call({action:'posture',posture});await update()}catch(e){$('state').textContent=e.message}};
+for(const [id,posture] of [['sit','sit'],['still','still'],['rise','active'],['auto','auto']])$(id).onclick=async()=>{try{await call({action:'posture',posture});await update()}catch(e){$('state').textContent=e.message}};
 // Hover greets once per cooldown and never stops walking (MaClaw petHoverCooldown).
 function greetHover(){const now=Date.now();if(!hoverDue(lastHover,now))return;lastHover=now;sound.play('notice');const b=$('hoverBubble');b.textContent='你好，继续备赛吗？右键打开菜单';b.hidden=false;clearTimeout(hoverTimer);hoverTimer=setTimeout(()=>{b.hidden=true},2600)}
 document.body.onmouseenter=()=>{hover=true;greetHover()};
 document.body.onmouseleave=()=>{hover=false;$('hoverBubble').hidden=true};
 const voiceChannel=new BroadcastChannel('desktop-teacher-voice');voiceChannel.onmessage=e=>{if(e.data?.type==='voice-state'){speaking=e.data.state==='speaking';generating=e.data.state==='generating';sound.speaking=speaking;sound.generating=generating;if(speaking||generating)sound.stop();$('voiceState').textContent=e.data.text;document.body.dataset.speaking=String(speaking);$('stopVoice').hidden=!(speaking||generating);$('speechBubble').hidden=!(speaking||generating);$('speechBubble').textContent=speaking?'正在为你讲解…':'正在准备声音…'}};
 $('stopVoice').onclick=()=>voiceChannel.postMessage({type:'voice-stop'});
-// Hover pauses walking; moving the pointer away resumes it.
-function canWalk(){return !windowDrag&&view===null&&state.posture!=='sit'&&!hover&&!speaking&&!generating&&!$('pin').checked&&['idle','done','error'].includes(state.state)&&!document.hidden}
+// Hover pauses walking; moving the pointer away resumes it. Default posture
+// "still" stands without roaming; walking needs explicit active/auto.
+function canWalk(){return !windowDrag&&view===null&&state.posture!=='sit'&&state.posture!=='still'&&!hover&&!speaking&&!generating&&!$('pin').checked&&['idle','done','error'].includes(state.state)&&!document.hidden}
 async function movement(){if(pendingStep)return;pendingStep=true;try{const x=await call({action:'roam',active:canWalk(),speed:Number($('speed').value)});state.direction=x.direction||state.direction}catch{}finally{pendingStep=false}}
 function frame(now){const elapsed=previous?now-previous:0;previous=now;const speed=Number($('speed').value);const walking=canWalk();animator.draw(elapsed*Math.max(.7,Math.min(1.6,speed/100)),{sit:state.posture==='sit',walking,direction:state.direction,view});if(walking)sound.step(now);requestAnimationFrame(frame)}
 setInterval(movement,250);

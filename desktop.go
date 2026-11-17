@@ -56,7 +56,7 @@ func (a *App) desktop(w http.ResponseWriter, r *http.Request) {
 		desktopState.status = "idle"
 	}
 	if desktopState.posture == "" {
-		desktopState.posture = "auto"
+		desktopState.posture = "still"
 	}
 	if desktopState.activityAt.IsZero() {
 		desktopState.activityAt = time.Now()
@@ -66,7 +66,7 @@ func (a *App) desktop(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if x.Action == "posture" {
-		if !oneOf(x.Posture, "auto", "sit", "active") {
+		if !oneOf(x.Posture, "auto", "sit", "active", "still") {
 			fail(w, 400, "未知教师动作")
 			return
 		}
@@ -143,7 +143,7 @@ func (a *App) desktop(w http.ResponseWriter, r *http.Request) {
 		if desktopState.direction == "" {
 			desktopState.direction = "left"
 		}
-		if desktopState.control != nil && resolvedTeacherPosture(desktopState.posture, desktopState.status, desktopState.activityAt, time.Now()) != "sit" {
+		if desktopState.control != nil && resolvedTeacherPosture(desktopState.posture, desktopState.status, desktopState.activityAt, time.Now()) == "active" {
 			if e := desktopState.control("step", desktopState.direction); e != nil {
 				fail(w, 500, e.Error())
 				return
@@ -169,10 +169,14 @@ func (a *App) desktop(w http.ResponseWriter, r *http.Request) {
 func nativeUnavailable() error { return errors.New("原生窗口尚未就绪") }
 
 // Appearance is independent from task execution: sitting never cancels a request.
-// Automatic rest starts after 90 idle seconds and ends when work resumes.
+// Default is "still" (stand without roaming); walking requires explicit "active"
+// or "auto". Automatic rest starts after 90 idle seconds and ends when work resumes.
 func resolvedTeacherPosture(mode, status string, activityAt, now time.Time) string {
 	if mode == "sit" {
 		return "sit"
+	}
+	if mode == "still" {
+		return "still"
 	}
 	if mode == "active" {
 		return "active"

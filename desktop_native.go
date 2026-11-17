@@ -223,7 +223,7 @@ func startDesktop(a *App, link string) error {
 				desktopState.Lock()
 				mu.Lock()
 				if pet != nil && visible.Load() {
-					active := !now.Before(desktopState.dragUntil) && now.Before(desktopState.roamUntil) && resolvedTeacherPosture(desktopState.posture, desktopState.status, desktopState.activityAt, now) != "sit"
+					active := !now.Before(desktopState.dragUntil) && now.Before(desktopState.roamUntil) && resolvedTeacherPosture(desktopState.posture, desktopState.status, desktopState.activityAt, now) == "active"
 					screen, e := pet.GetScreen()
 					if e != nil || screen == nil {
 						screen = host.Screen.GetPrimary()
