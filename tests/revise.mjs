@@ -8,7 +8,7 @@ const ok={items:[{id:'p1@0:10',comment:'成效数据缺口，需用户补充前�
 const items=parseRevise(JSON.stringify(ok),batch);
 assert.equal(items.length,1);
 assert.equal(items[0].revisions.length,1);
-assert.equal(applyRevisions(text,items[0].revisions,new Set(['r1'])),'本课程仍有若干问题。');
+assert.equal(applyRevisions(text,items[0].revisions,new Set([items[0].revisions[0].rid])),'本课程仍有若干问题。');
 assert.equal(applyRevisions(text,items[0].revisions,new Set()),text);
 
 // delete must match the original slice exactly
@@ -34,16 +34,21 @@ assert.match(revisePrompt('任务',{}),/不得为凑4000字自动删减/);
 
 // Word export bridge: part-relative offsets become paragraph-absolute
 const doc={ext:'.docx',source_id:'src',paragraphs:[{id:'p1',text}]};
-const edits=reviseExportEdits(doc,items,new Map([['r1',true]]));
+const edits=reviseExportEdits(doc,items,new Map([[items[0].revisions[0].rid,true]]));
 assert.equal(edits[0].replacement,'本课程仍有若干问题。');
 assert.deepEqual(edits[0].spans,[{start:3,end:5,delete:'存在',insert:'仍有',reason:'措辞更准确'}]);
 assert.match(edits[0].comment,/前后测口径/);
-assert.equal(reviseExportEdits(doc,items,new Map([['r1',false]]))[0].replacement,'');
-assert.deepEqual(reviseExportEdits(doc,items,new Map([['r1',false]]))[0].spans,[]);
+assert.equal(reviseExportEdits(doc,items,new Map([[items[0].revisions[0].rid,false]]))[0].replacement,'');
+assert.deepEqual(reviseExportEdits(doc,items,new Map([[items[0].revisions[0].rid,false]]))[0].spans,[]);
 const batch2={section:'第一章',parts:[{id:'p1@5:10',paragraph_id:'p1',start:5,end:10,text:'若干问题。'}]};
 const items2=parseRevise(JSON.stringify({items:[{id:'p1@5:10',comment:'批注',revisions:[{rid:'r2',start:0,end:2,delete:'若干',insert:'一些',reason:'措辞'}]}]}),batch2);
-assert.equal(reviseExportEdits(doc,items2,new Map([['r2',true]]))[0].replacement,'本课程存在一些问题。');
-assert.deepEqual(reviseExportEdits(doc,items2,new Map([['r2',true]]))[0].spans,[{start:5,end:7,delete:'若干',insert:'一些',reason:'措辞'}]);
-assert.deepEqual(reviseCounts(items,new Map([['r1',true]])),{total:1,accepted:1});
+assert.equal(reviseExportEdits(doc,items2,new Map([[items2[0].revisions[0].rid,true]]))[0].replacement,'本课程存在一些问题。');
+assert.deepEqual(reviseExportEdits(doc,items2,new Map([[items2[0].revisions[0].rid,true]]))[0].spans,[{start:5,end:7,delete:'若干',insert:'一些',reason:'措辞'}]);
+assert.deepEqual(reviseCounts(items,new Map([[items[0].revisions[0].rid,true]])),{total:1,accepted:1});
 assert.throws(()=>reviseExportEdits({ext:'.pdf'},items,new Map()),/DOCX原件/);
 console.log('PASS revise protocol, accept/reject application, word-count reminder and Word export bridge');
+// Models routinely restart r1 in each part/batch. Decisions must stay per part.
+const otherBatch={section:'第二章',parts:[{...batch.parts[0],id:'p2@0:10',paragraph_id:'p2'}]};
+const other=parseRevise(JSON.stringify({items:[{...ok.items[0],id:'p2@0:10'}]}),otherBatch);
+assert.notEqual(items[0].revisions[0].rid,other[0].revisions[0].rid);
+assert.deepEqual(reviseCounts([...items,...other],new Map([[items[0].revisions[0].rid,true]])),{total:2,accepted:1});

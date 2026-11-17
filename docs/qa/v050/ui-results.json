@@ -1,0 +1,97 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "name": "修订面板与字数提醒",
+      "status": "PASS",
+      "detail": "四条修订，接受三条拒绝一条；超过四千字不阻断"
+    },
+    {
+      "name": "Word字级写回与降级批注",
+      "status": "PASS",
+      "detail": {
+        "accepted_span_text_exact": true,
+        "rejected_revision_absent": true,
+        "complex_body_and_drawing_unchanged": true,
+        "comments_and_revision_details": true,
+        "author": "教创赛专家"
+      }
+    },
+    {
+      "name": "PPT生成与渲染",
+      "status": "PASS",
+      "detail": "三页方案及来源、讲稿、时间"
+    },
+    {
+      "name": "PPT 721秒拒绝",
+      "status": "PASS",
+      "detail": "汇报总时长721秒，超过官方十二分钟上限（720秒）"
+    },
+    {
+      "name": "PPT建议性限制不阻断",
+      "status": "PASS",
+      "detail": "31页、715秒、不使用3+6+3仍通过，并有三条提醒"
+    },
+    {
+      "name": "报告逐段扩写入口",
+      "status": "PASS",
+      "detail": "depth=full实际送达，正文草稿可见"
+    },
+    {
+      "name": "赛道检索 新工科",
+      "status": "PASS",
+      "detail": "刘学莘、熊芸"
+    },
+    {
+      "name": "赛道检索 新农科",
+      "status": "PASS",
+      "detail": "向妙莲"
+    },
+    {
+      "name": "赛道检索 实验教学",
+      "status": "PASS",
+      "detail": "刘战合"
+    }
+  ],
+  "export": "word-review-sample.docx",
+  "screenshots": [
+    "revise-panel.png",
+    "word-export.png",
+    "presentation-plan.png",
+    "presentation-warnings.png"
+  ],
+  "provider": "deterministic local mock; UI and OOXML verification, not actual Word redline rendering",
+  "calls": [
+    {
+      "kind": "structure"
+    },
+    {
+      "kind": "revise"
+    },
+    {
+      "kind": "revise"
+    },
+    {
+      "kind": "revise"
+    },
+    {
+      "kind": "revise"
+    },
+    {
+      "kind": "revise"
+    },
+    {
+      "kind": "generate"
+    },
+    {
+      "kind": "generate"
+    },
+    {
+      "kind": "generate"
+    },
+    {
+      "kind": "generate"
+    }
+  ],
+  "errors": []
+}

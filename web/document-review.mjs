@@ -92,7 +92,7 @@ export function parseRevise(answer,batch,sections=[]){
    if(r.delete===''&&r.insert==='')throw Error('空修订，本批未计完成。');
    if(typeof r.reason!=='string'||!r.reason.trim()||r.reason.length>1000)throw Error('修订理由缺失或超限，本批未计完成。');
    if(factRisk(r.insert))throw Error('修订insert含数字/引语/成效断言，涉嫌虚构，本批未计完成；请改为结构修改或"待补："占位。');
-   spans.push({rid:r.rid,start:r.start,end:r.end,delete:r.delete,insert:r.insert,reason:r.reason});
+   spans.push({rid:JSON.stringify([p.id,r.rid]),start:r.start,end:r.end,delete:r.delete,insert:r.insert,reason:r.reason});
   }
   spans.sort((a,b)=>a.start-b.start||a.end-b.end);
   for(let i=1;i<spans.length;i++){if(spans[i].start<spans[i-1].end)throw Error('修订区间重叠，本批未计完成。')}

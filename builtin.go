@@ -13,7 +13,7 @@ import (
 
 // Public, versioned reference material only. No user reports or lecture media.
 //
-//go:embed knowledge/rules.json knowledge/rules_6_2026.pdf knowledge/experts.json knowledge/rules_7_ai_2026.json knowledge/ai_playbook.json knowledge/ai_award_cases_6th.json knowledge/video_index_5th_wenke.json research/*.md research/third-party/*.md
+//go:embed knowledge/track_playbooks.json knowledge/ai_track_deep.json knowledge/rules.json knowledge/rules_6_2026.pdf knowledge/experts.json knowledge/rules_7_ai_2026.json knowledge/ai_playbook.json knowledge/ai_award_cases_6th.json knowledge/video_index_5th_wenke.json research/*.md research/third-party/*.md
 var builtinFiles embed.FS
 
 type RulePart struct {

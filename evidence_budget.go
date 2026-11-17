@@ -68,7 +68,7 @@ func evidenceSources(root map[string]any) []evidenceSource {
 					}
 				}
 			case "document_evidence":
-				add("research_or_rule_pdf", r, []string{"id", "kind", "document_id", "title", "pdf_page_no", "authority_status", "edition", "extraction", "source_file", "source_url", "publisher", "origin", "text"}, "document:"+fmt.Sprint(r["document_id"]))
+				add("research_or_rule_pdf", r, []string{"id", "kind", "document_id", "title", "pdf_page_no", "authority_status", "edition", "extraction", "source_file", "source_url", "source_locator", "source_nature", "verification", "source_group", "track", "report_url", "practice_source_url", "publisher", "origin", "text"}, "document:"+fmt.Sprint(r["document_id"]))
 			case "official_pdf_hits":
 				add("official_pdf", r, []string{"id", "teacher", "title", "pdf_page_no", "direct_text", "ocr_text"}, "official:"+fmt.Sprint(r["id"]))
 			case "raw_ocr_unverified":
@@ -108,7 +108,7 @@ func clipEvidence(v any, key string, n int) any {
 	case string:
 		limit := n
 		switch key {
-		case "id", "document_id", "teacher", "tag", "original_page_no", "authority_status", "edition", "extraction", "kind", "source_file", "source_url", "origin":
+		case "id", "document_id", "teacher", "tag", "original_page_no", "authority_status", "edition", "extraction", "kind", "source_file", "source_url", "source_locator", "source_nature", "verification", "source_group", "track", "report_url", "practice_source_url", "origin":
 			return x
 		case "title":
 			if limit > 160 {
@@ -166,7 +166,7 @@ func fitEvidence(raw string, budget int) string {
 		chosen := []any{}
 		for _, s := range sources {
 			m := map[string]any{}
-			for _, k := range []string{"kind", "id", "document_id", "teacher", "title", "pdf_page_no", "authority_status", "edition", "source_file", "source_url", "origin", "extraction", "page_facts", "text", "direct_text", "ocr_text", "payload_json", "review_issues_present"} {
+			for _, k := range []string{"kind", "id", "document_id", "teacher", "title", "pdf_page_no", "authority_status", "edition", "source_file", "source_url", "source_locator", "source_nature", "verification", "source_group", "track", "report_url", "practice_source_url", "origin", "extraction", "page_facts", "text", "direct_text", "ocr_text", "payload_json", "review_issues_present"} {
 				if v, ok := s.fields[k]; ok {
 					m[k] = v
 				}

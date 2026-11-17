@@ -1,0 +1,296 @@
+{
+  "source_note": "来自36场专家方法库；迁移建议非专家本人观点、非官方评分标准。赛道归属区分总账与分析者判断。",
+  "tracks": {
+    "新工科": {
+      "mindset": "工程真实问题、职业角色、方案迭代和可核验证据。",
+      "status": "traceable",
+      "plays": [
+        {
+          "id": "engineering_liuxueshen",
+          "name": "评委三档、七个创新判据、反乱炖与生成问题",
+          "mechanism": "评委三档、七个创新判据、反乱炖与生成问题",
+          "source": "刘学莘｜赛制工作坊",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜刘学莘｜赛制工作坊行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要工程真实问题、职业角色、方案迭代和可核验证据。且能提供对应学生过程材料时",
+          "caution": "是个人评审经验；不能与官方评分条文混写",
+          "track_attribution": "总账§三记载的参赛赛道"
+        },
+        {
+          "id": "engineering_xiongyun",
+          "name": "短场也给双值，下降项照实画",
+          "mechanism": "短场也给双值，下降项照实画",
+          "source": "熊芸｜化工分离工程",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜熊芸｜化工分离工程行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要工程真实问题、职业角色、方案迭代和可核验证据。且能提供对应学生过程材料时",
+          "caution": "双值仍须交代年份、同批与配对方式",
+          "track_attribution": "按课程学科/主题归类（分析者判断，不代表已核定参赛赛道）"
+        },
+        {
+          "id": "engineering_luan",
+          "name": "成效页给 N、均值±SD、r、p、分组 n",
+          "mechanism": "成效页给 N、均值±SD、r、p、分组 n",
+          "source": "卢安｜数据结构与算法",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜卢安｜数据结构与算法行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要工程真实问题、职业角色、方案迭代和可核验证据。且能提供对应学生过程材料时",
+          "caution": "相关与事后分组不能写成因果",
+          "track_attribution": "按课程学科/主题归类（分析者判断，不代表已核定参赛赛道）"
+        }
+      ]
+    },
+    "新医科": {
+      "mindset": "临床推理、患者安全、依据表达和能力模型。",
+      "status": "traceable",
+      "plays": [
+        {
+          "id": "medical_xinye",
+          "name": "教师不公布答案，用分层问题逼学生说依据",
+          "mechanism": "教师不公布答案，用分层问题逼学生说依据",
+          "source": "辛页｜医学影像与核医学",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜辛页｜医学影像与核医学行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要临床推理、患者安全、依据表达和能力模型。且能提供对应学生过程材料时",
+          "caution": "成效以描述性证据为主，缺双值",
+          "track_attribution": "总账§三记载的参赛赛道"
+        },
+        {
+          "id": "medical_jianghongquan",
+          "name": "用 AI 调研岗位与标准，反推能力模型",
+          "mechanism": "用 AI 调研岗位与标准，反推能力模型",
+          "source": "姜宏佺｜神经系统疾病",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜姜宏佺｜神经系统疾病行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要临床推理、患者安全、依据表达和能力模型。且能提供对应学生过程材料时",
+          "caution": "学校与专业背景过多，单课证据少",
+          "track_attribution": "按课程学科/主题归类（分析者判断，不代表已核定参赛赛道）"
+        }
+      ]
+    },
+    "新农科": {
+      "mindset": "农业真实情境、学情差异、师生技术分工与实践判断。",
+      "status": "traceable",
+      "plays": [
+        {
+          "id": "agriculture_xiangmiaolian",
+          "name": "用学情论证“AI 认、教师判”",
+          "mechanism": "用学情论证“AI 认、教师判”",
+          "source": "向妙莲｜植物有害生物检疫",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜向妙莲｜植物有害生物检疫行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要农业真实情境、学情差异、师生技术分工与实践判断。且能提供对应学生过程材料时",
+          "caution": "技术形态叠加，奖项不能自动归因课程",
+          "track_attribution": "总账§三记载的参赛赛道"
+        }
+      ]
+    },
+    "新文科": {
+      "mindset": "文本与社会问题的证据解释、批判性判断与评价设计。",
+      "status": "traceable",
+      "plays": [
+        {
+          "id": "liberal_tangdan",
+          "name": "器/术/法/道四层自检 AI 必要性",
+          "mechanism": "器/术/法/道四层自检 AI 必要性",
+          "source": "唐丹｜中国法律史",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜唐丹｜中国法律史行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要文本与社会问题的证据解释、批判性判断与评价设计。且能提供对应学生过程材料时",
+          "caution": "无量化成效；四层框架宜作答辩自检",
+          "track_attribution": "总账§三记载的参赛赛道"
+        },
+        {
+          "id": "liberal_jinhaijing",
+          "name": "学生自设互评指标并公示",
+          "mechanism": "学生自设互评指标并公示",
+          "source": "金海京｜教育测量与评价",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜金海京｜教育测量与评价行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要文本与社会问题的证据解释、批判性判断与评价设计。且能提供对应学生过程材料时",
+          "caution": "理论堆叠；口述“成效就不讲了吧”不可学",
+          "track_attribution": "按课程学科/主题归类（分析者判断，不代表已核定参赛赛道）"
+        },
+        {
+          "id": "liberal_majianqing",
+          "name": "作业标明 AI 用在哪、怎么用、怎么核",
+          "mechanism": "作业标明 AI 用在哪、怎么用、怎么核",
+          "source": "马建青｜思想道德与法治",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜马建青｜思想道德与法治行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要文本与社会问题的证据解释、批判性判断与评价设计。且能提供对应学生过程材料时",
+          "caution": "初期满意度不能代表全程成效",
+          "track_attribution": "迁移自课程思政学科情境（分析者判断，非其参赛赛道认定）"
+        }
+      ]
+    },
+    "基础课程": {
+      "mindset": "基础概念与思维方法、追问、纠错及可核验交互。",
+      "status": "traceable",
+      "plays": [
+        {
+          "id": "foundation_zhangjing",
+          "name": "智能体不给答案只反问，真实交互证明",
+          "mechanism": "智能体不给答案只反问，真实交互证明",
+          "source": "张静｜大学物理",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜张静｜大学物理行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要基础概念与思维方法、追问、纠错及可核验交互。且能提供对应学生过程材料时",
+          "caution": "大量时间讲理念，未证明学习效果",
+          "track_attribution": "总账§三记载的参赛赛道"
+        },
+        {
+          "id": "foundation_chenchunli",
+          "name": "AI 使用契约、找茬、初评—人审—申诉",
+          "mechanism": "AI 使用契约、找茬、初评—人审—申诉",
+          "source": "陈春丽｜高等数学",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜陈春丽｜高等数学行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要基础概念与思维方法、追问、纠错及可核验交互。且能提供对应学生过程材料时",
+          "caution": "工具现场演示不宜挤占教学论证",
+          "track_attribution": "按课程学科/主题归类（分析者判断，不代表已核定参赛赛道）"
+        },
+        {
+          "id": "foundation_zhaoyi",
+          "name": "公开智能体编造的“引理”并做复盘",
+          "mechanism": "公开智能体编造的“引理”并做复盘",
+          "source": "赵毅｜概率论与数理统计",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜赵毅｜概率论与数理统计行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要基础概念与思维方法、追问、纠错及可核验交互。且能提供对应学生过程材料时",
+          "caution": "政策背景过长，成效占时低",
+          "track_attribution": "按课程学科/主题归类（分析者判断，不代表已核定参赛赛道）"
+        }
+      ]
+    },
+    "课程思政": {
+      "mindset": "专业情境中的价值判断、核验与责任行为。",
+      "status": "traceable",
+      "plays": [
+        {
+          "id": "values_huanghailan",
+          "name": "思政目标写成“情境＋动词＋对象＋价值”",
+          "mechanism": "思政目标写成“情境＋动词＋对象＋价值”",
+          "source": "黄海兰｜数字地形测量学",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜黄海兰｜数字地形测量学行",
+          "supports_dimensions": [
+            "问题导向",
+            "创新举措"
+          ],
+          "applies_when": "本课程需要专业情境中的价值判断、核验与责任行为。且能提供对应学生过程材料时",
+          "caution": "平台量规由谁审定须说明",
+          "track_attribution": "按课程学科/主题归类（分析者判断，不代表已核定参赛赛道）"
+        },
+        {
+          "id": "values_yeqi",
+          "name": "AI 幻觉标注并回课程内容验证",
+          "mechanism": "AI 幻觉标注并回课程内容验证",
+          "source": "叶齐｜普通生物学",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜叶齐｜普通生物学行",
+          "supports_dimensions": [
+            "问题导向",
+            "创新举措"
+          ],
+          "applies_when": "本课程需要专业情境中的价值判断、核验与责任行为。且能提供对应学生过程材料时",
+          "caution": "开场参赛经历占时；结构闭环不能替代结果数据",
+          "track_attribution": "课程思政赛道：04_AI教学创新迁移清单.md §七"
+        },
+        {
+          "id": "values_majianqing",
+          "name": "作业标明 AI 用在哪、怎么用、怎么核",
+          "mechanism": "作业标明 AI 用在哪、怎么用、怎么核",
+          "source": "马建青｜思想道德与法治",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜马建青｜思想道德与法治行",
+          "supports_dimensions": [
+            "问题导向",
+            "创新举措"
+          ],
+          "applies_when": "本课程需要专业情境中的价值判断、核验与责任行为。且能提供对应学生过程材料时",
+          "caution": "初期满意度不能代表全程成效",
+          "track_attribution": "按课程学科/主题归类（分析者判断，不代表已核定参赛赛道）"
+        }
+      ]
+    },
+    "产教融合": {
+      "mindset": "校企共同任务、真实产业约束与三方评价口径。",
+      "status": "traceable",
+      "plays": [
+        {
+          "id": "industry_yumeifang",
+          "name": "“不是越多越好，而是要为课所用”",
+          "mechanism": "“不是越多越好，而是要为课所用”",
+          "source": "俞梅芳｜乡土建筑空间设计",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜俞梅芳｜乡土建筑空间设计行",
+          "supports_dimensions": [
+            "问题导向",
+            "创新特色"
+          ],
+          "applies_when": "本课程需要校企共同任务、真实产业约束与三方评价口径。且能提供对应学生过程材料时",
+          "caution": "三方评价权重与量表口径需补清",
+          "track_attribution": "总账§三记载的参赛赛道"
+        }
+      ]
+    },
+    "实验教学": {
+      "mindset": "真题实践、操作探究、分层成效及可复现实验记录。",
+      "status": "traceable",
+      "plays": [
+        {
+          "id": "experiment_liuzhanhe",
+          "name": "真题真做真飞行；成效按全员/骨干/顶尖分层",
+          "mechanism": "真题真做真飞行；成效按全员/骨干/顶尖分层",
+          "source": "刘战合｜航空模型设计制作",
+          "source_locator": "research/source-evidence/02_专家方法库_36场.md §六A组｜刘战合｜航空模型设计制作行",
+          "supports_dimensions": [
+            "有明确的问题导向",
+            "有明显的创新特色"
+          ],
+          "applies_when": "本课程需要真题实践、操作探究、分层成效及可复现实验记录。且能提供对应学生过程材料时",
+          "caution": "与 AI 关系不大；百分比须补分母",
+          "track_attribution": "总账§三记载的参赛赛道"
+        }
+      ]
+    },
+    "人工智能": {
+      "mindset": "沿用AI深度库及打法库，不重复登记。",
+      "status": "reuse_ai_playbook",
+      "plays": []
+    }
+  }
+}

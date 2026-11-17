@@ -1,0 +1,36 @@
+{
+  "searches": [
+    {
+      "q": "第六届 AI 赛道一等奖有哪些课程和做法",
+      "count": 15,
+      "ms": 16
+    },
+    {
+      "q": "第七届 AI 赛道报告评分维度有哪些",
+      "count": 7,
+      "ms": 7
+    },
+    {
+      "q": "AI 赛道怎么防止学生让 AI 代做",
+      "count": 15,
+      "ms": 9
+    },
+    {
+      "q": "第五届新文科课堂视频下载",
+      "count": 13,
+      "ms": 8
+    }
+  ],
+  "roles": 11,
+  "workspaces": 7,
+  "noAPIStillSearchOnly": true,
+  "architectGeneratedAndRendered": true,
+  "newLiberalArtsFiveDimensionsNoAIEthics": true,
+  "videoPlannerGeneratedAndRendered": true,
+  "twoVideosAndLessonAnnotations": true,
+  "fabricationRejected": true,
+  "historyRestored": true,
+  "newResetPreserved": true,
+  "provider": "deterministic local mock; not real-model semantic evaluation",
+  "errors": []
+}
