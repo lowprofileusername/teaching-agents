@@ -92,9 +92,16 @@ foreach ($persona in @('original','male')) {
   [TeacherWindowProbe]::SetCursorPos($after.Left+110,$after.Top+420)|Out-Null
   Start-Sleep -Milliseconds 350
   $paused=New-Object TeacherWindowProbe+Rect;[TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$paused)|Out-Null
-  Start-Sleep -Milliseconds 400
+  Start-Sleep -Milliseconds 650
   $still=New-Object TeacherWindowProbe+Rect;[TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$still)|Out-Null
-  if([Math]::Abs($still.Left-$paused.Left) -gt 4 -or [Math]::Abs($still.Top-$paused.Top) -gt 4){throw 'Hover did not pause teacher movement'}
+  # MaClaw-style behavior: hovering must NOT stop the teacher; it keeps roaming.
+  if([Math]::Abs($still.Left-$paused.Left) -lt 4 -and [Math]::Abs($still.Top-$paused.Top) -lt 2){throw 'Hover should not pause teacher movement'}
+  # Stabilize (sit stops roaming) so the drag probe lands on a still window.
+  Invoke-RestMethod "$base/api/desktop" -Method Post -Headers $headers -ContentType 'application/json' -Body '{"action":"posture","posture":"sit"}' | Out-Null
+  Start-Sleep -Milliseconds 1200
+  $still=New-Object TeacherWindowProbe+Rect;[TeacherWindowProbe]::GetWindowRect($hwnd,[ref]$still)|Out-Null
+  [TeacherWindowProbe]::SetCursorPos($still.Left+110,$still.Top+420)|Out-Null
+  Start-Sleep -Milliseconds 300
   [TeacherWindowProbe]::mouse_event(2,0,0,0,[UIntPtr]::Zero)
   for($k=1;$k -le 10;$k++){[TeacherWindowProbe]::SetCursorPos($still.Left+110+$k*8,$still.Top+420-$k*5)|Out-Null;Start-Sleep -Milliseconds 25}
   [TeacherWindowProbe]::mouse_event(4,0,0,0,[UIntPtr]::Zero)
