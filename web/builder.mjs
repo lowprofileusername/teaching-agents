@@ -1,8 +1,8 @@
-export const isBuilder=id=>['architect','video-planner','presentation-architect','syllabus-architect'].includes(id);
+export const isBuilder=id=>['architect','video-planner','presentation-architect','syllabus-architect','lessonplan-architect'].includes(id);
 const text=s=>String(s??'').replace(/[<>]/g,'').replace(/\|/g,'／').replace(/\r?\n/g,' ');
 const list=a=>(a||[]).map(s=>'- '+text(s)).join('\n');
 export function renderBuilderPlan(p){
- const lines=['## '+(p.kind==='report'?'报告架构方案':p.kind==='presentation'?'汇报PPT方案':p.kind==='syllabus'?'课程教学大纲方案':'课堂视频策划'),text(p.boundary),'','### 一句话创新主线',text(p.innovation_line),'','### 逻辑闭环',text(p.logic_loop),''];
+ const lines=['## '+(p.kind==='report'?'报告架构方案':p.kind==='presentation'?'汇报PPT方案':p.kind==='syllabus'?'课程教学大纲方案':p.kind==='lessonplan'?'节段教案方案':'课堂视频策划'),text(p.boundary),'','### 一句话创新主线',text(p.innovation_line),'','### 逻辑闭环',text(p.logic_loop),''];
  if(p.kind==='report'){
   lines.push('### 章节骨架与字数预算',`预算合计：${p.word_budget_total} 字（计划值）`,'');
   for(const s of p.sections){lines.push(`#### ${text(s.title)} · ${s.word_budget} 字`,'必答问题：',list(s.questions),'','待补证据：',list(s.evidence_needed),'');if(s.draft)lines.push('正文草稿：',s.draft,'');}
@@ -20,6 +20,14 @@ export function renderBuilderPlan(p){
   if(y.ai_integration)lines.push('','### AI融合说明',text(y.ai_integration));
   lines.push('','### 与报告/实录/教案的一致性',text(y.consistency));
   if(p.warnings?.length)lines.push('','### 建议提醒（不阻断）',list(p.warnings));
+ }else if(p.kind==='lessonplan'&&p.lesson_plan){
+  const l=p.lesson_plan;
+  lines.push('### 节段信息','','| 要素 | 内容 |','| --- | --- |',`| 课程名称 | ${text(l.course_name)} |`,`| 实录节段授课内容 | ${text(l.segment_topic)} |`,`| 节段学时 | ${text(l.segment_hours)} |`,`| 授课对象 | ${text(l.audience)} |`,'','### 节段目标',list(l.objectives),'','### 学情分析',text(l.learner_analysis),'','### 教学重点',text(l.key_points),'','### 教学难点',text(l.difficulties),'','### 教学过程（分钟级）','','| 环节 | 分钟 | 教师活动 | 学生活动 | AI活动 | 设计意图 |','| --- | --- | --- | --- | --- | --- |');
+  for(const s of l.stages||[])lines.push(`| ${text(s.stage)} | ${text(s.minutes)} | ${text(s.teacher)} | ${text(s.student)} | ${text(s.ai_action||'—')} | ${text(s.intent)} |`);
+  const aiStages=(l.stages||[]).filter(s=>s.ai_action&&s.ai_action.trim()&&s.ai_action!=='无');
+  if(aiStages.length){lines.push('','### AI应用四项标注','','| 应用环节 | 设计目的 | 操作流程 | 预期效果 |','| --- | --- | --- | --- |');for(const s of aiStages)lines.push(`| ${text(s.ai_application)} | ${text(s.ai_purpose)} | ${text(s.ai_operation)} | ${text(s.ai_expected)} |`);}
+  lines.push('','### 节段评价',text(l.assessment),'','### 资源与课件',text(l.resources),'','### 思政融入点',text(l.ideology_politics),'','### 与大纲/报告/实录的一致性',text(l.consistency));
+  if(p.warnings?.length)lines.push('','### 建议提醒（不阻断）',list(p.warnings));
  }else{
   lines.push('### 课堂时刻表',`总时长：${p.duration_minutes} 分钟（本次策划参数）`,'','| 时间段 | 教学环节 | AI介入动作 | 要拍到的学生行为证据 | 对应报告举措 |','| --- | --- | --- | --- | --- |');
   for(const t of p.timeline)lines.push(`| ${t.start_minute}–${t.end_minute}分 | ${text(t.stage)} | ${text(t.ai_action)} | ${text(t.student_evidence)} | ${text(t.report_measure)} |`);
@@ -35,7 +43,7 @@ export function renderBuilderPlan(p){
   if(r.report)lines.push('',`报告：字数上限 ${r.report.word_limit} 字，查重不高于 ${r.report.similarity_limit_percent}%，${r.report.anonymous?'匿名提交':'按所给要求提交'}；格式 ${text(r.report.format)}。`);
   if(p.kind==='lesson'&&r.video)for(const [key,label] of [['lesson_record','课堂实录'],['extra_demo','课外说课'],['lesson_plan_annotation','教案与课件'],['naming','两项视频命名']])lines.push('',label+'：'+text(r.video[key]));
  }
- const positions=new Map([...(p.slides||[]).map(s=>[s.id,`第${s.page_no}页 ${s.title}`]),...(p.sections||[]).map(s=>[s.id,s.title]),...(p.timeline||[]).map(t=>[t.id,`${t.start_minute}–${t.end_minute}分 ${t.stage}`]),...(p.syllabus?[['syllabus:basic','基本信息'],['syllabus:objectives','课程目标'],['syllabus:ideology','思政目标'],['syllabus:content','内容与学时'],['syllabus:assessment','课程评价'],['syllabus:resources','教材资源'],['syllabus:ai','AI融合']]:[])]);
+ const positions=new Map([...(p.slides||[]).map(s=>[s.id,`第${s.page_no}页 ${s.title}`]),...(p.sections||[]).map(s=>[s.id,s.title]),...(p.timeline||[]).map(t=>[t.id,`${t.start_minute}–${t.end_minute}分 ${t.stage}`]),...(p.syllabus?[['syllabus:basic','基本信息'],['syllabus:objectives','课程目标'],['syllabus:ideology','思政目标'],['syllabus:content','内容与学时'],['syllabus:assessment','课程评价'],['syllabus:resources','教材资源'],['syllabus:ai','AI融合']]:[]),...(p.lesson_plan?[['lessonplan:objectives','节段目标'],['lessonplan:learner','学情分析'],['lessonplan:keydiff','重难点'],['lessonplan:process','教学过程'],['lessonplan:assessment','节段评价'],['lessonplan:ideology','思政融入'],['lessonplan:ai','AI四项标注']]:[])]);
  lines.push('',`### ${p.scoring_map.length}维评分对照`,text(p.requirements?.notice||p.boundary),'','| 维度 | 对应位置 | 待补证据 |','| --- | --- | --- |');
  for(const s of p.scoring_map)lines.push(`| ${text(s.dimension)} | ${text(s.section_ids.map(id=>positions.get(id)||id).join('；'))} | ${text(s.evidence_needed.join('；'))} |`);
  lines.push('','### 需要补充的证据',list(p.evidence_needed),'','### 资料依据与使用边界');

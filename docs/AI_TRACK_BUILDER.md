@@ -50,6 +50,16 @@ v0.5.0 在已合并 builder 的 main 上增量扩展，不改默认八顾问及�
 - scoring_map 用固定 id（syllabus:basic/objectives/ideology/content/assessment/resources/ai）覆盖本赛道评分维度。
 - 入口：专业分工下拉选"大纲架构师"（动态渲染），建议在创新报告工作区使用；不改动 7 工作区与默认映射。测试：`builder_syllabus_test.go`、`tests/syllabus.mjs`。
 
+## 教案架构师（lessonplan-architect）
+
+对应视频节段的节段级教学设计（教案）生成器（kind=lessonplan），依据见 `research/教案_标准与写法参考.md`：
+
+- 通知硬要求：视频对应节段的教案及课件（海南/河南/广东同文）；AI 赛道教案课件须标注应用环节/设计目的/操作流程/预期效果四项。
+- 结构对标评分维度：节段目标/学情/重难点/分钟级过程（师/生/机活动+设计意图）/评价/资源/思政/一致性。
+- 校验：必备要素缺项拒绝；**有 AI 介入的环节四项标注必填**（所有赛道），AI 赛道须至少一个 AI 环节；分钟/占比等结构数据允许拟议，成效断言拒绝（复用 syllabusFactRisk）；匿名；consistency 必填。
+- scoring_map 固定 id（lessonplan:objectives/learner/keydiff/process/assessment/ideology/ai）；前端渲染过程表 + AI 四项标注表。
+- 与大纲架构师、视频策划配套（大纲→教案→实录/说课同源）。测试：`builder_lessonplan_test.go`、`tests/lessonplan.mjs`。
+
 ## 可复现测试
 
 ```sh
