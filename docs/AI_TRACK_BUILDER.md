@@ -60,6 +60,25 @@ v0.5.0 在已合并 builder 的 main 上增量扩展，不改默认八顾问及�
 - scoring_map 固定 id（lessonplan:objectives/learner/keydiff/process/assessment/ideology/ai）；前端渲染过程表 + AI 四项标注表。
 - 与大纲架构师、视频策划配套（大纲→教案→实录/说课同源）。测试：`builder_lessonplan_test.go`、`tests/lessonplan.mjs`。
 
+## 桌面宠物与任务恢复（借鉴 MaClaw）
+
+宠物行为（`web/pet.mjs` / `pet.html` / `pet-sound.mjs` / `pet-gesture.mjs`）：
+
+- **音效零资源**：借鉴 MaClaw `petpack/action_sound.go` 的声明式 `{hz,ms}` 音序，宿主用 Web Audio 合成（无音频文件）。 cues：step/greet/notice/brace/release/rest/celebrate/concern/focus，绑定走动/单击/悬停/拖拽/坐下/完成/出错/思考。静音门控借鉴 `actionSoundAllowed`：说话/生成时不发环境音；音效开关与静音持久化（localStorage）。
+- **悬停不打断走动**：`canWalk()` 去掉 `!hover`（MaClaw hover 不在停步条件里）；悬停每 5s 冷却打招呼一次（`petHoverCooldown`）+ 气泡，不再浮现全面板挡住教师。
+- **右键最小菜单→展开**：右键人物弹最小菜单（打开工作台/音效开关/定住/更多选项/隐藏）；"更多选项"展开完整面板，可收起。注：MaClaw 本身是平铺原生菜单，两级菜单是按用户需求设计。
+- **点击手势状态机**：借鉴 `pet_click.go`，5px 拖拽阈值区分拖拽/点击；单击 burst 裁决（单击开工作台+greet，双击 notice，多击 celebrate）；拖拽 brace/release 音效。
+- **360° 查看**：转身素材本就是完整 360°（24 视角，含背面）；此前悬停全面板遮挡导致看不全。现面板不遮挡，旋转模式支持拖动＋滚轮＋方向键循环全 24 视角。
+
+任务恢复（`web/task-resume.mjs` + `app.mjs` 启动检测 + `#resumeDialog`）：
+
+- 借鉴 MaClaw `UnfinishedTaskSlot` / `InFlightCheckpoint` / 副作用三分类思路，适配本项目现有会话持久化（`decodeSession` 已把 running→interrupted、不自动重发）。
+- 启动检测中断会话→恢复卡："检测到未完成任务…状态：已中断…继续只恢复上下文，不会重试该操作"＋工作区路径＋[继续上次任务][开始新任务]。
+- 副作用分类：有上传材料/审阅进度/生成方案→`local_committed`→`requires_review`（"需要审阅：可能已修改工作区"）；仅检索问答→`none`→`resume_context`。
+- 继续＝恢复上下文＋注入"不要重放中断操作"提示，绝不重试模型请求；开始新任务＝保留旧记录开空白任务。
+- 测试：`tests/pet.mjs`、`tests/task-resume.mjs`。
+- 范围说明：未移植 MaClaw 的原生窗口骨骼渲染/performer 行为池/养成/想念/值守等完整系统（数千行，独立工程）；本次交付用户具体诉求＋可借鉴的核心机制。
+
 ## 可复现测试
 
 ```sh

@@ -6,6 +6,7 @@ import {mountWebSearch,searchRequest} from './web-search.mjs';
 import {createModuleTasks} from './module-tasks.mjs';
 import {prepareVisuals,parseVisualReview,visualReviewPrompt,documentExportEdits} from './material-visuals.mjs';
 import {createWorkspaceMemory,encodeSession,decodeSession} from './workspace-memory.mjs';
+import {detectUnfinished,resumeNotice,resumeContextNote} from './task-resume.mjs';
 import {createLecturePlayer} from './lecture-player.mjs';
 import {structureMap,structurePrompt,parseStructurePlan,structureText} from './document-structure.mjs';
 import {questionScope} from './question-scope.mjs';
@@ -322,6 +323,17 @@ await restoreBranch();
 setInterval(()=>{if(jobs.size)syncTaskControls()},1000);
 
 function persistentSnapshot(){snapshotTask();return{version:1,layout:layoutManager?.exportState(),currentTask,library:currentLibraryPath,project:projectState(),notes:workspace.exportState().notes,replay:lecturePlayer.exportState(),sessions:Object.fromEntries(tasks.map(t=>[t.id,projectSession(t.id)]).filter(([,s])=>s).map(([id,s])=>[id,encodeSession(s)]))}}
+// MaClaw-style unfinished-task resume: detect an interrupted session on startup
+// and offer continue (restore context only, never replay) or start new.
+async function maybeShowResumeCard(){
+ if(freshWindow||branchID)return;
+ const s=taskSessions.get(currentTask);const slot=detectUnfinished(s);if(!slot)return;
+ const d=$('#resumeDialog');$('#resumeTask').textContent=slot.lastTask;$('#resumeState').textContent='状态：已中断 · '+slot.summary;$('#resumeNotice').textContent=resumeNotice(slot);
+ try{const x=await workspaceMemory.list();$('#resumePath').textContent='工作区：'+(x.directory||'本机工作记录')+' / workbench_history.sqlite3'}catch{$('#resumePath').textContent='工作区：本机工作记录'}
+ $('#resumeContinue').onclick=()=>{d.close();s.conversation.push({role:'assistant',expert_name:'',text:resumeContextNote(slot),status:'local_reply',at:new Date().toISOString(),sources:[],reasoning:'',request_scope:'',retrieval:null,review_attempts:[]});s.jobState='interrupted';s.status='已恢复上下文；未重试中断操作。';workspaceMemory.changed();selectTask(currentTask,true);$('#status').textContent='已恢复上次任务上下文，未重试中断操作。'};
+ $('#resumeNew').onclick=()=>{d.close();startBlankTask(false)};
+ d.showModal();
+}
 function restorePersistent(state){
  if(state?.version!==1||!state.sessions||typeof state.sessions!=='object')throw Error('不是可恢复的工作记录格式');
  if(state.notes&&(typeof state.notes!=='object'||Array.isArray(state.notes)||Object.values(state.notes).some(v=>!v||typeof v!=='object'||Array.isArray(v)||(v.selected&&!Array.isArray(v.selected))||(v.page!==undefined&&(!Number.isInteger(v.page)||v.page<0)))))throw Error('工作区标注格式无效，原工作未改变');
@@ -334,6 +346,7 @@ function restorePersistent(state){
 layoutManager=createLayoutResize({changed:()=>workspaceMemory?.changed()});
 const memoryStatus=$('#memoryStatus');workspaceMemory=createWorkspaceMemory({request:async data=>{const r=await fetch('/api/workspaces',{method:'POST',headers:{'Content-Type':'application/json','X-Session-Token':token},body:JSON.stringify(data)});const x=await r.json();if(!r.ok)throw Error(x.error);return x},snapshot:persistentSnapshot,restore:restorePersistent,indicator:memoryStatus});
 try{await workspaceMemory.start(freshWindow||!!branchID)}catch(e){memoryStatus.textContent='自动恢复未完成：'+e.message}
+await maybeShowResumeCard();
 $('#saveWorkspaceNow').onclick=()=>workspaceMemory.flush().catch(()=>{});
 $('#workspaceHistoryOpen').onclick=async()=>{const d=$('#workspaceHistoryDialog');d.showModal();const box=$('#workspaceHistoryList');box.replaceChildren();try{await workspaceMemory.flush();const x=await workspaceMemory.list();$('#workspaceStorage').textContent='保存位置：'+x.directory+' / workbench_history.sqlite3。只存工作记录，不改讲座库，不保存API密钥。';for(const s of x.sessions){const card=el('article',undefined,'source'),b=el('button','恢复此记录');b.type='button';card.append(el('strong',s.title),el('p',new Date(s.updated).toLocaleString()),b);b.onclick=async()=>{try{await workspaceMemory.load(s.id);d.close()}catch(e){$('#workspaceStorage').textContent=e.message}};box.append(card)}}catch(e){$('#workspaceStorage').textContent=e.message}};
 $('#workspaceSaveCopy').onclick=()=>workspaceMemory.saveCopy().catch(e=>$('#workspaceStorage').textContent=e.message);

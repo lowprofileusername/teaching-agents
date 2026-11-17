@@ -45,6 +45,8 @@ jobs:
           node tests/revise.mjs
           node tests/syllabus.mjs
           node tests/lessonplan.mjs
+          node tests/pet.mjs
+          node tests/task-resume.mjs
       - name: Build two original teachers
         shell: pwsh
         run: |

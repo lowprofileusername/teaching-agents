@@ -21,6 +21,8 @@ jobs:
       - run: node tests/revise.mjs
       - run: node tests/syllabus.mjs
       - run: node tests/lessonplan.mjs
+      - run: node tests/pet.mjs
+      - run: node tests/task-resume.mjs
       - run: node tests/document-review.mjs
       - run: node tests/workspace-data.mjs
       - run: node tests/lecture-timeline.mjs
