@@ -30,7 +30,7 @@ var teachingSpecialists = []TeachingSpecialist{
 	{"architect", "报告架构师", "从零生成赛道适配的报告骨架与逐段字数预算", []string{"痛点可溯源", "唯一创新主线", "从所选赛道规则加载评分维度", "前后数据待补，不编造成效", "AI专属章节仅对人工智能赛道启用"}, "创新主线、逻辑闭环、章节字数预算、必答问题、赛道评分对照与待补证据；案例标注往届公开报道，不是你的课程事实", "报告骨架 评分 证据 创新主线"},
 	{"video-planner", "视频策划", "规划AI赛道课堂实录与课外说课两项视频，围绕同一创新主线", []string{"课堂实录40–50分钟，按用户课程实际学时规划", "课外说课不超过15分钟，覆盖课前课后（课中衔接可选）", "拟拍学生行为及界面产物证据", "有AI介入环节的教案课件四项标注与视频共同约束", "打法来源专家与迁移建议性质"}, "课堂时刻表、课外说课分段脚本、两段同一创新主线、AI应用环节/设计目的/操作流程/预期效果、命名与拍摄规范；只计划拍什么，不声称已经发生；迁移建议非专家本人观点", "人工智能 视频策划 课堂实录 课外说课 打法 防代做 获奖案例"},
 }
-var defaultSpecialists = map[string]string{"report": "report", "lesson": "lesson", "presentation": "presentation", "consistency": "evidence", "library": "rules", "replay": "chief", "overview": "chief"}
+var defaultSpecialists = map[string]string{"report": "report", "lesson": "lesson", "presentation": "presentation", "consistency": "evidence", "replay": "chief", "overview": "chief"}
 var trackFocus = map[string]string{
 	"新工科":  "工程复杂问题、设计迭代、系统约束与真实工程产物。",
 	"新医科":  "临床推理、患者安全、伦理与模拟/实践证据，不能把教学建议写成诊疗指令。",

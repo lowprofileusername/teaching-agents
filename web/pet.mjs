@@ -1,10 +1,14 @@
 import {createSpeech} from './speech.mjs';
 import {TeacherAnimator,wrapView} from './teacher-animation.mjs';
 import {PetSound} from './pet-sound.mjs';
+import {createPetChat} from './pet-chat.mjs';
 import {isDrag,classifyClick,clickCue,clickOpensMain,hoverDue,CLICK_BURST_MS} from './pet-gesture.mjs';
 const token=location.hash.slice(1);history.replaceState(null,'',location.pathname);
 const $=id=>document.getElementById(id),animator=new TeacherAnimator($('teacher'));
 const sound=new PetSound({storage:localStorage});
+const chat=createPetChat({token});document.body.append(chat.panel);
+$('mmChat').onclick=()=>{closeMenu();chat.toggle()};
+$('chatOpen').onclick=()=>{$('controls').classList.remove('expanded');chat.open()};
 const names={idle:'就绪，可拖动人物或打开工作台',retrieving:'正在检索教学资料',reviewing:'正在审阅材料',thinking:'正在等待模型回答',answering:'正在生成建议',done:'本次回答已完成',error:'任务遇到问题，请查看工作台'};
 let state={template:'female',posture:'active',state:'idle',native:false,direction:'left'},hover=false,speaking=false,generating=false,pendingStep=false,lastStep=0,previous=0,view=null,dragStart=null,windowDrag=null,movePending=null,moveFlight=null;
 let lastHover=0,hoverTimer=null,burst=0,burstTimer=null,pointerStart=null,dragMoved=false,braced=false,prevState='';

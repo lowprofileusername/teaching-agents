@@ -52,7 +52,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
           foreach ($persona in @('original','male')) {
-            go build -tags desktop -trimpath -ldflags "-s -w -X main.defaultPersona=$persona" -o "dist/teaching-agent-$persona-windows-amd64.exe" .
+            go build -tags desktop -trimpath -ldflags "-s -w -H windowsgui -X main.defaultPersona=$persona" -o "dist/teaching-agent-$persona-windows-amd64.exe" .
             if ($LASTEXITCODE -ne 0) { throw "Build failed: $persona" }
           }
       - name: Start and verify actual Windows executables

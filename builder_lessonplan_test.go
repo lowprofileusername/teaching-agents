@@ -133,7 +133,7 @@ func TestLessonPlanPromptAndRegistration(t *testing.T) {
 	if !found {
 		t.Fatal("lessonplan-architect missing from teachingSpecialists")
 	}
-	if len(defaultSpecialists) != 7 {
+	if len(defaultSpecialists) != 6 {
 		t.Fatal("workspace mapping changed")
 	}
 }

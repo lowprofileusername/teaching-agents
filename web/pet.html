@@ -10,6 +10,7 @@
 .note{font-size:10px;color:#73828e;margin:5px 0 0}body[data-speaking="true"] #speechBubble{animation:pulse 1s ease-in-out infinite alternate}@keyframes pulse{to{box-shadow:0 0 10px #73a4ca70}}
 #miniMenu{position:absolute;z-index:6;min-width:150px;background:rgba(255,255,255,.98);border:1px solid #c5d4df;border-radius:9px;box-shadow:0 4px 14px #0003;padding:4px;display:none;--wails-draggable:no-drag}
 #miniMenu.open{display:block}#miniMenu button{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:6px;padding:7px 9px}#miniMenu button:hover{background:#e8f1fa}#miniMenu hr{border:0;border-top:1px solid #e2e9f0;margin:4px 2px}
+.petChat{position:absolute;inset:0;z-index:5;background:rgba(250,252,255,.98);display:flex;flex-direction:column;padding:8px;gap:6px;--wails-draggable:no-drag}.petChat[hidden]{display:none}.petChatHead{display:flex;justify-content:space-between;align-items:center}.petChatMode{display:flex;gap:6px;align-items:center;font-size:11px}.petChatMode select{flex:1;width:auto}.petChatLog{flex:1;overflow:auto;display:flex;flex-direction:column;gap:6px;min-height:60px}.petChatMsg{font-size:11px;line-height:1.6;border-radius:8px;padding:6px 8px;white-space:pre-wrap;word-break:break-word}.petChatMsg.me{background:#e8f1fa;align-self:flex-end}.petChatMsg.her{background:#f0f7f5;border:1px solid #d6e0e9}.petChatMsg small{display:block;color:#73828e;font-size:10px;margin-bottom:2px}.petChatStatus{font-size:10px;color:#306487;margin:0}.petChatInput{display:flex;gap:6px}.petChatInput textarea{flex:1;font:inherit;border:1px solid #c5d4df;border-radius:7px;padding:5px;resize:none}.petChatInput button{flex:none}
 </style></head><body>
 <div class="controls" id="controls"><header><strong>桌面教师 · 完整选项</strong><button id="collapse" aria-label="收起选项">收起 ✕</button></header>
 <div class="row"><label>形象 <select id="template" aria-label="教师形象"><option value="female">原创女教师</option><option value="male">原创男教师</option></select></label></div>
@@ -20,11 +21,13 @@
 <div class="row"><label><input id="pin" type="checkbox">固定位置</label><label>大小 <select id="size" aria-label="教师大小"><option value=".65">迷你</option><option value="1" selected>轻巧</option><option value="1.2">大</option></select></label></div>
 <div class="row"><label><input id="sound" type="checkbox" checked>动作音效</label><label><input id="quiet" type="checkbox">静音</label></div>
 <div class="row"><button id="testVoice">听我说话</button><button id="voiceSettings">声音设置</button></div>
+<div class="row"><button id="chatOpen">和教师对话（问答/改大纲）</button></div>
 <div id="postureStatus" role="status"></div><div id="state" role="status">等待连接…</div><div id="voiceState" role="status"></div>
 <div class="row"><button id="open">打开工作台</button><button id="hide">隐藏</button><button id="stopVoice" hidden>停止朗读</button></div>
 <p class="note">右键人物＝最小菜单；拖动移动；旋转模式拖动或滚轮查看完整360° · 原创AI形象与合成声音</p></div>
 <div id="miniMenu" role="menu">
 <button id="mmOpen" role="menuitem">打开工作台</button>
+<button id="mmChat" role="menuitem">和教师对话</button>
 <button id="mmSound" role="menuitem">音效：开</button>
 <button id="mmPin" role="menuitem">定住</button>
 <button id="mmMore" role="menuitem">更多选项…</button><hr>

@@ -86,7 +86,7 @@ func TestAITrackSpecialistsPreserveDefaults(t *testing.T) {
 			t.Fatal(p, e)
 		}
 	}
-	if len(defaultSpecialists) != 7 {
+	if len(defaultSpecialists) != 6 {
 		t.Fatal("workspace mapping changed")
 	}
 	if defaultSpecialists["report"] != "report" || defaultSpecialists["lesson"] != "lesson" {

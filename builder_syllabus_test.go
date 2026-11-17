@@ -126,7 +126,7 @@ func TestSyllabusPromptAndRegistration(t *testing.T) {
 	if !found {
 		t.Fatal("syllabus-architect missing from teachingSpecialists")
 	}
-	if len(defaultSpecialists) != 7 {
+	if len(defaultSpecialists) != 6 {
 		t.Fatal("workspace mapping changed")
 	}
 }

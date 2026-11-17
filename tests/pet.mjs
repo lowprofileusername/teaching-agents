@@ -31,4 +31,6 @@ assert.equal(s.enabled,true);
 s.setEnabled(false);assert.equal(store.m.petSound,'0');assert.equal(s.enabled,false);
 s.setEnabled(true);assert.equal(store.m.petSound,'1');
 const off=new PetSound({storage:{getItem:()=>'0'}});assert.equal(off.enabled,false);
-console.log('PASS pet sound cues, mute gating and gesture classification');
+console.log('PASS pet sound cues, mute gating and gesture classification');import {createPetChat} from '../web/pet-chat.mjs';
+assert.equal(typeof createPetChat,'function');
+console.log('PASS pet-chat module import chain');
