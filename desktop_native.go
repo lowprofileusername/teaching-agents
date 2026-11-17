@@ -36,6 +36,7 @@ func startDesktop(a *App, link string) error {
 	})
 	var mu sync.Mutex
 	var pet *application.WebviewWindow
+	var workbench *application.WebviewWindow
 	var dragAnchor struct {
 		active                             bool
 		screenX, screenY, windowX, windowY int
@@ -61,6 +62,14 @@ func startDesktop(a *App, link string) error {
 			g = clampGeometry(g, r.X, r.Y, r.Width, r.Height)
 		}
 		w := host.Window.NewWithOptions(application.WebviewWindowOptions{Name: fmt.Sprintf("workbench-%d", count), Title: "教学创新备赛工作台", Width: g.Width, Height: g.Height, MinWidth: 800, MinHeight: 600, InitialPosition: application.WindowXY, X: g.X, Y: g.Y, URL: windowURL, BackgroundColour: application.NewRGB(242, 243, 237)})
+		workbench = w
+		w.OnWindowEvent(events.Common.WindowClosing, func(_ *application.WindowEvent) {
+			mu.Lock()
+			if workbench == w {
+				workbench = nil
+			}
+			mu.Unlock()
+		})
 		// Keep standard OS titlebar drag, resize and maximize semantics. Only
 		// persist a normal (not maximized/minimized) rectangle, debounced.
 		var geometryMu sync.Mutex
@@ -164,7 +173,15 @@ func startDesktop(a *App, link string) error {
 			}
 
 		case "open":
-			open(a.origin + "/?fresh=1#" + a.token)
+			// Reuse the existing workbench window (focus current task) instead of
+			// spawning a new window/process on every open.
+			if workbench != nil {
+				workbench.Show()
+				workbench.Restore()
+				workbench.Focus()
+			} else {
+				open(a.origin + "/#" + a.token)
+			}
 		case "open_voice":
 			open(a.origin + "/?voice=1#" + a.token)
 		case "open_branch":
