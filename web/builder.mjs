@@ -1,11 +1,15 @@
-export const isBuilder=id=>['architect','video-planner'].includes(id);
+export const isBuilder=id=>['architect','video-planner','presentation-architect'].includes(id);
 const text=s=>String(s??'').replace(/[<>]/g,'').replace(/\|/g,'／').replace(/\r?\n/g,' ');
 const list=a=>(a||[]).map(s=>'- '+text(s)).join('\n');
 export function renderBuilderPlan(p){
- const lines=['## '+(p.kind==='report'?'报告架构方案':'课堂视频策划'),text(p.boundary),'','### 一句话创新主线',text(p.innovation_line),'','### 逻辑闭环',text(p.logic_loop),''];
+ const lines=['## '+(p.kind==='report'?'报告架构方案':p.kind==='presentation'?'汇报PPT方案':'课堂视频策划'),text(p.boundary),'','### 一句话创新主线',text(p.innovation_line),'','### 逻辑闭环',text(p.logic_loop),''];
  if(p.kind==='report'){
   lines.push('### 章节骨架与字数预算',`预算合计：${p.word_budget_total} 字（计划值）`,'');
-  for(const s of p.sections)lines.push(`#### ${text(s.title)} · ${s.word_budget} 字`,'必答问题：',list(s.questions),'','待补证据：',list(s.evidence_needed),'');
+  for(const s of p.sections){lines.push(`#### ${text(s.title)} · ${s.word_budget} 字`,'必答问题：',list(s.questions),'','待补证据：',list(s.evidence_needed),'');if(s.draft)lines.push('正文草稿：',s.draft,'');}
+ }else if(p.kind==='presentation'){
+  lines.push('### 逐页方案',`总时长：${p.slides.reduce((n,s)=>n+s.duration_sec,0)} 秒`);
+  for(const s of p.slides)lines.push('',`#### 第 ${s.page_no} 页 · ${text(s.title)}`,`环节：${text(s.section)} · ${s.duration_sec} 秒`,list(s.bullets),'可视化：'+text(s.visual),'讲稿：'+text(s.speaker_note),'资料：'+text(s.evidence_source));
+  if(p.warnings?.length)lines.push('','### 建议提醒（不阻断）',list(p.warnings));
  }else{
   lines.push('### 课堂时刻表',`总时长：${p.duration_minutes} 分钟（本次策划参数）`,'','| 时间段 | 教学环节 | AI介入动作 | 要拍到的学生行为证据 | 对应报告举措 |','| --- | --- | --- | --- | --- |');
   for(const t of p.timeline)lines.push(`| ${t.start_minute}–${t.end_minute}分 | ${text(t.stage)} | ${text(t.ai_action)} | ${text(t.student_evidence)} | ${text(t.report_measure)} |`);
@@ -18,10 +22,10 @@ export function renderBuilderPlan(p){
  }
  if(p.requirements){
   const r=p.requirements;lines.push('','### 材料规格与共同约束',text(r.notice));
-  if(r.report)lines.push('',`报告：字数上限 ${r.report.word_limit} 字，查重低于 ${r.report.similarity_limit_percent}%，${r.report.anonymous?'匿名提交':'按所给要求提交'}；格式 ${text(r.report.format)}。`);
+  if(r.report)lines.push('',`报告：字数上限 ${r.report.word_limit} 字，查重不高于 ${r.report.similarity_limit_percent}%，${r.report.anonymous?'匿名提交':'按所给要求提交'}；格式 ${text(r.report.format)}。`);
   if(p.kind==='lesson'&&r.video)for(const [key,label] of [['lesson_record','课堂实录'],['extra_demo','课外说课'],['lesson_plan_annotation','教案与课件'],['naming','两项视频命名']])lines.push('',label+'：'+text(r.video[key]));
  }
- const positions=new Map([...(p.sections||[]).map(s=>[s.id,s.title]),...(p.timeline||[]).map(t=>[t.id,`${t.start_minute}–${t.end_minute}分 ${t.stage}`])]);
+ const positions=new Map([...(p.slides||[]).map(s=>[s.id,`第${s.page_no}页 ${s.title}`]),...(p.sections||[]).map(s=>[s.id,s.title]),...(p.timeline||[]).map(t=>[t.id,`${t.start_minute}–${t.end_minute}分 ${t.stage}`])]);
  lines.push('',`### ${p.scoring_map.length}维评分对照`,text(p.requirements?.notice||p.boundary),'','| 维度 | 对应位置 | 待补证据 |','| --- | --- | --- |');
  for(const s of p.scoring_map)lines.push(`| ${text(s.dimension)} | ${text(s.section_ids.map(id=>positions.get(id)||id).join('；'))} | ${text(s.evidence_needed.join('；'))} |`);
  lines.push('','### 需要补充的证据',list(p.evidence_needed),'','### 资料依据与使用边界');

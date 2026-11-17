@@ -1,6 +1,6 @@
 # AI 赛道资料与生成顾问
 
-本改造在 `feat/ai-track-builder`，基于 v0.4.8 之后的 main；不发布版本、不改默认八顾问及七工作区映射。新教师、新任务、重置和材料隔离继续保留。
+v0.5.0 在已合并 builder 的 main 上增量扩展，不改默认八顾问及七工作区映射。新教师、新任务、重置和材料隔离继续保留。
 
 ## 实际接入
 
@@ -69,3 +69,14 @@ PLAYWRIGHT_MODULE=/path/to/playwright CHROME_BIN=/path/to/chrome node tests/buil
 WorkBuddy/Codex/Claude播放器共用改进：点击左侧画面节点将真实出现区间填入总结起止秒（保留小数，不合并回看），解释当前页直接按page_id读取，且将转写限定在当前出现区间；不再先做模糊全文检索。同区任务忙碌、空档、未载入和失败都有明确提示。图片可点击放大、适应窗口/原始尺寸、Esc/关闭，放大时暂停原声。
 
 实库验证：WorkBuddy revised 的 `xinye:R03` 00:43节点实际43.022–73.504秒，自动填入、片段总结、精确页读取、重复点击反馈、图片放大与关闭通过。数据库及媒体用实际库只读读取，回答API仍为隔离本地mock，未冒称真人听辨或模型语义验收。
+
+
+## v0.5.0 新增操作
+
+顾问角色中选“报告架构师”，生成深度选“逐段扩写”，再提交当前课程问题。选择“汇报PPT架构师”生成逐页方案；它不等于PPTX成品。PPT总时间最多720秒；30页、3+6+3、690–710秒是提醒。
+
+人工智能生成优先提供 `builtin:aideep:lijing_ai_track`、`builtin:aideep:songxiaofei_ai_track`。共12条deep记录；每条保留source_group/source_locator/source_nature/verification/report_url/practice_source_url。数据库为内存只读副本，不改用户SQLite。`builtin:track:*`按赛道过滤；非AI不注入deep条目。
+
+报告draft使用章节预算、成效待补硬校验；用户上传文稿的4000字只提示，不自动截断或拒绝审阅。修订选择保存在任务中，单条修订ID由段落ID和模型rid组合，防止跨段落误接受。
+
+UI门禁：`node tests/revise-ui.cjs <isolated-server.log> <artifact-dir>`，环境与上文builder-ui一致；输出修订截图、PPT方案截图、导出DOCX及ui-results.json。Word批注部件按document.xml.rels解析，不假定固定文件名。边界：浏览器交互与OOXML校验，不宣称Word红线视觉渲染已验收。

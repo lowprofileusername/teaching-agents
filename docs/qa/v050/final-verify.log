@@ -1,0 +1,18 @@
+仓库：.
+============================================================
+[PASS] 0a 改动在独立分支而非 main -- 当前分支：feat/v050-ai-deep（设计要求是 feat/ai-track-builder 之类，不是 main）
+[PASS] 1a builtin.go embed 含四个新 JSON -- embed 行：//go:embed knowledge/track_playbooks.json knowledge/ai_track_deep.json knowledge/rules.json knowledge/rules_6_2026.pdf knowledge/experts.json knowledge/rules_7_ai_2026.json knowledge/ai_playbook.json knowledge/ai_award_cases_6th.json knowledge/video_index_5th_wenke.json research/*.md research/third-party/*.md
+[PASS] 1b rules_7_ai_2026.json 被实际读取/检索 -- 在 .go 文件中出现 7 次；<=1 表示只加进 embed 但没有任何加载/检索代码（典型偷懒）
+[PASS] 1b ai_playbook.json 被实际读取/检索 -- 在 .go 文件中出现 8 次；<=1 表示只加进 embed 但没有任何加载/检索代码（典型偷懒）
+[PASS] 1b ai_award_cases_6th.json 被实际读取/检索 -- 在 .go 文件中出现 5 次；<=1 表示只加进 embed 但没有任何加载/检索代码（典型偷懒）
+[PASS] 1b video_index_5th_wenke.json 被实际读取/检索 -- 在 .go 文件中出现 4 次；<=1 表示只加进 embed 但没有任何加载/检索代码（典型偷懒）
+[PASS] 2a specialists.go 含顾问 architect -- 检查 teachingSpecialists 数组是否新增该 ID
+[PASS] 2a specialists.go 含顾问 video-planner -- 检查 teachingSpecialists 数组是否新增该 ID
+[PASS] 2b 前端能看到新顾问 -- 命中：web/app.mjs (dynamic /api/specialists)
+[PASS] 3a main.go 有 generate 模式痕迹 -- 命中 7 行，例：if c.Depth != "" && (c.Depth != "full" || c.Mode != "generate" || c.SpecialistID != "archi
+[PASS] 3b 存在新的生成型 system prompt 分支 -- 新增 sys 赋值 2 处
+[PASS] 4a 新增针对性测试文件/断言 -- 新文件：generate_test.go, ai_track_test.go | 含新断言：generate_test.go, builder_extensions_test.go, ai_track_test.go, revise_test.go
+[PASS] 4b go test ./... -- ok  	lijing-assistant	8.168s
+============================================================
+总结：PASS 13 / FAIL 0 / RED FLAG 0
+代码层全部通过。请继续做文档中的 UI 手工测试（能不能真写、真查、不编造）。

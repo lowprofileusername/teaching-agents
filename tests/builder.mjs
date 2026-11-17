@@ -11,3 +11,8 @@ text=renderBuilderPlan({...p,kind:'lesson',duration_minutes:45,sections:[],timel
 assert.equal(audioQualityLabel('encoded_decode_checked_not_listened'),'音频编码及解码检查通过，未做原声听辨');
 const evidence=buildEvidence({document_hits:[{id:'builtin:play:demo',source_file:'knowledge/ai_playbook.json',origin:'来源老师',kind:'ai_migration'}]});assert.equal(evidence.document_evidence[0].origin,'来源老师');assert.equal(evidence.document_evidence[0].kind,'ai_migration');
 console.log('PASS builder presentation, saved plan, evidence attribution and audio-status translation');
+
+assert(isBuilder('presentation-architect'));
+const pp={...p,kind:'presentation',sections:[],slides:[{id:'p1',page_no:1,title:'可核查问题',section:'创新内容',bullets:['待补：原始证据'],visual:'匿名截图',evidence_source:'builtin:play:demo',speaker_note:'拟议讲稿',duration_sec:715}],warnings:['时长建议，不阻断']};
+text=renderBuilderPlan(pp);for(const s of ['汇报PPT方案','715 秒','第 1 页','拟议讲稿','建议提醒（不阻断）'])assert(text.includes(s));
+text=renderBuilderPlan({...p,sections:[{...p.sections[0],draft:'拟议正文；待补：真实证据'}]});assert(text.includes('正文草稿'));assert(text.includes('拟议正文'));

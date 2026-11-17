@@ -18,16 +18,23 @@ const caseNotice = "第六届往届公开报道，非获奖报告全文；不是
 const videoIndexNotice = "第五届新文科视频资源索引，仅说明资源存在及获取入口；视频未内置，未观看，不据索引推断课堂内容。"
 
 type builtinReference struct {
-	ID         string `json:"id"`
-	Kind       string `json:"kind"`
-	Edition    int    `json:"edition"`
-	Title      string `json:"title"`
-	Text       string `json:"text"`
-	Authority  string `json:"authority_status"`
-	SourceFile string `json:"source_file"`
-	SourceURL  string `json:"source_url"`
-	Publisher  string `json:"publisher"`
-	Origin     string `json:"origin,omitempty"`
+	Track         string `json:"track,omitempty"`
+	ID            string `json:"id"`
+	Kind          string `json:"kind"`
+	Edition       int    `json:"edition"`
+	Title         string `json:"title"`
+	Text          string `json:"text"`
+	Authority     string `json:"authority_status"`
+	SourceFile    string `json:"source_file"`
+	SourceURL     string `json:"source_url"`
+	Publisher     string `json:"publisher"`
+	Origin        string `json:"origin,omitempty"`
+	SourceLocator string `json:"source_locator,omitempty"`
+	SourceNature  string `json:"source_nature,omitempty"`
+	Verification  string `json:"verification,omitempty"`
+	SourceGroup   string `json:"source_group,omitempty"`
+	ReportURL     string `json:"report_url,omitempty"`
+	PracticeURL   string `json:"practice_source_url,omitempty"`
 }
 
 func readReferenceJSON(name string, target any) error {
@@ -89,6 +96,12 @@ func installBuiltinReferences(db *sql.DB) error {
 			return fmt.Errorf("reference %s: %w", r.ID, e)
 		}
 		return nil
+	}
+	if e := installTrackPlaybooks(add); e != nil {
+		return e
+	}
+	if e := installDeepReferences(add); e != nil {
+		return e
 	}
 	for _, part := range []string{"scoring", "materials", "eligibility", "timeline_estimate"} {
 		if rules[part] == nil {
@@ -272,7 +285,20 @@ func builtinReferenceSearch(ctx context.Context, q string) []map[string]any {
 				score++
 			}
 		}
+		// Full query phrases inside a session's mechanisms are stronger than
+		// incidental bigrams. A session title is not its list of methods.
+		for _, phrase := range strings.Fields(q) {
+			term := normalizedQuery(phrase)
+			if len([]rune(term)) >= 4 && strings.Contains(body, term) {
+				score += 30
+			}
+		}
 		switch r.Kind {
+		case "track_migration":
+			if queryTrack(q) != r.Track {
+				continue
+			}
+			score += 60
 		case "provisional_rule":
 			if edition != 7 || !ai {
 				continue
@@ -294,7 +320,15 @@ func builtinReferenceSearch(ctx context.Context, q string) []map[string]any {
 				continue
 			}
 		case "ai_migration":
-			if !ai && !hasAny(nq, "打法", "于歆杰", "张静", "辛页", "宋晓菲", "叶齐") {
+			if r.SourceFile == deepFile {
+				if hasAny(nq, r.Origin) {
+					score += 40
+				}
+				if ai && caseWanted && r.SourceGroup == "sixth_edition_reports" {
+					score += 35
+				}
+			}
+			if !ai && !hasAny(nq, "打法", "于歆杰", "张静", "辛页", "宋晓菲", "叶齐", "李静", "汪琼", "刘学莘", "高越", "石拓") {
 				continue
 			}
 			if !playWanted && score < 18 {
@@ -359,14 +393,30 @@ func builtinReferenceSearch(ctx context.Context, q string) []map[string]any {
 		if r.Kind == "ai_migration" {
 			limit = 4
 		}
-		if counts[r.Kind] >= limit {
+		bucket := r.Kind
+		if r.SourceFile == deepFile {
+			bucket = "ai_deep"
+			limit = 4
+		}
+		if counts[bucket] >= limit {
 			continue
 		}
-		counts[r.Kind]++
-		out = append(out, map[string]any{"id": r.ID, "document_id": r.ID, "kind": r.Kind, "edition": r.Edition, "title": r.Title, "text": r.Text, "authority_status": r.Authority, "source_file": r.SourceFile, "source_url": r.SourceURL, "publisher": r.Publisher, "origin": r.Origin, "pdf_available": false, "extraction": "结构化资料/研究摘录；性质见authority_status"})
+		counts[bucket]++
+		out = append(out, referenceMap(r))
 		if len(out) == 12 {
 			break
 		}
 	}
 	return out
+}
+
+func decodeReference(raw string, r *builtinReference) error { return json.Unmarshal([]byte(raw), r) }
+func referenceMap(r builtinReference) map[string]any {
+	b, _ := json.Marshal(r)
+	m := map[string]any{}
+	_ = json.Unmarshal(b, &m)
+	m["document_id"] = r.ID
+	m["pdf_available"] = false
+	m["extraction"] = "结构化资料/研究摘录；性质见authority_status"
+	return m
 }

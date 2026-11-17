@@ -42,6 +42,7 @@ jobs:
           node tests/lecture-timeline.mjs
           node tests/lecture-question.mjs
           node tests/builder.mjs
+          node tests/revise.mjs
       - name: Build two original teachers
         shell: pwsh
         run: |

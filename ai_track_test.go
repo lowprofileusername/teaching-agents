@@ -62,7 +62,7 @@ func TestAITrackBuiltinFourSourcesAndEdition(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	for kind, want := range map[string]int{"provisional_rule": 4, "ai_migration": 12, "award_case": 10, "video_index": 24} {
+	for kind, want := range map[string]int{"provisional_rule": 4, "ai_migration": 24, "award_case": 10, "video_index": 24} {
 		var n int
 		if e = db.QueryRow("SELECT COUNT(*) FROM builtin_reference WHERE kind=?", kind).Scan(&n); e != nil || n != want {
 			t.Errorf("%s count %d want %d (%v)", kind, n, want, e)
@@ -77,8 +77,8 @@ func TestAITrackSpecialistsPreserveDefaults(t *testing.T) {
 	if queryEdition("第七届报告，参考第六届做法") != 7 {
 		t.Fatal("reference edition overrides requested edition")
 	}
-	if len(teachingSpecialists) != 10 {
-		t.Fatal("expected old eight plus two builders")
+	if len(teachingSpecialists) != 11 {
+		t.Fatal("expected old eight plus three builders")
 	}
 	for _, id := range []string{"architect", "video-planner"} {
 		p, e := specialistPrompt(id, "report", "人工智能")
@@ -91,5 +91,75 @@ func TestAITrackSpecialistsPreserveDefaults(t *testing.T) {
 	}
 	if defaultSpecialists["report"] != "report" || defaultSpecialists["lesson"] != "lesson" {
 		t.Fatal("checker defaults replaced")
+	}
+}
+
+func TestDeepKnowledgeRetrievalAndProvenance(t *testing.T) {
+	var d map[string]any
+	if err := readReferenceJSON("knowledge/ai_track_deep.json", &d); err != nil {
+		t.Fatal(err)
+	}
+	count := 0
+	for _, group := range []string{"priority_sessions", "support_sessions", "sixth_edition_reports"} {
+		for _, x := range objects(d[group]) {
+			r := builtinReferenceByID(context.Background(), "builtin:aideep:"+stringField(x, "id"))
+			count++
+			if r == nil || r["source_file"] != deepFile || r["kind"] != "ai_migration" {
+				t.Fatalf("missing record %v", x)
+			}
+			if group == "sixth_edition_reports" && (r["report_url"] != x["source_url"] || r["verification"] != x["verification"] || r["source_nature"] != x["source_nature"]) {
+				t.Fatal("lost report provenance", r)
+			}
+			if group != "sixth_edition_reports" && r["source_locator"] != x["source_locator"] {
+				t.Fatal("lost locator", r)
+			}
+		}
+	}
+	if count != 12 {
+		t.Fatal(count)
+	}
+	for _, q := range []string{"AI 审查三基准", "AI 分类治理", "AI 思维实验室", "第六届 人工智能 一等奖", "李静 流体力学"} {
+		found := false
+		for _, r := range builtinSearch(context.Background(), q) {
+			if r["source_file"] == deepFile {
+				found = true
+			}
+		}
+		if !found {
+			t.Error("missing deep retrieval", q)
+		}
+	}
+	matches := builtinSearch(context.Background(), "AI 审查三基准")
+	for _, id := range []string{"builtin:aideep:yuxinjie_ai_logic", "builtin:play:three_checks_benchmark"} {
+		seen := false
+		for _, r := range matches {
+			if r["id"] == id {
+				seen = true
+			}
+		}
+		if !seen {
+			t.Error("specific method lost", id)
+		}
+	}
+	for _, track := range []string{"人工智能", "新文科"} {
+		raw := appendBuiltinEvidence(context.Background(), Chat{Mode: "generate", SpecialistID: "architect", Track: track, Edition: "7", Question: "报告骨架"})
+		refs := includedBuilderReferences(raw)
+		if track == "人工智能" {
+			if refs["builtin:aideep:lijing_ai_track"] == nil || refs["builtin:aideep:songxiaofei_ai_track"] == nil {
+				t.Fatal("priority missing")
+			}
+			packed := fitEvidence(raw, 12000)
+			for _, id := range []string{"builtin:aideep:lijing_ai_track", "builtin:aideep:songxiaofei_ai_track"} {
+				if includedBuilderReferences(packed)[id] == nil {
+					t.Fatal("priority lost to budget")
+				}
+			}
+		} else {
+			for id := range refs {
+				if strings.HasPrefix(id, "builtin:aideep:") {
+					t.Fatal("cross-track deep leak")
+				}
+			}
+		}
 	}
 }

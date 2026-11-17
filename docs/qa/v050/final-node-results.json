@@ -1,0 +1,72 @@
+[
+  {
+    "test": "tests/pdf-smoke.mjs",
+    "code": 0,
+    "output": "Synthetic two-page PDF extraction and cleanup passed\nWarning: Please use the `legacy` build in Node.js environments.\n"
+  },
+  {
+    "test": "tests/markdown.mjs",
+    "code": 0,
+    "output": "Markdown structure passed; renderer uses text nodes, no raw HTML\n"
+  },
+  {
+    "test": "tests/retrieval-context.mjs",
+    "code": 0,
+    "output": "Explicit track and speaker changes do not inherit stale query scope\n"
+  },
+  {
+    "test": "tests/evidence.mjs",
+    "code": 0,
+    "output": "Evidence payload keeps every selected page and report within request limits\n"
+  },
+  {
+    "test": "tests/speech.mjs",
+    "code": 0,
+    "output": "speech segmentation preserves text, removes markup, and bounds requests\n"
+  },
+  {
+    "test": "tests/teacher-animation.mjs",
+    "code": 0,
+    "output": "walk, sit, stand and mid-transition reversal passed\n"
+  },
+  {
+    "test": "tests/workspace-data.mjs",
+    "code": 0,
+    "output": "workspace timeline, provenance and slide metrics passed\n"
+  },
+  {
+    "test": "tests/workspace-memory.mjs",
+    "code": 0,
+    "output": "checkpoint serialization, interruption, restart and secret exclusion passed\n"
+  },
+  {
+    "test": "tests/document-review.mjs",
+    "code": 0,
+    "output": "document coverage, missing review rejection, branch isolation and incomplete streams passed\nwrapped JSON, ambiguous/truncated rejection, bounded retry and cancellation passed\n"
+  },
+  {
+    "test": "tests/material-visuals.mjs",
+    "code": 0,
+    "output": "visual schema, source guard and paragraph/image comment merge passed\n"
+  },
+  {
+    "test": "tests/lecture-timeline.mjs",
+    "code": 0,
+    "output": "replay boundaries, revisits, gaps, overlapping frames and audio chunk offsets passed\n"
+  },
+  {
+    "test": "tests/lecture-question.mjs",
+    "code": 0,
+    "output": "lecture identity, whole transcript, current page, time range and lossless batch boundaries passed\n"
+  },
+  {
+    "test": "tests/builder.mjs",
+    "code": 0,
+    "output": "PASS builder presentation, saved plan, evidence attribution and audio-status translation\n"
+  },
+  {
+    "test": "tests/revise.mjs",
+    "code": 0,
+    "output": "PASS revise protocol, accept/reject application, word-count reminder and Word export bridge\n"
+  }
+]

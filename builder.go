@@ -12,7 +12,9 @@ import (
 	"time"
 )
 
-func isBuilder(id string) bool { return id == "architect" || id == "video-planner" }
+func isBuilder(id string) bool {
+	return id == "architect" || id == "video-planner" || id == "presentation-architect"
+}
 func builderEdition(c Chat) int {
 	if n := queryEdition(strings.Split(c.Question, "\n本轮备赛信息")[0]); n != 0 {
 		return n
@@ -24,6 +26,7 @@ func builderEdition(c Chat) int {
 }
 
 type BuilderSection struct {
+	Draft      string   `json:"draft,omitempty"`
 	ID         string   `json:"id"`
 	Title      string   `json:"title"`
 	WordBudget int      `json:"word_budget"`
@@ -66,6 +69,8 @@ type BuilderAnnotation struct {
 	Expected  string `json:"expected_effect"`
 }
 type BuilderPlan struct {
+	Slides       []BuilderSlide      `json:"slides,omitempty"`
+	Warnings     []string            `json:"warnings,omitempty"`
 	DemoDuration int                 `json:"demo_duration_minutes"`
 	Demo         []BuilderDemo       `json:"demo_script"`
 	Annotations  []BuilderAnnotation `json:"lesson_annotations"`
@@ -193,7 +198,7 @@ func validateBuilderPlan(raw, role string, available map[string]map[string]any, 
 		if !policy.AI && ethicsChapter {
 			return p, fmt.Errorf("非AI赛道不得设置AI专属伦理治理章节")
 		}
-	} else {
+	} else if role == "video-planner" {
 		if p.Kind != "lesson" || p.Duration < 40 || p.Duration > 50 || end != p.Duration || p.WordBudget != 0 || len(p.Sections) != 0 {
 			return p, fmt.Errorf("视频策划需40–50分钟完整课堂时刻表")
 		}
@@ -239,6 +244,16 @@ func validateBuilderPlan(raw, role string, available map[string]map[string]any, 
 			}
 		}
 	}
+	if role == "presentation-architect" {
+		if e := validatePresentation(&p, available, ids); e != nil {
+			return p, e
+		}
+	} else if len(p.Slides) > 0 {
+		return p, fmt.Errorf("当前角色不能混入PPT方案")
+	}
+	if e := validateFullDraft(p, policy.Depth); e != nil {
+		return p, e
+	}
 	dims := map[string]bool{}
 	for _, d := range policy.Dimensions {
 		dims[d] = false
@@ -276,6 +291,9 @@ func validateBuilderPlan(raw, role string, available map[string]map[string]any, 
 		if strings.TrimSpace(s) == "" || generatedFactRisk.MatchString(s) {
 			return p, fmt.Errorf("生成文本含空字段、统计数字、引语或成效断言；未计为完成，请只列结构与待补证据")
 		}
+	}
+	if e := validateDeepCitations(p, available, policy.AI); e != nil {
+		return p, e
 	}
 	p.Boundary = policy.boundary()
 	return p, nil
@@ -317,10 +335,19 @@ func appendBuiltinEvidence(ctx context.Context, c Chat) string {
 	if c.Mode == "generate" {
 		policy, _ := builderPolicyFor(c.Track, builderEdition(c))
 		selected := []map[string]any{}
+		if policy.AI {
+			selected = builderDeepEvidence(ctx, q)
+		}
 		counts := map[string]int{}
 		for _, r := range found {
+			if duplicateDeepPlay(stringField(r, "id"), selected) {
+				continue
+			}
 			kind := stringField(r, "kind")
-			if !policy.AI && kind != "competition_rule" {
+			if strings.HasPrefix(stringField(r, "id"), "builtin:aideep:") {
+				continue
+			}
+			if !policy.AI && kind != "competition_rule" && kind != "track_migration" {
 				continue
 			}
 			limit := 0
@@ -333,6 +360,10 @@ func appendBuiltinEvidence(ctx context.Context, c Chat) string {
 				if r["id"] == "builtin:rules7:scoring" || r["id"] == "builtin:rules7:materials" {
 					limit = 1
 				}
+			case "track_migration":
+				if stringField(r, "track") == policy.Track {
+					limit = 2
+				}
 			case "ai_migration":
 				limit = 2
 			case "award_case":
@@ -341,6 +372,14 @@ func appendBuiltinEvidence(ctx context.Context, c Chat) string {
 			if counts[kind] < limit {
 				selected = append(selected, r)
 				counts[kind]++
+			}
+		}
+		if policy.AI && counts["ai_migration"] == 0 {
+			// Deep sessions must not starve distinct cross-session mechanisms.
+			for _, id := range []string{"builtin:play:ai_refuse_direct_answer", "builtin:play:ai_blind_review"} {
+				if r := builtinReferenceByID(ctx, id); r != nil {
+					selected = append(selected, r)
+				}
 			}
 		}
 		found = selected
@@ -421,6 +460,7 @@ func (a *App) completeGeneration(w http.ResponseWriter, r *http.Request, cfg Con
 		fail(w, 400, e.Error())
 		return
 	}
+	policy.Depth = c.Depth
 	p, e := validateBuilderPlan(answer, c.SpecialistID, includedBuilderReferences(packed), policy)
 	if e != nil {
 		fail(w, 502, e.Error())

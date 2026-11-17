@@ -41,6 +41,7 @@ type Message struct {
 	Content string `json:"content"`
 }
 type Chat struct {
+	Depth               string        `json:"depth"`
 	Mode                string        `json:"mode"`
 	Edition             string        `json:"edition"`
 	Images              []VisionImage `json:"images"`
@@ -165,6 +166,10 @@ func (a *App) chat(w http.ResponseWriter, r *http.Request) {
 		fail(w, 400, "请求无效或超过8MB")
 		return
 	}
+	if c.Depth != "" && (c.Depth != "full" || c.Mode != "generate" || c.SpecialistID != "architect") {
+		fail(w, 400, "depth=full仅用于报告架构师生成")
+		return
+	}
 	if c.Mode != "" && c.Mode != "generate" {
 		fail(w, 400, "未知工作模式")
 		return
@@ -229,7 +234,7 @@ func (a *App) chat(w http.ResponseWriter, r *http.Request) {
 		}
 		lens, _ = specialistPrompt(c.SpecialistID, c.Workspace, c.Track)
 		expert, _ := expertPerspective(c.ExpertID)
-		sys = generationPrompt(c.SpecialistID, builderEdition(c), c.Track) + expert + lens
+		sys = generationPrompt(c.SpecialistID, builderEdition(c), c.Track, c.Depth) + expert + lens
 		c.History = nil
 	}
 	if c.AnswerScope != "single_unit" {

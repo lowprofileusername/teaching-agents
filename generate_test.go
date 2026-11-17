@@ -20,7 +20,7 @@ func builderJPEG() string {
 	return "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(b.Bytes())
 }
 func builderFixture(role string) BuilderPlan {
-	p := BuilderPlan{Kind: "report", Line: "以问题核验串联自主判断", Loop: "问题识别到举措再到证据", WordBudget: 4000, Sections: []BuilderSection{{"s1", "课程问题与创新举措", 3200, []string{"哪些问题有真实依据"}, []string{"待补：原始学情记录"}}, {"s2", "AI伦理与治理", 800, []string{"如何核验模型回答"}, []string{"待补：治理规则"}}}, Scores: []BuilderScore{}, Evidence: []string{"待补：改革前后同口径原始记录"}, Timeline: []BuilderStage{}, Demo: []BuilderDemo{}, Annotations: []BuilderAnnotation{}, References: []BuilderReference{{"builtin:rules7:scoring", "借鉴章节对照结构", ""}}, Boundary: "待实施建议"}
+	p := BuilderPlan{Kind: "report", Line: "以问题核验串联自主判断", Loop: "问题识别到举措再到证据", WordBudget: 4000, Sections: []BuilderSection{{"", "s1", "课程问题与创新举措", 3200, []string{"哪些问题有真实依据"}, []string{"待补：原始学情记录"}}, {"", "s2", "AI伦理与治理", 800, []string{"如何核验模型回答"}, []string{"待补：治理规则"}}}, Scores: []BuilderScore{}, Evidence: []string{"待补：改革前后同口径原始记录"}, Timeline: []BuilderStage{}, Demo: []BuilderDemo{}, Annotations: []BuilderAnnotation{}, References: []BuilderReference{{"builtin:rules7:scoring", "借鉴章节对照结构", ""}}, Boundary: "待实施建议"}
 	ids := []string{"s1", "s2"}
 	if role == "video-planner" {
 		p.Kind = "lesson"
@@ -114,6 +114,7 @@ func TestGenerateActualProviderFlowAndCheckerRegression(t *testing.T) {
 					t.Error("history leaked or unvalidated stream")
 				}
 				p := builderFixture(role)
+				p.References = append(p.References, BuilderReference{"builtin:aideep:lijing_ai_track", "借鉴主映射机制并补齐成效证据", ""})
 				if bad {
 					p.Line = "学生成绩提升32%"
 				}
@@ -294,5 +295,31 @@ func TestBuilderAuditRetractionRegressions(t *testing.T) {
 	}
 	if strings.Contains(generationPrompt("architect", 7), "独立设置AI伦理与治理章节") {
 		t.Error("architect prompt still forces independent ethics chapter")
+	}
+}
+
+func TestDeepGenerationBoundaries(t *testing.T) {
+	p := builderFixture("architect")
+	refs := includedBuilderReferences(appendBuiltinEvidence(context.Background(), Chat{Mode: "generate", Track: "人工智能", Question: "报告骨架", Edition: "7"}))
+	if _, e := validateBuilderPlan(fixtureJSON(p), "architect", refs); e == nil {
+		t.Fatal("missing priority citation accepted")
+	}
+	p.References = append(p.References, BuilderReference{"builtin:aideep:lijing_ai_track", "借鉴主映射并补齐成效证据", ""})
+	if _, e := validateBuilderPlan(fixtureJSON(p), "architect", refs); e != nil {
+		t.Fatal(e)
+	}
+	for _, id := range []string{"shi_tuo_self_dev", "gao_yue_ai_fit"} {
+		ref := builtinReferenceByID(context.Background(), "builtin:aideep:"+id)
+		refs[stringField(ref, "id")] = ref
+		bad := p
+		bad.References = append(append([]BuilderReference{}, p.References...), BuilderReference{stringField(ref, "id"), "获奖者原话说明具体方法", ""})
+		if _, e := validateBuilderPlan(fixtureJSON(bad), "architect", refs); e == nil {
+			t.Fatal("transcribed as quote accepted")
+		}
+	}
+	bad := p
+	bad.References = append(append([]BuilderReference{}, p.References...), BuilderReference{"builtin:aideep:gao_yue_ai_fit", "AI适配度象限以成本和效益为两个轴", ""})
+	if _, e := validateBuilderPlan(fixtureJSON(bad), "architect", refs); e == nil {
+		t.Fatal("fabricated axes accepted")
 	}
 }
